@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Blue Neon base styles */
+@layer base {
+    body {
+        @apply bg-night-900 text-slate-200 antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-display text-white;
+    }
+}
+
+/* Neon utility components */
+@layer components {
+    .btn-neon {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg bg-neon-blue/10 px-5 py-2.5 font-display text-sm font-semibold tracking-wider text-neon-cyan ring-1 ring-neon-cyan/60 transition-all duration-200 hover:bg-neon-cyan/20 hover:shadow-neon focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan disabled:opacity-50;
+    }
+
+    .btn-neon-solid {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg bg-neon-blue px-5 py-2.5 font-display text-sm font-bold tracking-wider text-night-950 shadow-neon transition-all duration-200 hover:bg-neon-cyan hover:shadow-neon-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan disabled:opacity-50;
+    }
+
+    .btn-neon-outline {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg border border-neon-cyan/50 bg-transparent px-5 py-2.5 font-display text-sm font-semibold tracking-wider text-neon-cyan transition-all duration-200 hover:border-neon-cyan hover:shadow-neon focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan disabled:opacity-50;
+    }
+
+    .card-neon {
+        @apply rounded-xl border border-night-600 bg-night-800/80 backdrop-blur-sm transition-all duration-200 hover:border-neon-blue/40 hover:shadow-neon-sm;
+    }
+
+    .input-neon {
+        @apply w-full rounded-lg border border-night-600 bg-night-700/60 px-3.5 py-2.5 text-sm text-white placeholder-slate-500 transition-colors focus:border-neon-blue focus:outline-none focus:ring-1 focus:ring-neon-blue/50;
+    }
+
+    .label-neon {
+        @apply mb-1.5 block text-sm font-semibold tracking-wide text-slate-300;
+    }
+
+    .badge-neon {
+        @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wider;
+    }
+}
+
+/* Thin arcade-style scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0a0e17;
+}
+::-webkit-scrollbar-thumb {
+    background: #1b2436;
+    border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #0066ff;
+}
