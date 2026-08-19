@@ -4,18 +4,28 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminGameController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminRoomController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminTierController;
 use App\Http\Controllers\Admin\AdminUnitController;
+use App\Http\Controllers\KtpController;
 use Illuminate\Support\Facades\Route;
 
 // =====================================================================
 // HANYA ROUTE ADMIN (CMS) — login admin terpisah + role/permission
 // =====================================================================
 
-Route::get('/admin/login', [AdminLoginController::class, 'create'])->name('admin.login');
-Route::post('/admin/login', [AdminLoginController::class, 'store'])->name('admin.login.store');
+// Login admin — middleware guest: user yang sudah login (member/admin) otomatis
+// diarahkan ke halaman sesuai role (lihat RedirectIfAuthenticated di AppServiceProvider).
+Route::middleware('guest:admin')->group(function () {
+    Route::get('/admin/login', [AdminLoginController::class, 'create'])->name('admin.login');
+    Route::post('/admin/login', [AdminLoginController::class, 'store'])->name('admin.login.store');
+    Route::get('/admin/login/otp', [AdminLoginController::class, 'showOtp'])->name('admin.login.otp');
+    Route::post('/admin/login/otp', [AdminLoginController::class, 'verifyOtp'])->name('admin.login.otp.store');
+});
 
-Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth:admin', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('/logout', [AdminLoginController::class, 'destroy'])->name('logout');
+
     Route::get('/', [AdminController::class, 'dashboard'])
         ->middleware('is_admin:dashboard')->name('dashboard');
 
@@ -28,6 +38,9 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
         ->middleware('is_admin:rentals')->name('rentals');
     Route::patch('/rentals/{rental}', [AdminController::class, 'updateRental'])
         ->middleware('is_admin:rentals')->name('rentals.update');
+    // Lihat foto KTP (private disk, hanya admin/staff dengan permission rentals)
+    Route::get('/rentals/{rental}/ktp', [KtpController::class, 'show'])
+        ->middleware('is_admin:rentals')->name('rentals.ktp');
 
     Route::get('/memberships', [AdminController::class, 'memberships'])
         ->middleware('is_admin:memberships')->name('memberships');
@@ -71,9 +84,9 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
         ->middleware('is_admin:users')->name('users');
     Route::post('/users', [AdminController::class, 'storeUser'])
         ->middleware('is_admin:users')->name('users.store');
-    Route::patch('/users/{user}', [AdminController::class, 'updateUser'])
+    Route::patch('/users/{admin}', [AdminController::class, 'updateUser'])
         ->middleware('is_admin:users')->name('users.update');
-    Route::patch('/users/{user}/permissions', [AdminController::class, 'updateUserPermissions'])
+    Route::patch('/users/{admin}/permissions', [AdminController::class, 'updateUserPermissions'])
         ->middleware('is_admin:users')->name('users.permissions');
 
     // Manajemen game (konten list game di landing)
@@ -85,4 +98,10 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
         ->middleware('is_admin:games')->name('games.update');
     Route::delete('/games/{game}', [AdminGameController::class, 'destroy'])
         ->middleware('is_admin:games')->name('games.destroy');
+
+    // Pengaturan website (kontak, alamat, jam operasional)
+    Route::get('/settings', [AdminSettingsController::class, 'index'])
+        ->middleware('is_admin:settings')->name('settings');
+    Route::patch('/settings', [AdminSettingsController::class, 'update'])
+        ->middleware('is_admin:settings')->name('settings.update');
 });

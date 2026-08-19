@@ -1,7 +1,8 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PublicLayout from '@/Layouts/PublicLayout';
-import { Head, router, useForm } from '@inertiajs/react';
+import { encryptedPayload } from '@/lib/encryptedPayload';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useMemo, useState } from 'react';
 
 export default function BookingRoom({
@@ -13,7 +14,7 @@ export default function BookingRoom({
     userMembership,
     waAdmin,
 }: any) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         nama: prefill.nama,
         no_hp: prefill.no_hp,
         tanggal: preselectedTanggal || '',
@@ -34,9 +35,14 @@ export default function BookingRoom({
     const total = Math.round(subtotal * (1 - diskonPersen / 100));
     const diskonNominal = subtotal - total;
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
-        post(route('booking.room.store'));
+
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
+        post(route('booking.room.store'), {
+            onFinish: () => transform((currentData) => currentData),
+        });
     };
 
     const today = new Date().toISOString().split('T')[0];

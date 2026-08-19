@@ -29,10 +29,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $admin = $request->user('admin');
+        $user = $request->user('web');
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->is('admin') || $request->is('admin/*') ? $admin : $user,
+                'admin' => $admin,
             ],
             // Flash message untuk toast (success / error)
             'flash' => [

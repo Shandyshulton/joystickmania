@@ -3,19 +3,25 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function ConfirmPassword() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset, transform } = useForm({
         password: '',
     });
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
 
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
         post(route('password.confirm'), {
-            onFinish: () => reset('password'),
+            onFinish: () => {
+                transform((currentData) => currentData);
+                reset('password');
+            },
         });
     };
 

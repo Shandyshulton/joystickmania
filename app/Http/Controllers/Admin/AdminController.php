@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\ActivityLog;
 use App\Models\Booking;
 use App\Models\MembershipPurchase;
@@ -128,7 +129,7 @@ class AdminController extends Controller
             ActivityLog::create([
                 'subject_type' => Booking::class,
                 'subject_id' => $booking->id,
-                'user_id' => $request->user()->id,
+                'admin_id' => $request->user('admin')->id,
                 'action' => 'admin_update',
                 'from_status' => $oldStatus !== $data['booking_status'] ? $oldStatus : null,
                 'to_status' => $oldStatus !== $data['booking_status'] ? $data['booking_status'] : null,
@@ -185,7 +186,7 @@ class AdminController extends Controller
             ActivityLog::create([
                 'subject_type' => PhysicalRental::class,
                 'subject_id' => $rental->id,
-                'user_id' => $request->user()->id,
+                'admin_id' => $request->user('admin')->id,
                 'action' => 'admin_update',
                 'from_status' => $oldStatus,
                 'to_status' => $data['booking_status'],
@@ -241,7 +242,7 @@ class AdminController extends Controller
         return Inertia::render('Admin/Memberships', [
             'memberships' => $query->orderByDesc('created_at')->get(),
             'tab' => $tab,
-            'waAdmin' => config('app.wa_admin_number'),
+            'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
         ]);
     }
 
@@ -279,7 +280,7 @@ class AdminController extends Controller
             ActivityLog::create([
                 'subject_type' => MembershipPurchase::class,
                 'subject_id' => $purchase->id,
-                'user_id' => $request->user()->id,
+                'admin_id' => $request->user('admin')->id,
                 'action' => 'admin_update',
                 'from_status' => $oldStatus,
                 'to_status' => $data['membership_status'],
@@ -296,8 +297,7 @@ class AdminController extends Controller
     public function members()
     {
         return Inertia::render('Admin/Members', [
-            'members' => User::where('is_admin', false)
-                ->withCount('bookings')
+            'members' => User::withCount('bookings')
                 ->orderBy('nama')
                 ->get(),
         ]);
@@ -318,7 +318,7 @@ class AdminController extends Controller
         ActivityLog::create([
             'subject_type' => User::class,
             'subject_id' => $user->id,
-            'user_id' => $request->user()->id,
+            'admin_id' => $request->user('admin')->id,
             'action' => 'admin_update',
             'from_status' => $oldTier,
             'to_status' => $data['membership_tier'],
@@ -334,10 +334,8 @@ class AdminController extends Controller
     public function users()
     {
         return Inertia::render('Admin/Users', [
-            'users' => User::orderByRaw(
-                "FIELD(role, 'super_admin','admin','staff','user'), nama"
-            )->get(),
-            'permissionList' => User::PERMISSIONS,
+            'users' => Admin::orderBy('role')->orderBy('nama')->get(),
+            'permissionList' => Admin::PERMISSIONS,
         ]);
     }
 
@@ -348,34 +346,33 @@ class AdminController extends Controller
     {
         $data = $request->validate([
             'nama' => 'required|string|max:255',
-            'no_hp' => 'required|string|max:20|unique:users,no_hp',
-            'email' => 'required|email|max:255|unique:users,email',
+            'no_hp' => 'required|string|max:20|unique:admins,no_hp',
+            'email' => 'required|email|max:255|unique:admins,email',
             'password' => 'required|string|min:8',
             'role' => 'required|in:super_admin,admin,staff',
         ]);
 
-        User::create([
+        Admin::create([
             'nama' => $data['nama'],
             'no_hp' => $data['no_hp'],
             'email' => $data['email'],
             'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
             'role' => $data['role'],
-            'is_admin' => in_array($data['role'], ['super_admin', 'admin']),
         ]);
 
-        return back()->with('success', 'User CMS berhasil ditambahkan.');
+        return back()->with('success', 'Admin CMS berhasil ditambahkan.');
     }
 
     /**
      * Update role & data dasar user CMS.
      */
-    public function updateUser(Request $request, User $user)
+    public function updateUser(Request $request, Admin $admin)
     {
         $data = $request->validate([
             'nama' => 'required|string|max:255',
-            'no_hp' => 'required|string|max:20|unique:users,no_hp,'.$user->id,
-            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
-            'role' => 'required|in:super_admin,admin,staff,user',
+            'no_hp' => 'required|string|max:20|unique:admins,no_hp,'.$admin->id,
+            'email' => 'required|email|max:255|unique:admins,email,'.$admin->id,
+            'role' => 'required|in:super_admin,admin,staff',
             'password' => 'nullable|string|min:8',
         ]);
 
@@ -384,30 +381,29 @@ class AdminController extends Controller
             'no_hp' => $data['no_hp'],
             'email' => $data['email'],
             'role' => $data['role'],
-            'is_admin' => in_array($data['role'], ['super_admin', 'admin']),
         ];
 
         if (! empty($data['password'])) {
             $fields['password'] = \Illuminate\Support\Facades\Hash::make($data['password']);
         }
 
-        $user->update($fields);
+        $admin->update($fields);
 
-        return back()->with('success', 'User '.$user->nama.' diperbarui.');
+        return back()->with('success', 'Admin '.$admin->nama.' diperbarui.');
     }
 
     /**
      * Update checklist permission (khusus role staff; admin & super admin full).
      */
-    public function updateUserPermissions(Request $request, User $user)
+    public function updateUserPermissions(Request $request, Admin $admin)
     {
         $data = $request->validate([
             'permissions' => 'array',
-            'permissions.*' => 'in:'.implode(',', array_keys(User::PERMISSIONS)),
+            'permissions.*' => 'in:'.implode(',', array_keys(Admin::PERMISSIONS)),
         ]);
 
-        $user->update(['permissions' => $data['permissions'] ?? []]);
+        $admin->update(['permissions' => $data['permissions'] ?? []]);
 
-        return back()->with('success', 'Permission '.$user->nama.' diperbarui.');
+        return back()->with('success', 'Permission '.$admin->nama.' diperbarui.');
     }
 }

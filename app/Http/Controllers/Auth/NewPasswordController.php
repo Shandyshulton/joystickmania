@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -57,6 +58,8 @@ class NewPasswordController extends Controller
             ]);
         }
 
+        $request->session()->put('otp_email', $request->email);
+
         return redirect()->route('password.reset', ['token' => $token])
             ->with('status', 'Kode OTP valid. Silakan buat password baru.');
     }
@@ -79,12 +82,28 @@ class NewPasswordController extends Controller
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $email = $request->session()->get('otp_email');
+        $email ??= DB::table('password_reset_tokens')
+            ->get()
+            ->first(fn ($record) => Hash::check($request->token, $record->token))
+            ?->email;
+
+        if (! $email) {
+            throw ValidationException::withMessages([
+                'password' => 'Sesi reset password tidak valid. Silakan minta OTP baru.',
+            ]);
+        }
+
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            [
+                'email' => $email,
+                'password' => $request->password,
+                'password_confirmation' => $request->password_confirmation,
+                'token' => $request->token,
+            ],
             function ($user) use ($request) {
                 $user->forceFill([
                     'password' => Hash::make($request->password),
@@ -95,10 +114,15 @@ class NewPasswordController extends Controller
                 DB::table('password_reset_tokens')
                     ->where('email', $user->email)
                     ->delete();
+
+                session()->forget(['otp_email', 'otp_token']);
             }
         );
 
         if ($status == Password::PASSWORD_RESET) {
+            Auth::guard('web')->logout();
+            $request->session()->regenerateToken();
+
             return redirect()->route('login')->with('success', 'Password berhasil direset. Silakan login.');
         }
 

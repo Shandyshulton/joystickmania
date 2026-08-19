@@ -2,6 +2,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -10,17 +11,27 @@ export default function AdminLogin({
 }: {
     status?: string;
 }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset, transform } = useForm({
         email: '',
         password: '',
         remember: false as boolean,
     });
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
 
+        const payload = await encryptedPayload({
+            email: data.email,
+            password: data.password,
+            remember: data.remember,
+        });
+
+        transform(() => payload);
         post(route('admin.login'), {
-            onFinish: () => reset('password'),
+            onFinish: () => {
+                transform((currentData) => currentData);
+                reset('password');
+            },
         });
     };
 

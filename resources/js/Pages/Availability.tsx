@@ -119,14 +119,23 @@ export default function Availability({ rooms, slots, grid, filters }: any) {
                         .map((room: any) => (
                             <div key={room.id} className="card-neon overflow-hidden">
                                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-night-600 bg-night-800/60 px-5 py-3">
-                                    <div>
-                                        <h3 className="font-display text-lg font-bold text-white">
-                                            {room.nama_room}
-                                        </h3>
-                                        <span className="text-xs text-slate-500">
-                                            {room.konsol_tersedia?.join(' • ')} • Rp{' '}
-                                            {Number(room.harga_per_jam).toLocaleString('id-ID')}/jam
-                                        </span>
+                                    <div className="flex items-center gap-3">
+                                        {room.foto && (
+                                            <img
+                                                src={`/storage/${room.foto}`}
+                                                alt={room.nama_room}
+                                                className="h-12 w-12 rounded-lg border border-night-600 object-cover"
+                                            />
+                                        )}
+                                        <div>
+                                            <h3 className="font-display text-lg font-bold text-white">
+                                                {room.nama_room}
+                                            </h3>
+                                            <span className="text-xs text-slate-500">
+                                                {room.konsol_tersedia?.join(' • ')} • Rp{' '}
+                                                {Number(room.harga_per_jam).toLocaleString('id-ID')}/jam
+                                            </span>
+                                        </div>
                                     </div>
                                     <Link
                                         href={`/booking/room?room_id=${room.id}&tanggal=${tanggal}`}

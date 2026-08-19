@@ -193,10 +193,20 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                 <div className="mt-8 grid gap-6 md:grid-cols-3">
                     {rooms?.map((room: any) => (
                         <div key={room.id} className="card-neon overflow-hidden">
-                            <div className="flex h-36 items-center justify-center bg-gradient-to-br from-night-700 to-night-950">
-                                <span className="font-display text-3xl font-black text-neon-cyan/80">
-                                    {room.nama_room}
-                                </span>
+                            <div className="h-36">
+                                {room.foto ? (
+                                    <img
+                                        src={`/storage/${room.foto}`}
+                                        alt={room.nama_room}
+                                        className="h-36 w-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex h-36 items-center justify-center bg-gradient-to-br from-night-700 to-night-950">
+                                        <span className="font-display text-3xl font-black text-neon-cyan/80">
+                                            {room.nama_room}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                             <div className="p-5">
                                 <h3 className="font-display text-lg font-bold text-white">

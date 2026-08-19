@@ -11,42 +11,36 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-// =====================================================================
-// AUTH USER (member) — login/register/password user
-// =====================================================================
+// Reset password via OTP boleh diakses guest maupun user yang sedang login.
+Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->name('password.request');
+Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->name('password.email');
+Route::get('verify-otp', [NewPasswordController::class, 'verify'])
+    ->name('password.verify');
+Route::post('verify-otp', [NewPasswordController::class, 'verifyOtp'])
+    ->name('password.verify.store');
+Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->name('password.reset');
+Route::post('reset-password', [NewPasswordController::class, 'store'])
+    ->name('password.store');
 
-Route::middleware('guest')->group(function () {
+Route::middleware('guest:web')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
-
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
-
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-        ->name('password.request');
-
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-        ->name('password.email');
-
-    // Verifikasi OTP (6 digit) — alur reset password via kode
-    Route::get('verify-otp', [NewPasswordController::class, 'verify'])
-        ->name('password.verify');
-
-    Route::post('verify-otp', [NewPasswordController::class, 'verifyOtp'])
-        ->name('password.verify.store');
-
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-        ->name('password.reset');
-
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
-        ->name('password.store');
+    Route::get('login/otp', [AuthenticatedSessionController::class, 'showOtp'])
+        ->name('login.otp');
+    Route::post('login/otp', [AuthenticatedSessionController::class, 'verifyOtp'])
+        ->name('login.otp.store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:web')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -60,7 +54,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
         ->name('password.confirm');
-
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');

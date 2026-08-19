@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use App\Notifications\SendOtpNotification;
+use App\Support\RequestPayloadCrypt;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -20,6 +21,16 @@ class PasswordResetTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_authenticated_user_can_open_forgot_password_screen(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/forgot-password');
+
+        $response->assertStatus(200);
+        $response->assertSee($user->email);
+    }
+
     public function test_otp_can_be_requested_and_sent_to_user_email(): void
     {
         Notification::fake();
@@ -27,6 +38,21 @@ class PasswordResetTest extends TestCase
         $user = User::factory()->create();
 
         $this->post('/forgot-password', ['email' => $user->email]);
+
+        Notification::assertSentTo($user, SendOtpNotification::class);
+    }
+
+    public function test_otp_can_be_requested_with_encrypted_payload(): void
+    {
+        Notification::fake();
+
+        $user = User::factory()->create();
+
+        $this->post('/forgot-password', [
+            'encrypted_payload' => RequestPayloadCrypt::encrypt([
+                'email' => $user->email,
+            ]),
+        ]);
 
         Notification::assertSentTo($user, SendOtpNotification::class);
     }
@@ -54,6 +80,29 @@ class PasswordResetTest extends TestCase
             $this->assertNotNull($record);
 
             // Redirect ke form reset password
+            $response->assertRedirect();
+
+            return true;
+        });
+    }
+
+    public function test_verify_otp_accepts_encrypted_payload(): void
+    {
+        Notification::fake();
+
+        $user = User::factory()->create();
+
+        $this->post('/forgot-password', ['email' => $user->email]);
+
+        Notification::assertSentTo($user, SendOtpNotification::class, function ($notification) use ($user) {
+            $response = $this->post('/verify-otp', [
+                'encrypted_payload' => RequestPayloadCrypt::encrypt([
+                    'email' => $user->email,
+                    'otp' => $notification->otp,
+                ]),
+            ]);
+
+            $response->assertSessionHasNoErrors();
             $response->assertRedirect();
 
             return true;
@@ -95,7 +144,6 @@ class PasswordResetTest extends TestCase
 
             $response = $this->post('/reset-password', [
                 'token' => $token,
-                'email' => $user->email,
                 'password' => 'passwordbaru123',
                 'password_confirmation' => 'passwordbaru123',
             ]);

@@ -23,6 +23,7 @@ class PasswordResetLinkController extends Controller
     public function create(): Response
     {
         return Inertia::render('Auth/ForgotPassword', [
+            'email' => request()->user('web')?->email ?? request()->input('email', ''),
             'status' => session('status'),
         ]);
     }
@@ -59,7 +60,10 @@ class PasswordResetLinkController extends Controller
             $user->notify(new SendOtpNotification($otp));
 
             // Simpan token plaintext di session untuk redirect ke form password baru
-            session(['otp_token' => $token]);
+            session([
+                'otp_token' => $token,
+                'otp_email' => $user->email,
+            ]);
         }
 
         return redirect()->route('password.verify')

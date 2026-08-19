@@ -12,6 +12,7 @@ class ActivityLog extends Model
         'subject_type',
         'subject_id',
         'user_id',
+        'admin_id',
         'action',
         'from_status',
         'to_status',
@@ -26,5 +27,10 @@ class ActivityLog extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function admin(): BelongsTo
+    {
+        return $this->belongsTo(Admin::class);
     }
 }

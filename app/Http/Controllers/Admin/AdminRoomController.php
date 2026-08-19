@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Room;
+use App\Support\ImageUploader;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -20,6 +21,10 @@ class AdminRoomController extends Controller
     {
         $data = $this->validated($request);
 
+        if ($request->hasFile('foto')) {
+            $data['foto'] = ImageUploader::store($request->file('foto'), 'rooms');
+        }
+
         Room::create($data);
 
         return back()->with('success', 'Room berhasil ditambahkan.');
@@ -29,6 +34,10 @@ class AdminRoomController extends Controller
     {
         $data = $this->validated($request);
 
+        if ($request->hasFile('foto')) {
+            $data['foto'] = ImageUploader::store($request->file('foto'), 'rooms', $room->foto);
+        }
+
         $room->update($data);
 
         return back()->with('success', 'Room berhasil diperbarui.');
@@ -36,6 +45,8 @@ class AdminRoomController extends Controller
 
     public function destroy(Room $room)
     {
+        ImageUploader::delete($room->foto);
+
         $room->delete();
 
         return back()->with('success', 'Room dihapus.');
@@ -49,6 +60,7 @@ class AdminRoomController extends Controller
             'konsol_tersedia' => 'required|array',
             'konsol_tersedia.*' => 'in:PS3,PS4,PS5',
             'harga_per_jam' => 'required|integer|min:0',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'fasilitas' => 'nullable|string|max:1000',
             'status' => 'required|in:aktif,maintenance',
         ]);

@@ -78,7 +78,7 @@ export default function AdminRentals({ rentals, filters }: any) {
                                 rental={r}
                                 editing={editing === r.id}
                                 onToggle={() => setEditing(editing === r.id ? null : r.id)}
-                                onViewKtp={() => setKtpView(`/storage/${r.foto_ktp}`)}
+                                onViewKtp={() => setKtpView(`/admin/rentals/${r.id}/ktp`)}
                             />
                         ))}
                     </tbody>
@@ -132,7 +132,7 @@ function RentalRow({ rental: r, editing, onToggle, onViewKtp }: any) {
                     </div>
                 </td>
                 <td className="px-4 py-3">
-                    {r.foto_ktp ? (
+                    {r.has_ktp ? (
                         <button onClick={onViewKtp} className="text-xs text-neon-cyan underline hover:text-neon-blue">
                             Lihat →
                         </button>

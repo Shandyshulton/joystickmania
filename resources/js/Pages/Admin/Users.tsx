@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -6,14 +7,12 @@ const ROLE_STYLE: Record<string, string> = {
     super_admin: 'border-neon-red/50 bg-neon-red/10 text-neon-red',
     admin: 'border-neon-purple/50 bg-neon-purple/10 text-neon-purple',
     staff: 'border-neon-cyan/50 bg-neon-cyan/10 text-neon-cyan',
-    user: 'border-slate-500/50 bg-slate-500/10 text-slate-400',
 };
 
 const ROLE_LABEL: Record<string, string> = {
     super_admin: 'Super Admin',
     admin: 'Admin',
     staff: 'Staff',
-    user: 'User',
 };
 
 export default function AdminUsers({ users, permissionList }: any) {
@@ -25,15 +24,15 @@ export default function AdminUsers({ users, permissionList }: any) {
             header={
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <h1 className="font-display text-xl font-bold text-white">
-                        Manajemen <span className="text-neon-cyan">User & Role</span>
+                        Manajemen <span className="text-neon-cyan">Admin & Role</span>
                     </h1>
                     <button onClick={() => setShowAdd(!showAdd)} className="btn-neon-solid !py-2 !text-xs">
-                        + Tambah User CMS
+                        + Tambah Admin CMS
                     </button>
                 </div>
             }
         >
-            <Head title="Manajemen User & Role" />
+            <Head title="Manajemen Admin & Role" />
 
             {showAdd && <AddUserForm onDone={() => setShowAdd(false)} />}
 
@@ -64,7 +63,7 @@ export default function AdminUsers({ users, permissionList }: any) {
 
             <p className="mt-3 text-xs text-slate-500">
                 💡 Role <b>Super Admin</b> punya semua akses. Role <b>Admin</b> punya semua
-                menu kecuali Manajemen User & Role. Role <b>Staff</b> hanya bisa mengakses
+                menu kecuali Manajemen Admin & Role. Role <b>Staff</b> hanya bisa mengakses
                 menu yang dicentang di kolom "Akses".
             </p>
         </AdminLayout>
@@ -72,7 +71,7 @@ export default function AdminUsers({ users, permissionList }: any) {
 }
 
 function AddUserForm({ onDone }: any) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         nama: '',
         no_hp: '',
         email: '',
@@ -80,8 +79,10 @@ function AddUserForm({ onDone }: any) {
         role: 'staff',
     });
 
-    const submit = (e: any) => {
+    const submit = async (e: any) => {
         e.preventDefault();
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
         post(route('admin.users.store'), { onSuccess: onDone });
     };
 
@@ -117,7 +118,7 @@ function AddUserForm({ onDone }: any) {
             </div>
             <div className="sm:col-span-2 lg:col-span-5">
                 <button type="submit" disabled={processing} className="btn-neon-solid w-full !py-2 !text-xs">
-                    Simpan User
+                    Simpan Admin
                 </button>
             </div>
         </form>
@@ -128,7 +129,7 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
     const isSuper = u.role === 'super_admin';
     const isAdmin = u.role === 'admin' || isSuper;
 
-    const { data, setData, patch, processing } = useForm({
+    const { data, setData, patch, processing, transform } = useForm({
         nama: u.nama,
         no_hp: u.no_hp,
         email: u.email,
@@ -140,8 +141,10 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
         permissions: u.permissions || [],
     });
 
-    const saveUser = (e: any) => {
+    const saveUser = async (e: any) => {
         e.preventDefault();
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
         patch(route('admin.users.update', u.id));
     };
 
@@ -175,7 +178,7 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
                     {isSuper ? (
                         <span className="text-xs text-neon-red">Semua akses</span>
                     ) : isAdmin ? (
-                        <span className="text-xs text-neon-purple">Semua menu (kecuali User & Role)</span>
+                        <span className="text-xs text-neon-purple">Semua menu (kecuali Admin & Role)</span>
                     ) : (
                         <span className="text-xs text-slate-400">
                             {(u.permissions?.length || 0)} menu: {(u.permissions || []).map((p: string) => permissionList?.[p]?.split(' ')[1] || p).join(', ')}
@@ -222,7 +225,6 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
                                         <option value="super_admin">Super Admin</option>
                                         <option value="admin">Admin</option>
                                         <option value="staff">Staff</option>
-                                        <option value="user">User (member biasa)</option>
                                     </select>
                                 </div>
                                 <button type="submit" disabled={processing} className="btn-neon-solid mt-3 w-full !py-2 !text-xs">
@@ -237,7 +239,7 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
                                         Checklist Permission (Staff)
                                     </div>
                                     <p className="mt-1 text-xs text-slate-500">
-                                        Centang menu yang boleh diakses user ini.
+                                        Centang menu yang boleh diakses admin/staff ini.
                                     </p>
                                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
                                         {Object.entries(permissionList).map(([key, label]) => (
@@ -261,8 +263,8 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
                             {u.role !== 'staff' && !isSuper && (
                                 <div className="rounded-lg border border-night-600 bg-night-800/60 p-4 text-xs text-slate-400">
                                     Role <b className="text-neon-purple">Admin</b> otomatis punya semua menu
-                                    (kecuali Manajemen User & Role). Role <b className="text-neon-red">Super Admin</b>{' '}
-                                    punya segalanya termasuk mengelola user & role.
+                                    (kecuali Manajemen Admin & Role). Role <b className="text-neon-red">Super Admin</b>{' '}
+                                    punya segalanya termasuk mengelola admin & role.
                                 </div>
                             )}
                         </div>

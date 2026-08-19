@@ -50,9 +50,6 @@ function MemberRow({ member }: any) {
         <tr className="hover:bg-night-800/50">
             <td className="px-4 py-3 text-slate-300">
                 {member.nama}
-                {member.is_admin && (
-                    <span className="badge-neon ml-2 border border-neon-purple/40 bg-neon-purple/10 text-neon-purple">ADMIN</span>
-                )}
             </td>
             <td className="px-4 py-3 text-slate-300">{member.no_hp}</td>
             <td className="px-4 py-3 text-slate-400">{member.email}</td>

@@ -6,6 +6,10 @@ import { PageProps as AppPageProps } from './';
 declare global {
     interface Window {
         axios: AxiosInstance;
+        joyConfig?: {
+            waAdmin?: string;
+            requestPayloadKey?: string;
+        };
     }
 
     /* eslint-disable no-var */

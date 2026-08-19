@@ -8,6 +8,7 @@ use App\Models\MembershipTier;
 use App\Models\PhysicalRental;
 use App\Models\PsUnit;
 use App\Models\Room;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -27,9 +28,9 @@ class PublicPageController extends Controller
                 ->orderBy('jenis_konsol')
                 ->orderBy('nama_game')
                 ->get(),
-            'jamOperasional' => '10.00 - 22.00 WIB',
-            'alamat' => 'Jl. Contoh No. 1, Kota',
-            'waAdmin' => config('app.wa_admin_number'),
+            'jamOperasional' => Setting::get('jam_operasional', '10.00 - 22.00 WIB'),
+            'alamat' => Setting::get('alamat', 'Jl. Contoh No. 1, Kota'),
+            'waAdmin' => Setting::get('no_wa', config('app.wa_admin_number')),
         ]);
     }
 
@@ -160,10 +161,13 @@ class PublicPageController extends Controller
                 ->get();
         }
 
+        $bookings = $bookings->sortByDesc('created_at')->values();
+        $physicalRentals = $physicalRentals->sortByDesc('created_at')->values();
+
         return Inertia::render('History', [
             'noHp' => $noHp ?? '',
-            'bookings' => $bookings->sortByDesc('created_at')->values(),
-            'physicalRentals' => $physicalRentals->sortByDesc('created_at')->values(),
+            'bookings' => $bookings,
+            'physicalRentals' => $physicalRentals,
             'membershipPurchases' => $membershipPurchases,
         ]);
     }

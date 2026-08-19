@@ -2,6 +2,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
@@ -17,17 +18,21 @@ export default function UpdateProfileInformation({
 }) {
     const user = usePage().props.auth.user;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
+    const { data, setData, patch, errors, processing, recentlySuccessful, transform } =
         useForm({
             nama: user.nama,
             no_hp: user.no_hp,
             email: user.email,
         });
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'));
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
+        patch(route('profile.update'), {
+            onFinish: () => transform((currentData) => currentData),
+        });
     };
 
     return (

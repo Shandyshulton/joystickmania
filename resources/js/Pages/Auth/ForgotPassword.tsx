@@ -3,18 +3,23 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-export default function ForgotPassword({ status }: { status?: string }) {
-    const { data, setData, post, processing, errors } = useForm({
-        email: '',
+export default function ForgotPassword({ status, email = '' }: { status?: string; email?: string }) {
+    const { data, setData, post, processing, errors, transform } = useForm({
+        email,
     });
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
 
-        post(route('password.email'));
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
+        post(route('password.email'), {
+            onFinish: () => transform((currentData) => currentData),
+        });
     };
 
     return (

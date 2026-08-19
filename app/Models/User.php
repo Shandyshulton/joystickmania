@@ -37,6 +37,7 @@ class User extends Authenticatable
         'units' => 'Manajemen Unit PS',
         'tiers' => 'Manajemen Tier',
         'games' => 'Manajemen Game',
+        'settings' => 'Pengaturan Website',
         'users' => 'Manajemen User & Role',
     ];
 

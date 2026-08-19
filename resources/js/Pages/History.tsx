@@ -1,6 +1,7 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, router } from '@inertiajs/react';
 import { FormEventHandler, useState } from 'react';
+import ImageViewer from '@/Components/ImageViewer';
 
 const STATUS_STYLE: Record<string, string> = {
     pending_payment: 'border-neon-yellow/50 bg-neon-yellow/10 text-neon-yellow',
@@ -44,6 +45,7 @@ function TimeLeft({ expiresAt }: { expiresAt?: string }) {
 
 export default function History({ noHp, bookings, physicalRentals, membershipPurchases, auth }: any) {
     const [input, setInput] = useState(noHp);
+    const [ktpView, setKtpView] = useState<string | null>(null);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -161,6 +163,7 @@ export default function History({ noHp, bookings, physicalRentals, membershipPur
                                                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Periode</th>
                                                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Biaya</th>
                                                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Deposit</th>
+                                                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">KTP</th>
                                                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
                                             </tr>
                                         </thead>
@@ -181,6 +184,18 @@ export default function History({ noHp, bookings, physicalRentals, membershipPur
                                                     <td className="px-4 py-3 text-neon-yellow">
                                                         Rp {Number(r.nominal_deposit).toLocaleString('id-ID')}
                                                         <div className="text-xs text-slate-500">{r.deposit_status}</div>
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        {auth?.user && r.has_ktp ? (
+                                                            <button
+                                                                onClick={() => setKtpView(`/ktp/${r.id}`)}
+                                                                className="text-xs text-neon-cyan underline hover:text-neon-blue"
+                                                            >
+                                                                Lihat →
+                                                            </button>
+                                                        ) : (
+                                                            <span className="text-xs text-slate-600">-</span>
+                                                        )}
                                                     </td>
                                                     <td className="px-4 py-3">
                                                         <span className={`badge-neon border ${STATUS_STYLE[r.booking_status] || ''}`}>
@@ -241,6 +256,15 @@ export default function History({ noHp, bookings, physicalRentals, membershipPur
                     </>
                 )}
             </div>
+
+            {/* Viewer foto KTP milik sendiri */}
+            {ktpView && (
+                <ImageViewer
+                    src={ktpView}
+                    alt="Foto KTP"
+                    onClose={() => setKtpView(null)}
+                />
+            )}
         </PublicLayout>
     );
 }

@@ -3,6 +3,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -13,15 +14,19 @@ export default function VerifyOtp({
     email?: string;
     status?: string;
 }) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         email: email || '',
         otp: '',
     });
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
 
-        post(route('password.verify.store'));
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
+        post(route('password.verify.store'), {
+            onFinish: () => transform((currentData) => currentData),
+        });
     };
 
     return (

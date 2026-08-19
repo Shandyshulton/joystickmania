@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Support\RequestPayloadCrypt;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -42,6 +43,31 @@ class ProfileTest extends TestCase
         $this->assertSame('Test User', $user->nama);
         $this->assertSame('test@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
+    }
+
+    public function test_profile_information_can_be_updated_with_encrypted_payload(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile', [
+                'encrypted_payload' => RequestPayloadCrypt::encrypt([
+                    'nama' => 'Nama AES',
+                    'no_hp' => '089999888777',
+                    'email' => 'aes@example.com',
+                ]),
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/profile');
+
+        $user->refresh();
+
+        $this->assertSame('Nama AES', $user->nama);
+        $this->assertSame('089999888777', $user->no_hp);
+        $this->assertSame('aes@example.com', $user->email);
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void

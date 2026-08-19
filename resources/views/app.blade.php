@@ -4,6 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <!-- Favicon -->
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="alternate icon" href="/favicon.ico">
+
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
@@ -15,6 +19,7 @@
         <script>
             window.joyConfig = {
                 waAdmin: @json(config('app.wa_admin_number')),
+                requestPayloadKey: @json(\App\Support\RequestPayloadCrypt::publicKey()),
             };
         </script>
         @viteReactRefresh

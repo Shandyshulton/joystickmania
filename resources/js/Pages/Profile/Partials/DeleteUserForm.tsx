@@ -4,6 +4,7 @@ import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef, useState } from 'react';
 
@@ -23,6 +24,7 @@ export default function DeleteUserForm({
         reset,
         errors,
         clearErrors,
+        transform,
     } = useForm({
         password: '',
     });
@@ -31,14 +33,19 @@ export default function DeleteUserForm({
         setConfirmingUserDeletion(true);
     };
 
-    const deleteUser: FormEventHandler = (e) => {
+    const deleteUser: FormEventHandler = async (e) => {
         e.preventDefault();
 
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
         destroy(route('profile.destroy'), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onError: () => passwordInput.current?.focus(),
-            onFinish: () => reset(),
+            onFinish: () => {
+                transform((currentData) => currentData);
+                reset();
+            },
         });
     };
 

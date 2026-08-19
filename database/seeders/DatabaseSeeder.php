@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\Game;
 use App\Models\MembershipTier;
 use App\Models\PsUnit;
@@ -21,26 +22,22 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ---- Admin & user demo ----
-        User::factory()->create([
+        Admin::factory()->create([
             'nama' => 'Super Admin',
             'no_hp' => '081234567890',
             'email' => 'admin@joystickmania.test',
             'password' => Hash::make('password'),
-            'is_admin' => true,
             'role' => 'super_admin',
-            'membership_tier' => 'gold',
         ]);
 
         // Staff demo (akses terbatas sesuai permission)
-        User::factory()->create([
+        Admin::factory()->create([
             'nama' => 'Staff Demo',
             'no_hp' => '081111222333',
             'email' => 'staff@joystickmania.test',
             'password' => Hash::make('password'),
-            'is_admin' => false,
             'role' => 'staff',
             'permissions' => ['dashboard', 'bookings', 'rentals'],
-            'membership_tier' => 'bronze',
         ]);
 
         User::factory()->create([

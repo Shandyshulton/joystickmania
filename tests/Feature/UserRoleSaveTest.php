@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -10,17 +10,17 @@ class UserRoleSaveTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function superAdmin(): User
+    private function superAdmin(): Admin
     {
-        return User::factory()->create(['role' => 'super_admin', 'is_admin' => true]);
+        return Admin::factory()->create(['role' => 'super_admin']);
     }
 
     public function test_super_admin_can_update_user_data_and_role(): void
     {
         $admin = $this->superAdmin();
-        $staff = User::factory()->create(['role' => 'staff']);
+        $staff = Admin::factory()->create(['role' => 'staff']);
 
-        $response = $this->actingAs($admin)->patch('/admin/users/'.$staff->id, [
+        $response = $this->actingAs($admin, 'admin')->patch('/admin/users/'.$staff->id, [
             'nama' => 'Nama Baru',
             'no_hp' => $staff->no_hp,
             'email' => $staff->email,
@@ -33,15 +33,14 @@ class UserRoleSaveTest extends TestCase
         $fresh = $staff->fresh();
         $this->assertSame('Nama Baru', $fresh->nama);
         $this->assertSame('admin', $fresh->role);
-        $this->assertTrue((bool) $fresh->is_admin);
     }
 
     public function test_super_admin_can_update_permissions(): void
     {
         $admin = $this->superAdmin();
-        $staff = User::factory()->create(['role' => 'staff']);
+        $staff = Admin::factory()->create(['role' => 'staff']);
 
-        $response = $this->actingAs($admin)->patch('/admin/users/'.$staff->id.'/permissions', [
+        $response = $this->actingAs($admin, 'admin')->patch('/admin/users/'.$staff->id.'/permissions', [
             'permissions' => ['dashboard', 'bookings'],
         ]);
 

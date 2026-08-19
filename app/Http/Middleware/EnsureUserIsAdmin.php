@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,15 +10,15 @@ class EnsureUserIsAdmin
 {
     /**
      * Batasi akses ke CMS berdasarkan role & permission.
-     * - Super admin: semua menu (termasuk Manajemen User & Role).
-     * - Admin: semua menu KECUALI Manajemen User & Role.
+     * - Super admin: semua menu (termasuk Manajemen Admin & Role).
+     * - Admin: semua menu KECUALI Manajemen Admin & Role.
      * - Staff: hanya menu yang dicentang di permission.
      */
     public function handle(Request $request, Closure $next, ?string $permission = null): Response
     {
-        $user = $request->user();
+        $user = $request->user('admin');
 
-        if (! $user || $user->role === User::ROLE_USER) {
+        if (! $user) {
             abort(403, 'Akses khusus admin.');
         }
 
@@ -28,13 +27,13 @@ class EnsureUserIsAdmin
             return $next($request);
         }
 
-        // Menu "users" (manajemen user & role) khusus super admin
+        // Menu "users" (manajemen admin & role) khusus super admin
         if ($permission === 'users') {
-            abort(403, 'Hanya Super Admin yang bisa mengelola user & role.');
+            abort(403, 'Hanya Super Admin yang bisa mengelola admin & role.');
         }
 
         // Admin: akses penuh selain users
-        if ($user->role === User::ROLE_ADMIN) {
+        if ($user->isAdmin()) {
             return $next($request);
         }
 

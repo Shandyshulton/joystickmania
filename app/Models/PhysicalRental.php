@@ -29,6 +29,9 @@ class PhysicalRental extends Model
         'expires_at',
     ];
 
+    // Path foto KTP tidak boleh pernah masuk payload browser.
+    protected $hidden = ['foto_ktp'];
+
     public const STATUS_PENDING = 'pending_payment';
     public const STATUS_CONFIRMED = 'confirmed';
     public const STATUS_EXPIRED = 'expired';
@@ -42,6 +45,15 @@ class PhysicalRental extends Model
             'tanggal_kembali' => 'date',
             'expires_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Apakah rental ini punya foto KTP? Dipakai frontend (has_ktp)
+     * karena path asli tidak pernah dikirim ke browser.
+     */
+    public function getHasKtpAttribute(): bool
+    {
+        return ! empty($this->getRawOriginal('foto_ktp'));
     }
 
     public function user(): BelongsTo

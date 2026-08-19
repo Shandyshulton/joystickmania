@@ -7,6 +7,7 @@ const EMPTY = {
     kapasitas: 2,
     konsol_tersedia: ['PS5'] as string[],
     harga_per_jam: 40000,
+    foto: null as File | null,
     fasilitas: '',
     status: 'aktif',
 };
@@ -33,6 +34,7 @@ export default function AdminRooms({ rooms }: any) {
                 <table className="min-w-full divide-y divide-night-600 text-sm">
                     <thead className="bg-night-800/60">
                         <tr>
+                            <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Foto</th>
                             <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Room</th>
                             <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Kapasitas</th>
                             <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Konsol</th>
@@ -44,6 +46,19 @@ export default function AdminRooms({ rooms }: any) {
                     <tbody className="divide-y divide-night-700">
                         {rooms.map((r: any) => (
                             <tr key={r.id} className="hover:bg-night-800/50">
+                                <td className="px-4 py-3">
+                                    {r.foto ? (
+                                        <img
+                                            src={`/storage/${r.foto}`}
+                                            alt={r.nama_room}
+                                            className="h-14 w-14 rounded-lg border border-night-600 object-cover"
+                                        />
+                                    ) : (
+                                        <span className="flex h-14 w-14 items-center justify-center rounded-lg border border-night-600 bg-night-800 text-xs text-slate-600">
+                                            No img
+                                        </span>
+                                    )}
+                                </td>
                                 <td className="px-4 py-3 font-semibold text-slate-200">{r.nama_room}</td>
                                 <td className="px-4 py-3 text-slate-400">{r.kapasitas}</td>
                                 <td className="px-4 py-3 text-slate-300">{r.konsol_tersedia?.join(', ')}</td>
@@ -90,9 +105,14 @@ function RoomFormModal({ room, onClose }: any) {
         kapasitas: room.kapasitas,
         konsol_tersedia: room.konsol_tersedia,
         harga_per_jam: room.harga_per_jam,
+        foto: null as File | null,
         fasilitas: room.fasilitas || '',
         status: room.status,
     } : EMPTY);
+
+    const [preview, setPreview] = useState<string | null>(
+        room?.foto ? `/storage/${room.foto}` : null,
+    );
 
     const toggleKonsol = (k: string) => {
         const cur = data.konsol_tersedia;
@@ -101,10 +121,11 @@ function RoomFormModal({ room, onClose }: any) {
 
     const submit = (e: any) => {
         e.preventDefault();
+        const options = { onSuccess: onClose, forceFormData: true };
         if (room) {
-            patch(route('admin.rooms.update', room.id), { onSuccess: onClose });
+            patch(route('admin.rooms.update', room.id), options);
         } else {
-            post(route('admin.rooms.store'), { onSuccess: onClose });
+            post(route('admin.rooms.store'), options);
         }
     };
 
@@ -136,6 +157,23 @@ function RoomFormModal({ room, onClose }: any) {
                         <label className="label-neon">Harga/Jam (Rp)</label>
                         <input type="number" min={0} value={data.harga_per_jam} onChange={(e) => setData('harga_per_jam', Number(e.target.value))} className="input-neon" />
                     </div>
+                </div>
+                <div>
+                    <label className="label-neon">Foto Room (opsional)</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0] || null;
+                            setData('foto', file);
+                            if (file) setPreview(URL.createObjectURL(file));
+                        }}
+                        className="input-neon file:me-3 file:rounded file:border-0 file:bg-neon-blue/20 file:px-3 file:py-1.5 file:font-semibold file:text-neon-cyan"
+                    />
+                    {preview && (
+                        <img src={preview} alt="Preview" className="mt-3 h-32 rounded-lg border border-night-600 object-cover" />
+                    )}
+                    {errors.foto && <p className="mt-1 text-xs text-neon-red">{errors.foto}</p>}
                 </div>
                 <div>
                     <label className="label-neon">Konsol Tersedia</label>

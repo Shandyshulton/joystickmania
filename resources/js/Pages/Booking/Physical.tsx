@@ -1,11 +1,12 @@
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PublicLayout from '@/Layouts/PublicLayout';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useMemo, useState } from 'react';
 
 export default function BookingPhysical({ units, prefill, waAdmin }: any) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         nama: prefill.nama,
         no_hp: prefill.no_hp,
         alamat: '',
@@ -34,9 +35,29 @@ export default function BookingPhysical({ units, prefill, waAdmin }: any) {
     const durasiValid = hariSewa >= 1 && hariSewa <= 7;
     const totalBiaya = (selectedUnit?.harga_sewa ?? 0) * hariSewa;
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
-        post(route('booking.fisik.store'));
+
+        const payload = await encryptedPayload({
+            nama: data.nama,
+            no_hp: data.no_hp,
+            alamat: data.alamat,
+            ps_unit_id: data.ps_unit_id,
+            tanggal_mulai: data.tanggal_mulai,
+            tanggal_kembali: data.tanggal_kembali,
+            catatan: data.catatan,
+            setuju_tnc: data.setuju_tnc,
+        });
+
+        transform(() => ({
+            ...payload,
+            foto_ktp: data.foto_ktp,
+        }));
+
+        post(route('booking.fisik.store'), {
+            forceFormData: true,
+            onFinish: () => transform((currentData) => currentData),
+        });
     };
 
     const today = new Date().toISOString().split('T')[0];

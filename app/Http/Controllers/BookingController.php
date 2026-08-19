@@ -9,6 +9,7 @@ use App\Models\MembershipTier;
 use App\Models\PhysicalRental;
 use App\Models\PsUnit;
 use App\Models\Room;
+use App\Support\ImageUploader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -36,7 +37,7 @@ class BookingController extends Controller
             'preselectedTanggal' => $request->input('tanggal'),
             'userTier' => $user?->membership_tier ?? 'bronze',
             'userMembership' => $this->activeMembership($user),
-            'waAdmin' => config('app.wa_admin_number'),
+            'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
         ]);
     }
 
@@ -138,7 +139,7 @@ class BookingController extends Controller
 
         return Inertia::render('Booking/Success', [
             'booking' => $booking->load('room'),
-            'waAdmin' => config('app.wa_admin_number'),
+            'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
             'tipe' => 'room',
         ]);
     }
@@ -164,7 +165,7 @@ class BookingController extends Controller
         return Inertia::render('Booking/Physical', [
             'units' => $units,
             'prefill' => $prefill,
-            'waAdmin' => config('app.wa_admin_number'),
+            'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
         ]);
     }
 
@@ -184,7 +185,7 @@ class BookingController extends Controller
             'ps_unit_id' => 'required|exists:ps_units,id',
             'tanggal_mulai' => 'required|date|after_or_equal:today',
             'tanggal_kembali' => 'required|date|after_or_equal:tanggal_mulai',
-            'foto_ktp' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'foto_ktp' => 'required|image|mimes:jpg,jpeg,png|max:5120',
             'catatan' => 'nullable|string|max:1000',
             // Wajib setuju T&C sebelum submit
             'setuju_tnc' => 'required|accepted',
@@ -225,8 +226,9 @@ class BookingController extends Controller
             ]);
         }
 
-        // Upload KTP
-        $fotoPath = $request->file('foto_ktp')->store('ktp', 'public');
+        // Upload KTP ke PRIVATE disk (tidak bisa diakses web langsung).
+        // Nama file custom + auto resize jika > 3MB. Path di DB terenkripsi.
+        $fotoPath = ImageUploader::store($request->file('foto_ktp'), 'ktp', null, 'local');
 
         $totalBiaya = $unit->harga_sewa * $hariSewa;
 
@@ -259,7 +261,7 @@ class BookingController extends Controller
 
         return Inertia::render('Booking/Success', [
             'booking' => $rental->load('psUnit'),
-            'waAdmin' => config('app.wa_admin_number'),
+            'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
             'tipe' => 'fisik',
         ]);
     }
@@ -277,7 +279,7 @@ class BookingController extends Controller
 
         return Inertia::render('Membership/Buy', [
             'tier' => $tier,
-            'waAdmin' => config('app.wa_admin_number'),
+            'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
         ]);
     }
 
@@ -308,7 +310,7 @@ class BookingController extends Controller
 
         return Inertia::render('Booking/Success', [
             'booking' => $purchase->load('tier'),
-            'waAdmin' => config('app.wa_admin_number'),
+            'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
             'tipe' => 'membership',
         ]);
     }

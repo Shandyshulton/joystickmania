@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
+use App\Support\ImageUploader;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AdminGameController extends Controller
@@ -22,7 +22,7 @@ class AdminGameController extends Controller
         $data = $this->validated($request);
 
         if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('games', 'public');
+            $data['gambar'] = ImageUploader::store($request->file('gambar'), 'games');
         }
 
         Game::create($data);
@@ -35,11 +35,7 @@ class AdminGameController extends Controller
         $data = $this->validated($request);
 
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            if ($game->gambar) {
-                Storage::disk('public')->delete($game->gambar);
-            }
-            $data['gambar'] = $request->file('gambar')->store('games', 'public');
+            $data['gambar'] = ImageUploader::store($request->file('gambar'), 'games', $game->gambar);
         }
 
         $game->update($data);
@@ -49,9 +45,7 @@ class AdminGameController extends Controller
 
     public function destroy(Game $game)
     {
-        if ($game->gambar) {
-            Storage::disk('public')->delete($game->gambar);
-        }
+        ImageUploader::delete($game->gambar);
 
         $game->delete();
 
@@ -63,7 +57,7 @@ class AdminGameController extends Controller
         return $request->validate([
             'nama_game' => 'required|string|max:255',
             'jenis_konsol' => 'required|in:PS3,PS4,PS5',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'deskripsi' => 'nullable|string|max:1000',
             'status' => 'required|in:aktif,nonaktif',
         ]);

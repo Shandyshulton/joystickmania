@@ -10,6 +10,7 @@ use App\Models\PhysicalRental;
 use App\Models\PsUnit;
 use App\Models\Room;
 use App\Models\User;
+use App\Support\RequestPayloadCrypt;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -155,6 +156,33 @@ class BookingLogicTest extends TestCase
         $this->assertSame(15, (int) $booking->diskon_persen);
     }
 
+    public function test_room_booking_can_be_created_with_encrypted_payload(): void
+    {
+        $room = $this->makeRoom();
+
+        $response = $this->post('/booking/room', [
+            'encrypted_payload' => RequestPayloadCrypt::encrypt([
+                'nama' => 'Room AES',
+                'no_hp' => '081234567891',
+                'tanggal' => now()->addDays(2)->toDateString(),
+                'jam_mulai' => '15:00',
+                'durasi' => 2,
+                'room_id' => $room->id,
+                'konsol' => 'PS5',
+                'catatan' => 'dekat tv besar',
+            ]),
+        ]);
+
+        $response->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('bookings', [
+            'nama' => 'Room AES',
+            'no_hp' => '081234567891',
+            'room_id' => $room->id,
+            'booking_status' => Booking::STATUS_PENDING,
+        ]);
+    }
+
     public function test_bronze_or_guest_gets_no_discount(): void
     {
         $room = $this->makeRoom();
@@ -264,6 +292,35 @@ class BookingLogicTest extends TestCase
 
         $response->assertSessionHasErrors('setuju_tnc');
         $this->assertDatabaseCount('physical_rentals', 0);
+    }
+
+    public function test_physical_rental_can_be_created_with_encrypted_payload(): void
+    {
+        $unit = $this->makeUnit();
+
+        $response = $this->post('/booking/fisik', [
+            'encrypted_payload' => RequestPayloadCrypt::encrypt([
+                'nama' => 'Rental AES',
+                'no_hp' => '081234567899',
+                'alamat' => 'Jl. Payload Terenkripsi',
+                'ps_unit_id' => $unit->id,
+                'tanggal_mulai' => now()->addDays(1)->toDateString(),
+                'tanggal_kembali' => now()->addDays(3)->toDateString(),
+                'catatan' => 'antar sore',
+                'setuju_tnc' => true,
+            ]),
+            'foto_ktp' => \Illuminate\Http\UploadedFile::fake()->image('ktp.jpg'),
+        ]);
+
+        $response->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('physical_rentals', [
+            'nama' => 'Rental AES',
+            'no_hp' => '081234567899',
+            'alamat' => 'Jl. Payload Terenkripsi',
+            'ps_unit_id' => $unit->id,
+            'booking_status' => PhysicalRental::STATUS_PENDING,
+        ]);
     }
 
     public function test_membership_purchase_pending_expires_via_command(): void

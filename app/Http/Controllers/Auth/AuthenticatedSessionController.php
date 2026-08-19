@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use App\Notifications\LoginOtpNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -18,8 +20,12 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): Response
+    public function create(): Response|RedirectResponse
     {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
@@ -31,23 +37,63 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        if (config('auth.login_otp.enabled')) {
+            /** @var User $user */
+            $user = $request->validateCredentials('web');
+            $this->startLoginOtp($request, $user, $request->boolean('remember'));
 
-        // Role CMS (admin/staff) tidak boleh login dari halaman user
-        if (in_array($request->user()->role, [User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN, User::ROLE_STAFF])) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            throw ValidationException::withMessages([
-                'email' => 'Akun ini adalah akun admin/staff. Silakan masuk melalui halaman Login Admin.',
-            ]);
+            return redirect()->route('login.otp')
+                ->with('status', 'Kode OTP login telah dikirim ke email Anda.');
         }
+
+        $request->authenticate();
 
         $request->session()->regenerate();
 
         return redirect()->intended(route('dashboard', absolute: false))
-            ->with('success', 'Login berhasil! Selamat datang kembali, '.$request->user()->nama.'.');
+            ->with('success', 'Login berhasil! Selamat datang kembali, '.$request->user('web')->nama.'.');
+    }
+
+    public function showOtp(Request $request): Response|RedirectResponse
+    {
+        if (! $request->session()->has('login_otp')) {
+            return redirect()->route('login');
+        }
+
+        return Inertia::render('Auth/LoginOtp', [
+            'status' => session('status'),
+        ]);
+    }
+
+    public function verifyOtp(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $pending = $request->session()->get('login_otp');
+
+        if (! $pending || ($pending['expires_at'] ?? 0) < now()->timestamp) {
+            $request->session()->forget('login_otp');
+
+            throw ValidationException::withMessages([
+                'otp' => 'Kode OTP login sudah kedaluwarsa. Silakan login ulang.',
+            ]);
+        }
+
+        if (! Hash::check($request->otp, $pending['otp_hash'] ?? '')) {
+            throw ValidationException::withMessages([
+                'otp' => 'Kode OTP login salah.',
+            ]);
+        }
+
+        Auth::guard('web')->loginUsingId($pending['user_id'], (bool) ($pending['remember'] ?? false));
+
+        $request->session()->forget('login_otp');
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard', absolute: false))
+            ->with('success', 'Login berhasil! Selamat datang kembali, '.$request->user('web')->nama.'.');
     }
 
     /**
@@ -55,19 +101,26 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        // Tentukan tujuan logout sebelum session dihapus
-        $user = $request->user();
-        $isCmsUser = $user && in_array($user->role, [User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN, User::ROLE_STAFF]);
-
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        // Admin/staff kembali ke halaman login admin, user biasa ke beranda
-        return $isCmsUser
-            ? redirect()->route('admin.login')
-            : redirect('/');
+        return redirect('/');
+    }
+
+    private function startLoginOtp(Request $request, User $user, bool $remember): void
+    {
+        $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        $request->session()->put('login_otp', [
+            'user_id' => $user->id,
+            'remember' => $remember,
+            'otp_hash' => Hash::make($otp),
+            'expires_at' => now()->addMinutes(config('auth.login_otp.expires_minutes', 10))->timestamp,
+        ]);
+
+        $user->notify(new LoginOtpNotification($otp));
     }
 }

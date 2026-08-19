@@ -27,6 +27,12 @@ return [
 
     'wa_admin_number' => env('WA_ADMIN_NUMBER', '6281234567890'),
 
+    'portal_ports' => [
+        'enabled' => (bool) env('PORT_SPLIT_ENABLED', false),
+        'user' => env('USER_PORT'),
+        'admin' => env('ADMIN_PORT'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -108,6 +114,8 @@ return [
     */
 
     'cipher' => 'AES-256-CBC',
+
+    'request_payload_key' => env('REQUEST_PAYLOAD_KEY'),
 
     'key' => env('APP_KEY'),
 

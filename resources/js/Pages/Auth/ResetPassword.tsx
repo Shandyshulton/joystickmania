@@ -3,30 +3,33 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
+import { encryptedPayload } from '@/lib/encryptedPayload';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function ResetPassword({
     token,
-    email,
     status,
 }: {
     token: string;
-    email?: string;
     status?: string;
 }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset, transform } = useForm({
         token: token,
-        email: email || '',
         password: '',
         password_confirmation: '',
     });
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
 
+        const payload = await encryptedPayload({ ...data });
+        transform(() => payload);
         post(route('password.store'), {
-            onFinish: () => reset('password', 'password_confirmation'),
+            onFinish: () => {
+                transform((currentData) => currentData);
+                reset('password', 'password_confirmation');
+            },
         });
     };
 
@@ -45,21 +48,6 @@ export default function ResetPassword({
             )}
 
             <form onSubmit={submit} className="mt-5 space-y-4">
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                    />
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
                 <div>
                     <InputLabel htmlFor="password" value="Password Baru" />
                     <TextInput

@@ -12,7 +12,8 @@ const NAV = [
     { href: '/admin/units', label: 'Unit PS', icon: '📦', perm: 'units' },
     { href: '/admin/tiers', label: 'Tier', icon: '🏆', perm: 'tiers' },
     { href: '/admin/games', label: 'Game', icon: '🎮', perm: 'games' },
-    { href: '/admin/users', label: 'User & Role', icon: '🔐', perm: 'users' },
+    { href: '/admin/settings', label: 'Pengaturan', icon: '⚙', perm: 'settings' },
+    { href: '/admin/users', label: 'Admin & Role', icon: '🔐', perm: 'users' },
 ];
 
 export default function AdminLayout({
@@ -81,7 +82,7 @@ export default function AdminLayout({
                             {auth.user?.nama}
                         </div>
                         <Link
-                            href={route('logout')}
+                            href={route('admin.logout')}
                             method="post"
                             as="button"
                             className="block w-full rounded-lg px-3 py-2 text-left text-sm text-neon-red/80 hover:bg-night-800 hover:text-neon-red"
@@ -124,7 +125,7 @@ export default function AdminLayout({
                                     </Link>
                                 ))}
                                 <Link
-                                    href={route('logout')}
+                                    href={route('admin.logout')}
                                     method="post"
                                     as="button"
                                     className="block w-full rounded-lg px-3 py-2.5 text-left text-sm text-neon-red/80 hover:bg-night-800"

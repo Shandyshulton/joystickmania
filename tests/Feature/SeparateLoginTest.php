@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Admin;
 use App\Models\User;
+use App\Support\RequestPayloadCrypt;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,11 +22,10 @@ class SeparateLoginTest extends TestCase
 
     public function test_super_admin_can_login_from_admin_page(): void
     {
-        User::factory()->create([
+        Admin::factory()->create([
             'email' => 'admin@example.com',
             'password' => bcrypt('password'),
             'role' => 'super_admin',
-            'is_admin' => true,
         ]);
 
         $response = $this->post('/admin/login', [
@@ -33,7 +34,28 @@ class SeparateLoginTest extends TestCase
         ]);
 
         $response->assertSessionHasNoErrors();
-        $this->assertAuthenticated();
+        $this->assertAuthenticated('admin');
+        $response->assertRedirect(route('admin.dashboard', absolute: false));
+    }
+
+    public function test_super_admin_can_login_from_admin_page_with_encrypted_payload(): void
+    {
+        Admin::factory()->create([
+            'email' => 'encrypted-admin@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'super_admin',
+        ]);
+
+        $response = $this->post('/admin/login', [
+            'encrypted_payload' => RequestPayloadCrypt::encrypt([
+                'email' => 'encrypted-admin@example.com',
+                'password' => 'password',
+                'remember' => true,
+            ]),
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertAuthenticated('admin');
         $response->assertRedirect(route('admin.dashboard', absolute: false));
     }
 
@@ -51,16 +73,15 @@ class SeparateLoginTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('email');
-        $this->assertGuest();
+        $this->assertGuest('admin');
     }
 
     public function test_admin_cannot_login_from_user_page(): void
     {
-        User::factory()->create([
+        Admin::factory()->create([
             'email' => 'admin2@example.com',
             'password' => bcrypt('password'),
             'role' => 'admin',
-            'is_admin' => true,
         ]);
 
         $response = $this->post('/login', [
@@ -69,7 +90,7 @@ class SeparateLoginTest extends TestCase
         ]);
 
         $response->assertSessionHasErrors('email');
-        $this->assertGuest();
+        $this->assertGuest('web');
     }
 
     public function test_regular_user_can_login_from_user_page(): void
@@ -86,7 +107,28 @@ class SeparateLoginTest extends TestCase
         ]);
 
         $response->assertSessionHasNoErrors();
-        $this->assertAuthenticated();
+        $this->assertAuthenticated('web');
+        $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_regular_user_can_login_from_user_page_with_encrypted_payload(): void
+    {
+        User::factory()->create([
+            'email' => 'encrypted-member@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
+        ]);
+
+        $response = $this->post('/login', [
+            'encrypted_payload' => RequestPayloadCrypt::encrypt([
+                'email' => 'encrypted-member@example.com',
+                'password' => 'password',
+                'remember' => false,
+            ]),
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertAuthenticated('web');
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 

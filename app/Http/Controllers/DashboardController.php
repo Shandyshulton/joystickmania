@@ -19,6 +19,12 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+
+        // Area khusus member — admin/staff tidak boleh masuk area user.
+        if (in_array($user->role, ['super_admin', 'admin', 'staff'])) {
+            abort(403, 'Area ini khusus member. Silakan gunakan Admin Panel.');
+        }
+
         $noHp = $user->no_hp;
 
         $bookings = Booking::with('room')
