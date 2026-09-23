@@ -281,24 +281,31 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                         </div>
 
                         <div className="grid gap-3">
-                            {[
-                                ['PS3', 'Rp 50.000', 'Rp 300.000'],
-                                ['PS4', 'Rp 75.000', 'Rp 600.000'],
-                                ['PS5', 'Rp 100.000', 'Rp 1.200.000'],
-                            ].map(([konsol, sewa, deposit]) => (
-                                <div
-                                    key={konsol as string}
-                                    className="flex items-center justify-between rounded-lg border border-night-600 bg-night-800/70 px-5 py-3.5"
-                                >
-                                    <span className="font-display text-lg font-bold text-white">
-                                        {konsol}
-                                    </span>
-                                    <div className="text-right text-sm">
-                                        <div className="text-neon-cyan">{sewa}/hari</div>
-                                        <div className="text-xs text-slate-500">Deposit {deposit}</div>
+                            {(psUnits || [])
+                                .filter(
+                                    (u: any, i: number, arr: any[]) =>
+                                        arr.findIndex(
+                                            (x: any) => x.jenis_konsol === u.jenis_konsol,
+                                        ) === i,
+                                )
+                                .map((u: any) => (
+                                    <div
+                                        key={u.id}
+                                        className="flex items-center justify-between rounded-lg border border-night-600 bg-night-800/70 px-5 py-3.5"
+                                    >
+                                        <span className="font-display text-lg font-bold text-white">
+                                            {u.jenis_konsol}
+                                        </span>
+                                        <div className="text-right text-sm">
+                                            <div className="text-neon-cyan">
+                                                Rp {Number(u.harga_sewa).toLocaleString('id-ID')}/hari
+                                            </div>
+                                            <div className="text-xs text-slate-500">
+                                                Deposit Rp {Number(u.nominal_deposit).toLocaleString('id-ID')}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     </div>
                 </div>
