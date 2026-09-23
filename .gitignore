@@ -28,3 +28,6 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Catatan internal — sengaja tidak di-commit ke repo
+/DEPLOYMENT.md

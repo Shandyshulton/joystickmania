@@ -50,6 +50,12 @@ Command terjadwal:
 | `bookings:expire-pending` | tiap menit | Booking/rental/purchase `PENDING_PAYMENT` lewat 30 menit → `EXPIRED`, slot bebas |
 | `membership:process-daily` | setiap 00:05 | Email reminder H-1, expire di hari-H, auto-downgrade Bronze setelah tenggang 1 hari + email |
 
+## Deploy ke Production
+
+Konfigurasi local & production ada di satu file `.env`: baris aktif = local, baris
+bertanda `[production]` = server. Panduan langkah deploy-nya ada di `DEPLOYMENT.md`
+(file lokal, tidak di-commit ke repo).
+
 ## Akun Demo (Seeder)
 
 | Role | Email | Password |
