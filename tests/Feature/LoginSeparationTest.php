@@ -116,4 +116,74 @@ class LoginSeparationTest extends TestCase
         $response->assertSessionHasNoErrors();
         $this->assertAuthenticated('admin');
     }
+
+    public function test_member_login_ignores_intended_url_from_admin_area(): void
+    {
+        $this->makeAdmin();
+        $this->makeMember();
+
+        // Guest yang sempat membuka area admin meninggalkan url.intended di session
+        $this->get('/admin/bookings')->assertRedirect(route('admin.login'));
+
+        $response = $this->post('/login', [
+            'email' => 'member@test.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticated('web');
+    }
+
+    public function test_admin_login_ignores_intended_url_from_member_area(): void
+    {
+        $this->makeAdmin();
+
+        $this->get('/profile')->assertRedirect('/login');
+
+        $response = $this->post('/admin/login', [
+            'email' => 'admin@test.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/admin');
+        $this->assertAuthenticated('admin');
+    }
+
+    public function test_member_login_still_follows_legitimate_intended_url(): void
+    {
+        $this->makeMember();
+
+        $this->get('/profile')->assertRedirect('/login');
+
+        $response = $this->post('/login', [
+            'email' => 'member@test.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/profile');
+    }
+
+    public function test_email_verification_prompt_ignores_intended_url_from_admin_area(): void
+    {
+        $member = $this->makeMember();
+
+        $this->get('/admin/bookings')->assertRedirect(route('admin.login'));
+
+        $response = $this->actingAs($member)->get('/verify-email');
+
+        $response->assertRedirect('/dashboard');
+    }
+
+    public function test_confirm_password_ignores_intended_url_from_admin_area(): void
+    {
+        $member = $this->makeMember();
+
+        $this->get('/admin/bookings')->assertRedirect(route('admin.login'));
+
+        $response = $this->actingAs($member)->post('/confirm-password', [
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+    }
 }

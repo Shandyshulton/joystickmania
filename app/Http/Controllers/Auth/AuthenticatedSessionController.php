@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Notifications\LoginOtpNotification;
+use App\Support\PortalRedirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,7 +56,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false))
+        return PortalRedirect::toMember(route('dashboard', absolute: false))
             ->with('success', 'Login berhasil! Selamat datang kembali, '.$request->user('web')->nama.'.');
     }
 
@@ -111,7 +112,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->forget('login_otp');
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false))
+        return PortalRedirect::toMember(route('dashboard', absolute: false))
             ->with('success', 'Login berhasil! Selamat datang kembali, '.$request->user('web')->nama.'.');
     }
 

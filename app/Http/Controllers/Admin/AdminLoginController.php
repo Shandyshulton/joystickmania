@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Notifications\LoginOtpNotification;
+use App\Support\PortalRedirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -86,7 +87,7 @@ class AdminLoginController extends Controller
         RateLimiter::clear($throttleKey);
         $request->session()->regenerate();
 
-        return redirect()->intended(route('admin.dashboard', absolute: false))
+        return PortalRedirect::toAdmin(route('admin.dashboard', absolute: false))
             ->with('success', 'Login berhasil! Selamat datang di Admin Panel.');
     }
 
@@ -142,7 +143,7 @@ class AdminLoginController extends Controller
         $request->session()->forget('admin_login_otp');
         $request->session()->regenerate();
 
-        return redirect()->intended(route('admin.dashboard', absolute: false))
+        return PortalRedirect::toAdmin(route('admin.dashboard', absolute: false))
             ->with('success', 'Login berhasil! Selamat datang di Admin Panel.');
     }
 
