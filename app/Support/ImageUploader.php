@@ -5,6 +5,7 @@ namespace App\Support;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class ImageUploader
 {
@@ -12,6 +13,12 @@ class ImageUploader
      * Batas ukuran file (bytes) sebelum di-resize otomatis.
      */
     public const MAX_BEFORE_RESIZE = 3 * 1024 * 1024; // 3 MB
+
+    /**
+     * Ekstensi yang boleh dipakai menyimpan gambar.
+     * Diambil dari hasil deteksi isi file, bukan nama file kiriman client.
+     */
+    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
 
     /**
      * Simpan gambar ke disk dengan nama file custom.
@@ -34,7 +41,16 @@ class ImageUploader
             return $existingPath;
         }
 
-        $extension = strtolower($file->getClientOriginalExtension() ?: $file->extension());
+        // Ekstensi diambil dari MIME hasil deteksi isi file, BUKAN dari nama file kiriman
+        // client — supaya file berisi gambar tapi bernama .php/.html tidak ikut tersimpan.
+        $extension = strtolower((string) $file->extension());
+
+        if (! in_array($extension, self::ALLOWED_EXTENSIONS, true)) {
+            throw ValidationException::withMessages([
+                'file' => 'Format file tidak didukung. Gunakan JPG, JPEG, PNG, atau WEBP.',
+            ]);
+        }
+
         $filename = now()->format('YmdHis') . '-' . Str::random(10) . '.' . $extension;
 
         if ($file->getSize() > self::MAX_BEFORE_RESIZE) {

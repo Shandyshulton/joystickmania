@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\Route;
 // Reset password via OTP boleh diakses guest maupun user yang sedang login.
 Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
     ->name('password.request');
+// Throttle: batasi spam kirim OTP per IP (batas percobaan per email ada di controller)
 Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware('throttle:5,1')
     ->name('password.email');
 Route::get('verify-otp', [NewPasswordController::class, 'verify'])
     ->name('password.verify');
 Route::post('verify-otp', [NewPasswordController::class, 'verifyOtp'])
+    ->middleware('throttle:10,1')
     ->name('password.verify.store');
 Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
     ->name('password.reset');
@@ -37,6 +40,7 @@ Route::middleware('guest:web')->group(function () {
     Route::get('login/otp', [AuthenticatedSessionController::class, 'showOtp'])
         ->name('login.otp');
     Route::post('login/otp', [AuthenticatedSessionController::class, 'verifyOtp'])
+        ->middleware('throttle:10,1')
         ->name('login.otp.store');
 });
 

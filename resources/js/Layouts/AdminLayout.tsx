@@ -23,6 +23,9 @@ export default function AdminLayout({
     const { auth } = usePage().props as any;
     const [open, setOpen] = useState(false);
 
+    // Dipakai untuk menandai menu aktif (sidebar & menu mobile)
+    const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+
     const user = auth?.user;
     const isSuper = user?.role === 'super_admin';
     const isAdmin = user?.role === 'admin' || isSuper;
@@ -57,13 +60,12 @@ export default function AdminLayout({
 
                     <nav className="mt-4 flex-1 space-y-1">
                         {navItems.map((item) => {
-                            const active =
-                                typeof window !== 'undefined' &&
-                                window.location.pathname === item.href;
+                            const active = pathname === item.href;
                             return (
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    aria-current={active ? 'page' : undefined}
                                     className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
                                         active
                                             ? 'bg-neon-blue/15 text-neon-cyan shadow-neon-sm ring-1 ring-neon-cyan/40'
@@ -107,28 +109,63 @@ export default function AdminLayout({
                             </Link>
                             <button
                                 onClick={() => setOpen(!open)}
-                                className="flex h-9 w-9 items-center justify-center rounded-md text-slate-300 hover:bg-night-800"
+                                className="flex h-11 w-11 items-center justify-center rounded-md text-slate-300 transition hover:bg-night-700 hover:text-neon-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+                                aria-label="Menu Admin"
+                                aria-expanded={open}
+                                aria-controls="admin-mobile-nav"
                             >
-                                ☰
+                                <svg
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    {open ? (
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    ) : (
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M4 6h16M4 12h16M4 18h16"
+                                        />
+                                    )}
+                                </svg>
                             </button>
                         </div>
                         {open && (
-                            <nav className="border-t border-night-700 px-3 pb-3">
-                                {navItems.map((item) => (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        onClick={() => setOpen(false)}
-                                        className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-300 hover:bg-night-800 hover:text-neon-cyan"
-                                    >
-                                        {item.icon} {item.label}
-                                    </Link>
-                                ))}
+                            <nav
+                                id="admin-mobile-nav"
+                                className="max-h-[calc(100vh-3.5rem)] overflow-y-auto overscroll-contain border-t border-night-600 bg-night-800 px-4 pb-4 pt-2"
+                            >
+                                {navItems.map((item) => {
+                                    const active = pathname === item.href;
+                                    return (
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            onClick={() => setOpen(false)}
+                                            aria-current={active ? 'page' : undefined}
+                                            className={`block rounded-md px-3 py-2.5 text-sm font-semibold transition ${
+                                                active
+                                                    ? 'bg-neon-blue/15 text-neon-cyan ring-1 ring-neon-cyan/40'
+                                                    : 'text-slate-300 hover:bg-night-700 hover:text-neon-cyan'
+                                            }`}
+                                        >
+                                            {item.icon} {item.label}
+                                        </Link>
+                                    );
+                                })}
                                 <Link
                                     href={route('admin.logout')}
                                     method="post"
                                     as="button"
-                                    className="block w-full rounded-lg px-3 py-2.5 text-left text-sm text-neon-red/80 hover:bg-night-800"
+                                    className="mt-2 block w-full rounded-md border-t border-night-600 px-3 py-2.5 text-left text-sm text-neon-red/80 hover:bg-night-700 hover:text-neon-red"
                                 >
                                     Keluar
                                 </Link>

@@ -1,6 +1,6 @@
 import PublicLayout from '@/Layouts/PublicLayout';
-import { Head, router } from '@inertiajs/react';
-import { FormEventHandler, useState } from 'react';
+import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 import ImageViewer from '@/Components/ImageViewer';
 
 const STATUS_STYLE: Record<string, string> = {
@@ -43,14 +43,8 @@ function TimeLeft({ expiresAt }: { expiresAt?: string }) {
     );
 }
 
-export default function History({ noHp, bookings, physicalRentals, membershipPurchases, auth }: any) {
-    const [input, setInput] = useState(noHp);
+export default function History({ bookings, physicalRentals, membershipPurchases, auth }: any) {
     const [ktpView, setKtpView] = useState<string | null>(null);
-
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-        router.get('/riwayat', { no_hp: input }, { preserveState: true });
-    };
 
     const total = (bookings?.length || 0) + (physicalRentals?.length || 0) + (membershipPurchases?.length || 0);
 
@@ -64,34 +58,34 @@ export default function History({ noHp, bookings, physicalRentals, membershipPur
                 </h1>
                 <p className="mt-2 text-slate-400">
                     Cek status booking room, sewa fisik, dan membership Anda.
-                    {auth?.user
-                        ? ' Riwayat akun Anda tampil otomatis di bawah.'
-                        : ' Masukkan No. HP yang dipakai saat booking untuk melihat riwayat.'}
+                    {auth?.user ? ' Riwayat akun Anda tampil otomatis di bawah.' : ''}
                 </p>
 
                 {!auth?.user && (
-                    <form onSubmit={submit} className="card-neon mt-6 flex flex-col gap-3 p-4 sm:flex-row sm:items-end">
-                        <div className="flex-1">
-                            <label className="label-neon">No. HP / WhatsApp</label>
-                            <input
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                className="input-neon"
-                                placeholder="08xxxxxxxxxx"
-                                required
-                            />
+                    <div className="card-neon mt-6 p-5 text-sm">
+                        <p className="font-semibold text-white">
+                            Menampilkan pemesanan yang dibuat dari perangkat ini
+                        </p>
+                        <p className="mt-1 text-slate-400">
+                            Demi keamanan, riwayat tidak lagi bisa dicari memakai nomor HP. Untuk melihat
+                            seluruh riwayat pemesanan Anda, silakan masuk ke akun.
+                        </p>
+                        <div className="mt-4 flex flex-wrap gap-3">
+                            <Link href="/login" className="btn-neon-solid !px-5 !py-2 !text-xs">
+                                Masuk ke Akun
+                            </Link>
+                            <Link href="/register" className="btn-neon-outline !px-5 !py-2 !text-xs">
+                                Daftar
+                            </Link>
                         </div>
-                        <button type="submit" className="btn-neon-solid">
-                            Cek Riwayat
-                        </button>
-                    </form>
+                    </div>
                 )}
 
                 {total === 0 ? (
                     <div className="card-neon mt-6 p-10 text-center text-slate-500">
                         {auth?.user
                             ? 'Belum ada pemesanan. Yuk booking sekarang!'
-                            : 'Tidak ada pemesanan ditemukan untuk nomor tersebut.'}
+                            : 'Belum ada pemesanan dari perangkat ini. Kalau kamu baru booking lewat HP atau browser lain, masuk ke akun untuk melihat riwayatnya.'}
                     </div>
                 ) : (
                     <>

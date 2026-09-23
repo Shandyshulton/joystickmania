@@ -43,6 +43,11 @@ class KtpController extends Controller
             abort(404, 'Foto KTP tidak ditemukan.');
         }
 
-        return Storage::disk('local')->response($path);
+        // Content-Type dari deteksi isi file + nosniff, supaya browser tidak menebak
+        // tipe sendiri dan mengeksekusi konten sebagai HTML.
+        return Storage::disk('local')->response($path, null, [
+            'X-Content-Type-Options' => 'nosniff',
+            'Cache-Control' => 'no-store, private',
+        ]);
     }
 }

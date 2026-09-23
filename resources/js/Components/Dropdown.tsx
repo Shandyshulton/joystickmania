@@ -6,6 +6,8 @@ import {
     PropsWithChildren,
     SetStateAction,
     useContext,
+    useEffect,
+    useId,
     useState,
 } from 'react';
 
@@ -13,32 +15,63 @@ const DropDownContext = createContext<{
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
     toggleOpen: () => void;
+    contentId: string;
 }>({
     open: false,
     setOpen: () => {},
     toggleOpen: () => {},
+    contentId: '',
 });
 
 const Dropdown = ({ children }: PropsWithChildren) => {
     const [open, setOpen] = useState(false);
+    const contentId = useId();
 
     const toggleOpen = () => {
         setOpen((previousState) => !previousState);
     };
 
+    // Escape menutup dropdown, sesuai perilaku standar disclosure
+    useEffect(() => {
+        if (!open) {
+            return;
+        }
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener('keydown', onKeyDown);
+
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, [open]);
+
     return (
-        <DropDownContext.Provider value={{ open, setOpen, toggleOpen }}>
+        <DropDownContext.Provider value={{ open, setOpen, toggleOpen, contentId }}>
             <div className="relative">{children}</div>
         </DropDownContext.Provider>
     );
 };
 
-const Trigger = ({ children }: PropsWithChildren) => {
-    const { open, setOpen, toggleOpen } = useContext(DropDownContext);
+const Trigger = ({
+    children,
+    className = '',
+}: PropsWithChildren<{ className?: string }>) => {
+    const { open, setOpen, toggleOpen, contentId } = useContext(DropDownContext);
 
     return (
         <>
-            <div onClick={toggleOpen}>{children}</div>
+            <button
+                type="button"
+                onClick={toggleOpen}
+                aria-expanded={open}
+                aria-controls={contentId}
+                className={className}
+            >
+                {children}
+            </button>
 
             {open && (
                 <div
@@ -60,7 +93,7 @@ const Content = ({
     width?: '48';
     contentClasses?: string;
 }>) => {
-    const { open, setOpen } = useContext(DropDownContext);
+    const { open, setOpen, contentId } = useContext(DropDownContext);
 
     let alignmentClasses = 'origin-top';
 
@@ -88,6 +121,7 @@ const Content = ({
                 leaveTo="opacity-0 scale-95"
             >
                 <div
+                    id={contentId}
                     className={`absolute z-50 mt-2 rounded-md shadow-lg ${alignmentClasses} ${widthClasses}`}
                     onClick={() => setOpen(false)}
                 >

@@ -70,7 +70,7 @@ function MemberRow({ member }: any) {
                     <select
                         value={data.membership_tier}
                         onChange={(e) => setData('membership_tier', e.target.value)}
-                        className="input-neon !w-32 !py-1.5 !text-xs"
+                        className="input-neon !w-32 !py-1.5 !text-base sm:!text-xs"
                     >
                         <option value="bronze">Bronze</option>
                         <option value="silver">Silver</option>

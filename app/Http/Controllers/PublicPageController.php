@@ -111,29 +111,36 @@ class PublicPageController extends Controller
     }
 
     /**
-     * Cek riwayat & status booking via nomor HP (guest) atau akun login.
-     * Menampilkan booking room + sewa fisik + purchase membership.
+     * Riwayat & status pemesanan.
+     * - User yang login: record miliknya sendiri (by user_id).
+     * - Tamu: hanya record yang dibuat dari sesi/perangkat ini
+     *   (dicatat oleh BookingController::rememberOwnedRecord).
+     *   Nomor HP sengaja TIDAK dipakai sebagai kunci pencarian supaya
+     *   riwayat orang lain tidak bisa dienumerasi.
      */
     public function history(Request $request)
     {
-        $noHp = $request->input('no_hp');
         $user = $request->user();
 
         $bookings = collect();
         $physicalRentals = collect();
         $membershipPurchases = collect();
 
-        if ($noHp) {
-            $bookings = Booking::with('room')
-                ->where('no_hp', $noHp)
-                ->orderByDesc('created_at')
-                ->limit(20)
-                ->get();
+        $sessionBookingIds = $this->sessionOwnedIds($request, 'room');
 
-            $physicalRentals = PhysicalRental::with('psUnit')
-                ->where('no_hp', $noHp)
+        if ($sessionBookingIds !== []) {
+            $bookings = Booking::with('room')
+                ->whereIn('id', $sessionBookingIds)
                 ->orderByDesc('created_at')
-                ->limit(20)
+                ->get();
+        }
+
+        $sessionRentalIds = $this->sessionOwnedIds($request, 'fisik');
+
+        if ($sessionRentalIds !== []) {
+            $physicalRentals = PhysicalRental::with('psUnit')
+                ->whereIn('id', $sessionRentalIds)
+                ->orderByDesc('created_at')
                 ->get();
         }
 
@@ -165,11 +172,27 @@ class PublicPageController extends Controller
         $physicalRentals = $physicalRentals->sortByDesc('created_at')->values();
 
         return Inertia::render('History', [
-            'noHp' => $noHp ?? '',
             'bookings' => $bookings,
             'physicalRentals' => $physicalRentals,
             'membershipPurchases' => $membershipPurchases,
         ]);
+    }
+
+    /**
+     * Daftar id record yang tercatat di sesi untuk tipe tertentu.
+     * Kunci di sesi berbentuk "tipe:id" (lihat BookingController::rememberOwnedRecord).
+     *
+     * @return array<int, int>
+     */
+    private function sessionOwnedIds(Request $request, string $tipe): array
+    {
+        $prefix = $tipe.':';
+
+        return collect($request->session()->get('my_records', []))
+            ->keys()
+            ->filter(fn ($key) => str_starts_with((string) $key, $prefix))
+            ->map(fn ($key) => (int) substr((string) $key, strlen($prefix)))
+            ->all();
     }
 
     /**

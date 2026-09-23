@@ -137,6 +137,8 @@ class BookingController extends Controller
             'catatan' => 'Booking room dibuat (pending payment 30 menit).',
         ]);
 
+        $this->rememberOwnedRecord($request, 'room', $booking->id);
+
         return Inertia::render('Booking/Success', [
             'booking' => $booking->load('room'),
             'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
@@ -259,6 +261,8 @@ class BookingController extends Controller
             'catatan' => 'Booking fisik dibuat (pending payment 30 menit). Deposit '.number_format($unit->nominal_deposit, 0, ',', '.').'.',
         ]);
 
+        $this->rememberOwnedRecord($request, 'fisik', $rental->id);
+
         return Inertia::render('Booking/Success', [
             'booking' => $rental->load('psUnit'),
             'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
@@ -308,6 +312,8 @@ class BookingController extends Controller
             'catatan' => "Pembelian membership {$tier->nama_tier} dibuat (pending 30 menit).",
         ]);
 
+        $this->rememberOwnedRecord($request, 'membership', $purchase->id);
+
         return Inertia::render('Booking/Success', [
             'booking' => $purchase->load('tier'),
             'waAdmin' => \App\Models\Setting::get('no_wa', config('app.wa_admin_number')),
@@ -344,16 +350,51 @@ class BookingController extends Controller
             'id' => 'required|integer',
         ]);
 
-        $status = null;
-
-        if ($request->tipe === 'room') {
-            $status = Booking::where('id', $request->id)->value('booking_status');
-        } elseif ($request->tipe === 'fisik') {
-            $status = PhysicalRental::where('id', $request->id)->value('booking_status');
-        } elseif ($request->tipe === 'membership') {
-            $status = MembershipPurchase::where('id', $request->id)->value('membership_status');
+        if (! $this->canSeeStatus($request, $request->tipe, (int) $request->id)) {
+            abort(403);
         }
 
+        $status = match ($request->tipe) {
+            'room' => Booking::where('id', $request->id)->value('booking_status'),
+            'fisik' => PhysicalRental::where('id', $request->id)->value('booking_status'),
+            'membership' => MembershipPurchase::where('id', $request->id)->value('membership_status'),
+        };
+
         return response()->json(['status' => $status]);
+    }
+
+    /**
+     * Catat record yang baru dibuat ke sesi, supaya halaman sukses (sesi yang sama)
+     * tetap bisa polling statusnya.
+     */
+    private function rememberOwnedRecord(Request $request, string $tipe, int $id): void
+    {
+        $owned = $request->session()->get('my_records', []);
+        $owned["{$tipe}:{$id}"] = true;
+
+        $request->session()->put('my_records', $owned);
+    }
+
+    /**
+     * Hanya pemilik record yang boleh melihat statusnya: sesi saat booking dibuat,
+     * atau user yang login dan record-nya memang milik dia.
+     */
+    private function canSeeStatus(Request $request, string $tipe, int $id): bool
+    {
+        if ($request->session()->get("my_records.{$tipe}:{$id}")) {
+            return true;
+        }
+
+        $user = $request->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        return match ($tipe) {
+            'room' => Booking::where('id', $id)->where('user_id', $user->id)->exists(),
+            'fisik' => PhysicalRental::where('id', $id)->where('user_id', $user->id)->exists(),
+            'membership' => MembershipPurchase::where('id', $id)->where('user_id', $user->id)->exists(),
+        };
     }
 }

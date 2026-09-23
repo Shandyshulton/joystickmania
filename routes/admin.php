@@ -18,9 +18,12 @@ use Illuminate\Support\Facades\Route;
 // diarahkan ke halaman sesuai role (lihat RedirectIfAuthenticated di AppServiceProvider).
 Route::middleware('guest:admin')->group(function () {
     Route::get('/admin/login', [AdminLoginController::class, 'create'])->name('admin.login');
-    Route::post('/admin/login', [AdminLoginController::class, 'store'])->name('admin.login.store');
+    // Throttle sebagai lapisan tambahan per IP (batas per email ada di controller)
+    Route::post('/admin/login', [AdminLoginController::class, 'store'])
+        ->middleware('throttle:10,1')->name('admin.login.store');
     Route::get('/admin/login/otp', [AdminLoginController::class, 'showOtp'])->name('admin.login.otp');
-    Route::post('/admin/login/otp', [AdminLoginController::class, 'verifyOtp'])->name('admin.login.otp.store');
+    Route::post('/admin/login/otp', [AdminLoginController::class, 'verifyOtp'])
+        ->middleware('throttle:10,1')->name('admin.login.otp.store');
 });
 
 Route::middleware(['auth:admin', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {

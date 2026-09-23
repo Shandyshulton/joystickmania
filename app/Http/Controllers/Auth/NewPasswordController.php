@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -16,6 +18,17 @@ use Inertia\Response;
 
 class NewPasswordController extends Controller
 {
+    /**
+     * Batas percobaan kode OTP salah per email sebelum dikunci sementara.
+     */
+    private const MAX_OTP_ATTEMPTS = 5;
+
+    /**
+     * Lama penguncian (detik) setelah batas percobaan terlampaui.
+     * Disamakan dengan masa berlaku OTP agar tidak bisa dicoba ulang tanpa OTP baru.
+     */
+    private const OTP_LOCKOUT_SECONDS = 600;
+
     /**
      * Tampilkan form input OTP (setelah kirim OTP).
      */
@@ -37,17 +50,32 @@ class NewPasswordController extends Controller
             'otp' => 'required|string|size:6',
         ]);
 
+        // Kunci per email: pencoba tidak bisa menghindari batas dengan ganti IP.
+        $throttleKey = 'verify-otp:'.Str::transliterate(Str::lower((string) $request->input('email')));
+
+        if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_OTP_ATTEMPTS)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            throw ValidationException::withMessages([
+                'otp' => "Terlalu banyak percobaan kode OTP. Coba lagi dalam {$seconds} detik.",
+            ]);
+        }
+
         $record = DB::table('password_reset_tokens')
             ->where('email', $request->email)
-            ->where('otp', $request->otp)
             ->where('expires_at', '>', now())
             ->first();
 
-        if (! $record) {
+        // OTP tersimpan sebagai hash -> dibandingkan dengan Hash::check (waktu konstan)
+        if (! $record || ! Hash::check((string) $request->input('otp'), (string) $record->otp)) {
+            RateLimiter::hit($throttleKey, self::OTP_LOCKOUT_SECONDS);
+
             throw ValidationException::withMessages([
                 'otp' => 'Kode OTP salah atau sudah kedaluwarsa.',
             ]);
         }
+
+        RateLimiter::clear($throttleKey);
 
         // Ambil token plaintext dari session (disimpan saat kirim OTP)
         $token = session('otp_token');

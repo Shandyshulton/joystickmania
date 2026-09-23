@@ -18,6 +18,11 @@ use Inertia\Response;
 class PasswordResetLinkController extends Controller
 {
     /**
+     * Masa berlaku kode OTP reset password (menit).
+     */
+    public const OTP_EXPIRES_MINUTES = 10;
+
+    /**
      * Tampilkan form minta OTP (input email).
      */
     public function create(): Response
@@ -51,8 +56,9 @@ class PasswordResetLinkController extends Controller
                 [
                     // Token di-hash seperti bawaan Laravel agar Password::reset bisa memverifikasi
                     'token' => \Illuminate\Support\Facades\Hash::make($token),
-                    'otp' => $otp,
-                    'expires_at' => now()->addMinutes(10),
+                    // OTP juga di-hash supaya isi tabel tidak bisa dipakai langsung
+                    'otp' => Hash::make($otp),
+                    'expires_at' => now()->addMinutes(self::OTP_EXPIRES_MINUTES),
                     'created_at' => now(),
                 ]
             );

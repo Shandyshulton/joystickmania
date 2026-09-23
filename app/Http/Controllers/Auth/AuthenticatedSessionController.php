@@ -18,6 +18,11 @@ use Inertia\Response;
 class AuthenticatedSessionController extends Controller
 {
     /**
+     * Batas percobaan kode OTP login salah sebelum sesi OTP dibuang.
+     */
+    private const MAX_OTP_ATTEMPTS = 5;
+
+    /**
      * Display the login view.
      */
     public function create(): Response|RedirectResponse
@@ -82,6 +87,20 @@ class AuthenticatedSessionController extends Controller
         }
 
         if (! Hash::check($request->otp, $pending['otp_hash'] ?? '')) {
+            $attempts = (int) ($pending['attempts'] ?? 0) + 1;
+
+            // Batas percobaan habis -> sesi OTP dibuang, harus login ulang dari awal
+            if ($attempts >= self::MAX_OTP_ATTEMPTS) {
+                $request->session()->forget('login_otp');
+
+                throw ValidationException::withMessages([
+                    'otp' => 'Kode OTP login salah. Batas percobaan habis, silakan login ulang.',
+                ]);
+            }
+
+            $pending['attempts'] = $attempts;
+            $request->session()->put('login_otp', $pending);
+
             throw ValidationException::withMessages([
                 'otp' => 'Kode OTP login salah.',
             ]);

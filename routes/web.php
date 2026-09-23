@@ -16,7 +16,10 @@ Route::get('/membership', [PublicPageController::class, 'membership'])->name('me
 
 Route::get('/syarat-ketentuan-sewa-fisik', [PublicPageController::class, 'terms'])->name('terms');
 
-Route::get('/riwayat', [PublicPageController::class, 'history'])->name('history');
+// Throttle: batasi enumerasi nomor HP lewat pencarian riwayat
+Route::get('/riwayat', [PublicPageController::class, 'history'])
+    ->middleware('throttle:10,1')
+    ->name('history');
 
 // ===== Booking (guest & login boleh) =====
 Route::get('/booking/room', [BookingController::class, 'createRoom'])->name('booking.room');
@@ -26,4 +29,7 @@ Route::get('/booking/fisik', [BookingController::class, 'createPhysical'])->name
 Route::post('/booking/fisik', [BookingController::class, 'storePhysical'])->name('booking.fisik.store');
 
 // Polling status booking (halaman sukses) — cek admin sudah accept / expired
-Route::get('/booking/status', [BookingController::class, 'status'])->name('booking.status');
+// Halaman sukses polling tiap 5 detik -> batas 60/menit masih longgar
+Route::get('/booking/status', [BookingController::class, 'status'])
+    ->middleware('throttle:60,1')
+    ->name('booking.status');

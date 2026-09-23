@@ -9,12 +9,24 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AdminLoginController extends Controller
 {
+    /**
+     * Batas percobaan login (tahap password) per email + IP.
+     */
+    private const MAX_LOGIN_ATTEMPTS = 5;
+
+    /**
+     * Batas percobaan kode OTP salah sebelum sesi OTP dibuang.
+     */
+    private const MAX_OTP_ATTEMPTS = 5;
+
     /**
      * Tampilkan halaman login khusus admin/staff.
      */
@@ -37,8 +49,26 @@ class AdminLoginController extends Controller
             'password' => ['required'],
         ]);
 
+        $throttleKey = $this->throttleKey($credentials['email'], $request);
+
+        if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_LOGIN_ATTEMPTS)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            throw ValidationException::withMessages([
+                'email' => "Terlalu banyak percobaan login. Coba lagi dalam {$seconds} detik.",
+            ]);
+        }
+
         if (config('auth.login_otp.enabled')) {
-            $admin = $this->validateCredentials($credentials);
+            try {
+                $admin = $this->validateCredentials($credentials);
+            } catch (ValidationException $e) {
+                RateLimiter::hit($throttleKey);
+
+                throw $e;
+            }
+
+            RateLimiter::clear($throttleKey);
             $this->startLoginOtp($request, $admin, $request->boolean('remember'));
 
             return redirect()->route('admin.login.otp')
@@ -46,11 +76,14 @@ class AdminLoginController extends Controller
         }
 
         if (! Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
+            RateLimiter::hit($throttleKey);
+
             throw ValidationException::withMessages([
                 'email' => 'Email atau password salah.',
             ]);
         }
 
+        RateLimiter::clear($throttleKey);
         $request->session()->regenerate();
 
         return redirect()->intended(route('admin.dashboard', absolute: false))
@@ -85,6 +118,20 @@ class AdminLoginController extends Controller
         }
 
         if (! Hash::check($request->otp, $pending['otp_hash'] ?? '')) {
+            $attempts = (int) ($pending['attempts'] ?? 0) + 1;
+
+            // Batas percobaan habis -> sesi OTP dibuang, harus login ulang dari awal
+            if ($attempts >= self::MAX_OTP_ATTEMPTS) {
+                $request->session()->forget('admin_login_otp');
+
+                throw ValidationException::withMessages([
+                    'otp' => 'Kode OTP login salah. Batas percobaan habis, silakan login ulang.',
+                ]);
+            }
+
+            $pending['attempts'] = $attempts;
+            $request->session()->put('admin_login_otp', $pending);
+
             throw ValidationException::withMessages([
                 'otp' => 'Kode OTP login salah.',
             ]);
@@ -107,6 +154,14 @@ class AdminLoginController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('admin.login');
+    }
+
+    /**
+     * Kunci rate limit login admin: email (lowercase) + IP pengirim.
+     */
+    private function throttleKey(string $email, Request $request): string
+    {
+        return 'admin-login:'.Str::transliterate(Str::lower($email)).'|'.$request->ip();
     }
 
     /**
