@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import AmountInput from '@/Components/AmountInput';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -74,17 +75,17 @@ export default function AdminTiers({ tiers }: any) {
 }
 
 function TierFormModal({ tier, onClose }: any) {
-    const { data, setData, post, patch, processing } = useForm(tier ? {
+    const { data, setData, post, patch, processing, errors } = useForm(tier ? {
         nama_tier: tier.nama_tier,
-        harga_paket: tier.harga_paket,
-        masa_berlaku_hari: tier.masa_berlaku_hari,
-        diskon_persen: tier.diskon_persen,
+        harga_paket: String(tier.harga_paket ?? ''),
+        masa_berlaku_hari: String(tier.masa_berlaku_hari ?? ''),
+        diskon_persen: String(tier.diskon_persen ?? ''),
         benefit_lain: tier.benefit_lain || '',
     } : {
         nama_tier: '',
-        harga_paket: 100000,
-        masa_berlaku_hari: 30,
-        diskon_persen: 10,
+        harga_paket: '100000',
+        masa_berlaku_hari: '30',
+        diskon_persen: '10',
         benefit_lain: '',
     });
 
@@ -118,18 +119,40 @@ function TierFormModal({ tier, onClose }: any) {
                         <input value={data.nama_tier} onChange={(e) => setData('nama_tier', e.target.value)} className="input-neon" required />
                     </div>
                     <div>
-                        <label className="label-neon">Harga Paket (Rp)</label>
-                        <input type="number" min={0} value={data.harga_paket} onChange={(e) => setData('harga_paket', Number(e.target.value))} className="input-neon" />
+                        <label className="label-neon">Harga Paket</label>
+                        <AmountInput
+                            prefix="Rp"
+                            value={data.harga_paket}
+                            onValueChange={(value) => setData('harga_paket', value)}
+                        />
+                        {errors.harga_paket && (
+                            <p className="mt-1 text-xs text-neon-red">{errors.harga_paket}</p>
+                        )}
                     </div>
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="label-neon">Masa Berlaku (hari)</label>
-                        <input type="number" min={0} value={data.masa_berlaku_hari} onChange={(e) => setData('masa_berlaku_hari', Number(e.target.value))} className="input-neon" />
+                        <label className="label-neon">Masa Berlaku</label>
+                        <AmountInput
+                            suffix="hari"
+                            value={data.masa_berlaku_hari}
+                            onValueChange={(value) => setData('masa_berlaku_hari', value)}
+                        />
+                        {errors.masa_berlaku_hari && (
+                            <p className="mt-1 text-xs text-neon-red">{errors.masa_berlaku_hari}</p>
+                        )}
                     </div>
                     <div>
-                        <label className="label-neon">Diskon (%)</label>
-                        <input type="number" min={0} max={100} value={data.diskon_persen} onChange={(e) => setData('diskon_persen', Number(e.target.value))} className="input-neon" />
+                        <label className="label-neon">Diskon</label>
+                        <AmountInput
+                            suffix="%"
+                            maxLength={3}
+                            value={data.diskon_persen}
+                            onValueChange={(value) => setData('diskon_persen', value)}
+                        />
+                        {errors.diskon_persen && (
+                            <p className="mt-1 text-xs text-neon-red">{errors.diskon_persen}</p>
+                        )}
                     </div>
                 </div>
                 <div>
