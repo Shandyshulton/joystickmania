@@ -29,22 +29,59 @@ class LoginSeparationTest extends TestCase
         ]);
     }
 
-    public function test_authenticated_admin_visiting_user_login_redirects_to_admin(): void
+    public function test_admin_session_still_sees_the_member_login_form(): void
     {
         $admin = $this->makeAdmin();
 
         $response = $this->actingAs($admin, 'admin')->get('/login');
 
-        $response->assertRedirect('/admin');
+        $response->assertOk();
     }
 
-    public function test_authenticated_member_visiting_admin_login_redirects_to_dashboard(): void
+    public function test_member_session_still_sees_the_admin_login_form(): void
     {
         $member = $this->makeMember();
 
         $response = $this->actingAs($member)->get('/admin/login');
 
+        $response->assertOk();
+    }
+
+    public function test_admin_and_member_can_be_logged_in_at_the_same_time(): void
+    {
+        $admin = $this->makeAdmin();
+        $member = $this->makeMember();
+
+        $this->actingAs($admin, 'admin')->get('/login')->assertOk();
+
+        $this->assertAuthenticatedAs($admin, 'admin');
+        $this->assertGuest('web');
+
+        $this->post('/login', [
+            'email' => 'member@test.com',
+            'password' => 'password',
+        ])->assertRedirect('/dashboard');
+
+        $this->assertAuthenticatedAs($member, 'web');
+        $this->assertAuthenticatedAs($admin, 'admin');
+    }
+
+    public function test_logged_in_member_opening_member_login_goes_to_dashboard(): void
+    {
+        $member = $this->makeMember();
+
+        $response = $this->actingAs($member)->get('/login');
+
         $response->assertRedirect('/dashboard');
+    }
+
+    public function test_logged_in_admin_opening_admin_login_goes_to_admin_dashboard(): void
+    {
+        $admin = $this->makeAdmin();
+
+        $response = $this->actingAs($admin, 'admin')->get('/admin/login');
+
+        $response->assertRedirect('/admin');
     }
 
     public function test_admin_cannot_login_from_user_login_page(): void

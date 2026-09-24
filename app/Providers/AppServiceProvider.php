@@ -32,17 +32,14 @@ class AppServiceProvider extends ServiceProvider
                 : route('login');
         });
 
-        // User yang SUDAH login membuka halaman login — arahkan sesuai role.
-        // CMS (admin/staff) -> /admin, member biasa -> /dashboard.
-        // Mencegah "kecampur" antara login user & login admin.
+        // User yang SUDAH login membuka halaman login di portalnya sendiri — arahkan ke
+        // portal milik halaman itu, bukan portal lain. guest:web hanya terpanggil saat
+        // guard "web" aktif dan guest:admin saat "admin" aktif, jadi path sudah cukup
+        // untuk menentukan tujuan dan sesi admin tidak pernah "menular" ke halaman member.
         RedirectIfAuthenticated::redirectUsing(function ($request) {
-            if ($request->user('admin')) {
-                return route('admin.dashboard');
-            }
-
-            $user = $request->user('web');
-
-            return $user ? route('dashboard') : route('login');
+            return $request->is('admin') || $request->is('admin/*')
+                ? route('admin.dashboard')
+                : route('dashboard');
         });
     }
 }

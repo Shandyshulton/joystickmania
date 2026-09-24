@@ -30,13 +30,12 @@ class AdminLoginController extends Controller
 
     /**
      * Tampilkan halaman login khusus admin/staff.
+     *
+     * Sesi member (guard "web") sengaja diabaikan supaya admin bisa membuka form ini
+     * meskipun browser yang sama sedang login sebagai customer.
      */
-    public function create(): Response|RedirectResponse
+    public function create(): Response
     {
-        if (Auth::guard('web')->check()) {
-            return redirect()->route('dashboard');
-        }
-
         return Inertia::render('Admin/Login');
     }
 

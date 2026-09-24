@@ -25,13 +25,13 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Display the login view.
+     *
+     * Halaman ini murni untuk member (guard "web"). Sesi admin (guard "admin") sengaja
+     * diabaikan: satu browser boleh login admin dan customer bersamaan, jadi admin yang
+     * membuka /login tetap melihat form login customer, bukan dibuang ke portal admin.
      */
-    public function create(): Response|RedirectResponse
+    public function create(): Response
     {
-        if (Auth::guard('admin')->check()) {
-            return redirect()->route('admin.dashboard');
-        }
-
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),

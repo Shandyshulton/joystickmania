@@ -1,4 +1,6 @@
 *.log
+# Dump DB (mysqldump/backup) — berisi hash password & data terenkripsi, jangan masuk repo
+*.sql
 .DS_Store
 .env
 .env.backup
