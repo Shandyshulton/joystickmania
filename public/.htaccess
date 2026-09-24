@@ -23,3 +23,12 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Gambar upload (storage/app/public) dan aset Vite sama-sama bernama unik:
+# games/20260814035544-aB3xYz.jpg dan assets/app-<hash>.js. Menggantinya selalu
+# lewat file baru, jadi aman di-cache browser selamanya.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(webp|jpe?g|png|gif|svg|woff2?|css|js)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>

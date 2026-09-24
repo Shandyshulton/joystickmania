@@ -1,12 +1,13 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import AmountInput from '@/Components/AmountInput';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 const EMPTY = {
     nama_room: '',
-    kapasitas: 2,
+    kapasitas: '2',
     konsol_tersedia: ['PS5'] as string[],
-    harga_per_jam: 40000,
+    harga_per_jam: '40000',
     foto: null as File | null,
     fasilitas: '',
     status: 'aktif',
@@ -102,9 +103,9 @@ export default function AdminRooms({ rooms }: any) {
 function RoomFormModal({ room, onClose }: any) {
     const { data, setData, post, patch, processing, errors } = useForm(room ? {
         nama_room: room.nama_room,
-        kapasitas: room.kapasitas,
+        kapasitas: String(room.kapasitas ?? ''),
         konsol_tersedia: room.konsol_tersedia,
-        harga_per_jam: room.harga_per_jam,
+        harga_per_jam: String(room.harga_per_jam ?? ''),
         foto: null as File | null,
         fasilitas: room.fasilitas || '',
         status: room.status,
@@ -151,11 +152,25 @@ function RoomFormModal({ room, onClose }: any) {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label className="label-neon">Kapasitas</label>
-                        <input type="number" min={1} value={data.kapasitas} onChange={(e) => setData('kapasitas', Number(e.target.value))} className="input-neon" />
+                        <AmountInput
+                            suffix="orang"
+                            value={data.kapasitas}
+                            onValueChange={(value) => setData('kapasitas', value)}
+                        />
+                        {errors.kapasitas && (
+                            <p className="mt-1 text-xs text-neon-red">{errors.kapasitas}</p>
+                        )}
                     </div>
                     <div>
-                        <label className="label-neon">Harga/Jam (Rp)</label>
-                        <input type="number" min={0} value={data.harga_per_jam} onChange={(e) => setData('harga_per_jam', Number(e.target.value))} className="input-neon" />
+                        <label className="label-neon">Harga/Jam</label>
+                        <AmountInput
+                            prefix="Rp"
+                            value={data.harga_per_jam}
+                            onValueChange={(value) => setData('harga_per_jam', value)}
+                        />
+                        {errors.harga_per_jam && (
+                            <p className="mt-1 text-xs text-neon-red">{errors.harga_per_jam}</p>
+                        )}
                     </div>
                 </div>
                 <div>

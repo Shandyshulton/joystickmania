@@ -1,4 +1,5 @@
 import AdminLayout from '@/Layouts/AdminLayout';
+import AmountInput from '@/Components/AmountInput';
 import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -7,8 +8,8 @@ const EMPTY = {
     jenis_konsol: 'PS5',
     kondisi: 'Baik',
     status: 'tersedia',
-    harga_sewa: 100000,
-    nominal_deposit: 1200000,
+    harga_sewa: '100000',
+    nominal_deposit: '1200000',
 };
 
 export default function AdminUnits({ units }: any) {
@@ -91,13 +92,13 @@ export default function AdminUnits({ units }: any) {
 }
 
 function UnitFormModal({ unit, onClose }: any) {
-    const { data, setData, post, patch, processing } = useForm(unit ? {
+    const { data, setData, post, patch, processing, errors } = useForm(unit ? {
         kode_unit: unit.kode_unit,
         jenis_konsol: unit.jenis_konsol,
         kondisi: unit.kondisi || '',
         status: unit.status,
-        harga_sewa: unit.harga_sewa,
-        nominal_deposit: unit.nominal_deposit,
+        harga_sewa: String(unit.harga_sewa ?? ''),
+        nominal_deposit: String(unit.nominal_deposit ?? ''),
     } : EMPTY);
 
     const submit = (e: any) => {
@@ -154,12 +155,26 @@ function UnitFormModal({ unit, onClose }: any) {
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="label-neon">Harga Sewa/Hari (Rp)</label>
-                        <input type="number" min={0} value={data.harga_sewa} onChange={(e) => setData('harga_sewa', Number(e.target.value))} className="input-neon" />
+                        <label className="label-neon">Harga Sewa/Hari</label>
+                        <AmountInput
+                            prefix="Rp"
+                            value={data.harga_sewa}
+                            onValueChange={(value) => setData('harga_sewa', value)}
+                        />
+                        {errors.harga_sewa && (
+                            <p className="mt-1 text-xs text-neon-red">{errors.harga_sewa}</p>
+                        )}
                     </div>
                     <div>
-                        <label className="label-neon">Deposit (Rp)</label>
-                        <input type="number" min={0} value={data.nominal_deposit} onChange={(e) => setData('nominal_deposit', Number(e.target.value))} className="input-neon" />
+                        <label className="label-neon">Deposit</label>
+                        <AmountInput
+                            prefix="Rp"
+                            value={data.nominal_deposit}
+                            onValueChange={(value) => setData('nominal_deposit', value)}
+                        />
+                        {errors.nominal_deposit && (
+                            <p className="mt-1 text-xs text-neon-red">{errors.nominal_deposit}</p>
+                        )}
                     </div>
                 </div>
                 <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
