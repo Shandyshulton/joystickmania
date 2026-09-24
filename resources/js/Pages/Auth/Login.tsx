@@ -117,6 +117,16 @@ export default function Login({
                 </div>
             </form>
 
+            <p className="mt-5 text-center text-sm text-slate-400">
+                Belum punya akun?{' '}
+                <Link
+                    href={route('register')}
+                    className="font-semibold text-neon-cyan underline hover:text-neon-green"
+                >
+                    Daftar
+                </Link>
+            </p>
+
             <div className="mt-5 border-t border-night-700 pt-4 text-center">
                 <Link
                     href="/"

@@ -81,19 +81,19 @@ export default function Membership({ tiers, auth }: any) {
                                         <div className="badge-neon w-full justify-center border border-night-500 bg-night-700 py-2 text-slate-400">
                                             Default Akun
                                         </div>
-                                    ) : auth?.user ? (
+                                    ) : (
+                                        // Sengaja menunjuk route beli (bukan /login): middleware
+                                        // auth:web menyimpan url.intended, jadi setelah masuk/daftar
+                                        // pengunjung langsung mendarat di tahap pemesanan tier ini.
                                         <Link
                                             href={`/membership/beli/${t.id}`}
-                                            className="btn-neon-solid w-full"
+                                            className={
+                                                auth?.user
+                                                    ? 'btn-neon-solid w-full'
+                                                    : 'btn-neon w-full'
+                                            }
                                         >
                                             Beli / Upgrade
-                                        </Link>
-                                    ) : (
-                                        <Link
-                                            href="/login"
-                                            className="btn-neon w-full"
-                                        >
-                                            Masuk untuk Beli
                                         </Link>
                                     )}
                                 </div>
@@ -101,6 +101,19 @@ export default function Membership({ tiers, auth }: any) {
                         );
                     })}
                 </div>
+
+                {!auth?.user && (
+                    <p className="mt-6 text-center text-sm text-slate-400">
+                        Belum punya akun?{' '}
+                        <Link
+                            href="/register"
+                            className="font-semibold text-neon-cyan underline hover:text-neon-green"
+                        >
+                            Daftar gratis
+                        </Link>{' '}
+                        — tier Bronze tanpa biaya, langsung bisa pesan.
+                    </p>
+                )}
 
                 <div className="card-neon mt-10 p-6 text-sm text-slate-400">
                     <h4 className="font-display text-base font-bold text-white">
