@@ -36,6 +36,10 @@ class AdminGameController extends Controller
 
         if ($request->hasFile('gambar')) {
             $data['gambar'] = ImageUploader::store($request->file('gambar'), 'games', $game->gambar);
+        } else {
+            // Form selalu mengirim key 'gambar' (kosong saat tidak pilih file). Tanpa
+            // buang key ini, update() akan menimpa path gambar lama dengan null.
+            unset($data['gambar']);
         }
 
         $game->update($data);
