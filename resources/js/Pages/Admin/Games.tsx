@@ -124,7 +124,7 @@ export default function AdminGames({ games }: any) {
 }
 
 function GameFormModal({ game, onClose }: any) {
-    const { data, setData, post, patch, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         nama_game: game?.nama_game || '',
         jenis_konsol: game?.jenis_konsol || 'PS5',
         gambar: null as File | null,
@@ -139,11 +139,12 @@ function GameFormModal({ game, onClose }: any) {
     const submit = (e: any) => {
         e.preventDefault();
         const options = { onSuccess: onClose, forceFormData: true };
-        if (game) {
-            patch(route('admin.games.update', game.id), options);
-        } else {
-            post(route('admin.games.store'), options);
-        }
+
+        // Sama seperti form Rooms: PHP tidak mem-parse body multipart untuk PATCH di
+        // hosting LiteSpeed, jadi edit dikirim POST + _method=PATCH.
+        transform((form: any) => (game ? { ...form, _method: 'PATCH' } : form));
+
+        post(game ? route('admin.games.update', game.id) : route('admin.games.store'), options);
     };
 
     return (

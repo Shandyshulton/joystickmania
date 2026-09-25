@@ -107,6 +107,38 @@ class AdminCmsCrudTest extends TestCase
         Storage::disk('public')->assertMissing('rooms/lama.jpg');
     }
 
+    /**
+     * Regresi produksi: PHP hanya mem-parse body multipart untuk POST, jadi form
+     * edit (yang punya input file) harus dikirim POST + _method=PATCH. Kalau route
+     * PATCH tidak lagi menerima spoofing ini, edit room di hosting kembali error
+     * "field is required" walau form terisi.
+     */
+    public function test_edit_room_via_multipart_post_with_method_spoofing(): void
+    {
+        Storage::fake('public');
+
+        $room = Room::create([
+            'nama_room' => 'Room Lama', 'kapasitas' => 2,
+            'konsol_tersedia' => ['PS4'], 'harga_per_jam' => 40000,
+            'foto' => 'rooms/lama.jpg', 'status' => 'aktif', 'fasilitas' => 'AC',
+        ]);
+
+        $response = $this->actingAs($this->admin(), 'admin')
+            ->post('/admin/rooms/'.$room->id, $this->roomsPayload([
+                '_method' => 'PATCH',
+                'nama_room' => 'Room Spoof',
+                'foto' => UploadedFile::fake()->image('baru.jpg', 800, 600),
+            ]));
+
+        $response->assertSessionHasNoErrors();
+
+        $fresh = $room->fresh();
+        $this->assertSame('Room Spoof', $fresh->nama_room);
+        $this->assertSame(4, $fresh->kapasitas);
+        $this->assertSame(60000, $fresh->harga_per_jam);
+        $this->assertNotSame('rooms/lama.jpg', $fresh->foto);
+    }
+
     public function test_edit_game_without_changing_image(): void
     {
         $game = Game::create([
