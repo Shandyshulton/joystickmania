@@ -101,7 +101,7 @@ export default function AdminRooms({ rooms }: any) {
 }
 
 function RoomFormModal({ room, onClose }: any) {
-    const { data, setData, post, patch, processing, errors } = useForm(room ? {
+    const { data, setData, post, processing, errors, transform } = useForm(room ? {
         nama_room: room.nama_room,
         kapasitas: String(room.kapasitas ?? ''),
         konsol_tersedia: room.konsol_tersedia,
@@ -123,11 +123,15 @@ function RoomFormModal({ room, onClose }: any) {
     const submit = (e: any) => {
         e.preventDefault();
         const options = { onSuccess: onClose, forceFormData: true };
-        if (room) {
-            patch(route('admin.rooms.update', room.id), options);
-        } else {
-            post(route('admin.rooms.store'), options);
-        }
+
+        // PHP hanya mem-parse body multipart/form-data untuk method POST. Di hosting
+        // (LiteSpeed) request PATCH multipart datang dengan $_POST & $_FILES kosong,
+        // sehingga semua field dianggap kosong dan validasi selalu membalas
+        // "field is required" walau form sudah terisi. Edit dikirim sebagai POST
+        // + _method=PATCH supaya file dan field-nya sampai ke server.
+        transform((form: any) => (room ? { ...form, _method: 'PATCH' } : form));
+
+        post(room ? route('admin.rooms.update', room.id) : route('admin.rooms.store'), options);
     };
 
     return (
