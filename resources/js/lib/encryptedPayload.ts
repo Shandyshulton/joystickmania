@@ -18,11 +18,15 @@ function exactArrayBuffer(bytes: Uint8Array): ArrayBuffer {
     return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
 
-export async function encryptedPayload(data: JsonPayload): Promise<{ encrypted_payload: string }> {
+export async function encryptedPayload(data: JsonPayload): Promise<JsonPayload> {
     const key = window.joyConfig?.requestPayloadKey;
 
+    // crypto.subtle hanya tersedia di secure context (HTTPS / localhost). Kalau tidak
+    // ada, kirim field apa adanya: middleware DecryptRequestPayload sudah menerima
+    // body plain. Membungkusnya dengan base64 sebagai 'encrypted_payload' justru
+    // ditolak server (butuh iv/data/tag) dan berakhir 422.
     if (!key || !window.crypto?.subtle) {
-        return { encrypted_payload: window.btoa(JSON.stringify(data)) };
+        return data;
     }
 
     const cryptoKey = await window.crypto.subtle.importKey(

@@ -36,6 +36,10 @@ class AdminRoomController extends Controller
 
         if ($request->hasFile('foto')) {
             $data['foto'] = ImageUploader::store($request->file('foto'), 'rooms', $room->foto);
+        } else {
+            // Form selalu mengirim key 'foto' (kosong saat tidak pilih file). Tanpa
+            // buang key ini, update() akan menimpa path foto lama dengan null.
+            unset($data['foto']);
         }
 
         $room->update($data);
