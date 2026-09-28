@@ -37,6 +37,10 @@ class CrashAlerter
             return false;
         }
 
+        // Same reason as SentryScrubber: PII yang tersisip ke pesan QueryException
+        // baru bisa dibuang kalau nilainya diketahui lebih dulu.
+        SensitiveData::observeThrowable($e);
+
         return TelegramAlert::send(
             TelegramAlert::CRASH,
             $this->dedupeKey($e),

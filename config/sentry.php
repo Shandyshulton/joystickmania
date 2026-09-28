@@ -4,8 +4,6 @@ use App\Support\SentryScrubber;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Session\TokenMismatchException;
-use Sentry\Event;
-use Sentry\EventHint;
 
 /**
  * Sentry Laravel SDK configuration file.
@@ -71,11 +69,13 @@ return [
 
     // Semua event dilewati penyaring PII sebelum dikirim. Lihat SentryScrubber
     // untuk alasan kenapa pesan exception adalah jalur yang paling rawan.
-    // Ditulis sebagai closure: Sentry memanggil callback ini dengan ($event, $hint),
-    // dan [Kelas::class, '__invoke'] bukan callable yang sah untuk method instance.
-    'before_send' => static function (Event $event, EventHint $hint) {
-        return (new SentryScrubber)($event, $hint);
-    },
+    //
+    // Bentuknya HARUS array callable ke method static, bukan closure. Nilai config
+    // ini ikut diserialisasi oleh `php artisan config:cache` (wajib di shared
+    // hosting ini), dan closure akan menggagalkan seluruh caching dengan error
+    // "Call to undefined method Closure::__set_state()". Sentry memanggil entri
+    // ini sebagai callable dengan argumen ($event, $hint).
+    'before_send' => [SentryScrubber::class, 'handle'],
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#ignore_exceptions
     //

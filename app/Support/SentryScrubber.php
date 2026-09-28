@@ -22,9 +22,26 @@ use Sentry\ExceptionDataBag;
  */
 class SentryScrubber
 {
+    /**
+     * Entry point untuk config('sentry.before_send').
+     *
+     * WAJIB berupa array callable ke method static — bukan closure. Laravel
+     * mem-serialisasi seluruh config ke bootstrap/cache/config.php saat
+     * `php artisan config:cache` (wajib di shared hosting ini), dan closure
+     * melempar "Call to undefined method Closure::__set_state()".
+     */
+    public static function handle(Event $event, ?EventHint $hint = null): ?Event
+    {
+        return (new static)($event, $hint);
+    }
+
     public function __invoke(Event $event, ?EventHint $hint = null): ?Event
     {
         try {
+            // Binding QueryException dulu: pesan error sudah memuat nilainya,
+            // jadi kita harus tahu isinya sebelum sempat menyaringnya.
+            SensitiveData::observeThrowable($hint?->exception);
+
             $this->scrubExceptions($event);
             $this->scrubMessage($event);
             $this->scrubRequest($event);

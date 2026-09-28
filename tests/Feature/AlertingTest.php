@@ -6,6 +6,7 @@ use App\Support\CrashAlerter;
 use App\Support\SensitiveData;
 use App\Support\SentryScrubber;
 use App\Support\TelegramAlert;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Facade;
@@ -100,6 +101,36 @@ class AlertingTest extends TestCase
             return ! str_contains($text, self::NAMA)
                 && ! str_contains($text, self::NO_HP)
                 && str_contains($text, '[crash]');
+        });
+    }
+
+    /**
+     * Regresi celah "tidak ada request": queued job / command tidak punya input
+     * user, jadi knownValues() kosong dan nama tidak akan ikut tersaring kalau
+     * nilainya tidak diambil dari binding QueryException. Binding int tetap utuh
+     * — ID justru dibutuhkan untuk debugging.
+     */
+    public function test_pii_query_exception_tersaring_walau_tanpa_request(): void
+    {
+        Http::fake(['api.telegram.org/*' => Http::response(['ok' => true], 200)]);
+
+        $exception = new QueryException(
+            'mysql',
+            'insert into physical_rentals (nama, no_hp, user_id) values (?, ?, ?)',
+            [self::NAMA, self::NO_HP, 42],
+            new \RuntimeException('SQLSTATE[23000] Duplicate entry'),
+        );
+
+        // Pastikan memang pesan aslinya memuat PII (ini yang bikin jalur ini bahaya).
+        $this->assertStringContainsString(self::NAMA, $exception->getMessage());
+
+        $this->assertTrue(app(CrashAlerter::class)->notify($exception));
+
+        Http::assertSent(function ($request) {
+            $text = (string) ($request['text'] ?? '');
+
+            return ! str_contains($text, self::NAMA)
+                && str_contains($text, '42');
         });
     }
 

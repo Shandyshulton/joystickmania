@@ -169,6 +169,57 @@ class SensitiveData
         self::$cachedValues = null;
     }
 
+    /**
+     * Tambah satu nilai PII yang sedang berlalu, untuk pencocokan persis.
+     */
+    public static function observe(mixed $value): void
+    {
+        if (! is_string($value) || mb_strlen(trim($value)) < 3 || ! mb_check_encoding($value, 'UTF-8')) {
+            return;
+        }
+
+        // knownValues() memoize; panggil dulu supaya basisnya ada.
+        $known = self::knownValues();
+
+        if (in_array($value, $known, true)) {
+            return;
+        }
+
+        $known[] = $value;
+        usort($known, fn ($a, $b) => mb_strlen($b) <=> mb_strlen($a));
+
+        self::$cachedValues = $known;
+    }
+
+    /**
+     * Ambil nilai PII dari binding QueryException.
+     *
+     * Menutup celah yang tidak dijangkau knownValues(): nama/alamat yang muncul
+     * di pesan error padahal tidak ada di request saat itu — misalnya error di
+     * queued job atau command, tempat tidak ada input user sama sekali.
+     * QueryException Laravel menyisipkan binding ke dalam pesannya, jadi binding
+     * adalah sumber nilai yang paling akurat di sana.
+     *
+     * Binding int/bool/float dilewati: itu ID atau flag, dan menghapusnya justru
+     * membuat pesan error tidak berguna untuk debugging.
+     */
+    public static function observeThrowable(?Throwable $e): void
+    {
+        while ($e !== null) {
+            if (method_exists($e, 'getBindings')) {
+                foreach ((array) $e->getBindings() as $binding) {
+                    if (is_int($binding) || is_bool($binding) || is_float($binding) || $binding === null) {
+                        continue;
+                    }
+
+                    self::observe(is_scalar($binding) ? (string) $binding : null);
+                }
+            }
+
+            $e = $e->getPrevious();
+        }
+    }
+
     private static function flatten(array $data, int $depth = 0): array
     {
         if ($depth > 6) {
