@@ -274,4 +274,60 @@ class AlertingTest extends TestCase
 
         Http::assertNothingSent();
     }
+
+    /**
+     * Regresi: Laravel mengikat request palsu ke container setiap kali proses
+     * berjalan di CLI, jadi kegagalan cron dulu dilaporkan sebagai "GET /" dan
+     * terbaca seolah homepage yang mati — persis seperti alert escapeshellarg
+     * yang masuk 28-09-2026.
+     */
+    public function test_crash_dari_console_tidak_menyamar_jadi_request_http(): void
+    {
+        Http::fake(['api.telegram.org/*' => Http::response(['ok' => true], 200)]);
+
+        // Sengaja tetap pasang request: inilah yang membuat bug-nya tidak terlihat.
+        $this->requestWithPii();
+
+        $this->assertTrue(app(CrashAlerter::class)->notify(new \RuntimeException('task gagal')));
+
+        Http::assertSent(function ($request) {
+            $text = (string) ($request['text'] ?? '');
+
+            return str_contains($text, 'console')
+                && ! str_contains($text, 'POST /booking/fisik');
+        });
+    }
+
+    /**
+     * Sisi sebaliknya: di proses web, method + URI justru informasi paling berguna,
+     * jadi pemeriksaan console tidak boleh menelannya.
+     */
+    public function test_crash_dari_web_tetap_mencantumkan_method_dan_uri(): void
+    {
+        Http::fake(['api.telegram.org/*' => Http::response(['ok' => true], 200)]);
+
+        $this->requestWithPii();
+        $this->paksaRunningInConsole(false);
+
+        $this->assertTrue(app(CrashAlerter::class)->notify(new \RuntimeException('booking gagal')));
+
+        Http::assertSent(function ($request) {
+            $text = (string) ($request['text'] ?? '');
+
+            return str_contains($text, 'POST /booking/fisik')
+                && ! str_contains($text, 'console');
+        });
+    }
+
+    /**
+     * phpunit berjalan di CLI, jadi runningInConsole() sudah ternilai true dan
+     * Application menyimpan hasilnya. Satu-satunya cara menguji jalur web adalah
+     * membatalkan nilai tersimpan itu.
+     */
+    private function paksaRunningInConsole(bool $nilai): void
+    {
+        $property = new \ReflectionProperty(\Illuminate\Foundation\Application::class, 'isRunningInConsole');
+        $property->setAccessible(true);
+        $property->setValue($this->app, $nilai);
+    }
 }

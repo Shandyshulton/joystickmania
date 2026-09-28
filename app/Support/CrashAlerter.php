@@ -94,7 +94,11 @@ class CrashAlerter
      */
     protected function requestDescriptor(): string
     {
-        if (! app()->bound('request')) {
+        // Laravel mengikat request palsu ke container setiap kali proses berjalan
+        // di CLI, jadi "ada request" BUKAN bukti crash ini berasal dari pengunjung.
+        // Tanpa pemeriksaan ini, kegagalan cron dan scheduled task terbaca sebagai
+        // "GET /" — seolah homepage yang mati padahal bukan.
+        if (app()->runningInConsole() || ! app()->bound('request')) {
             return 'console';
         }
 
