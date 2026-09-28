@@ -10,6 +10,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Sentry\Laravel\Integration;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -44,9 +45,14 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         // Setiap exception yang dilaporkan juga dikirim ke Telegram (dibatasi
-        // throttle & disaring mana yang layak membangunkan orang). Sentry
-        // menangkap exception yang sama lewat reportable listener-nya sendiri.
+        // throttle & disaring mana yang layak membangunkan orang).
         $exceptions->reportable(function (Throwable $e): void {
             app(CrashAlerter::class)->notify($e);
         });
+
+        // Tanpa baris ini Sentry tidak menerima satu pun exception: sejak Laravel 11
+        // paket sentry-laravel tidak lagi memasang handler-nya sendiri, ia menunggu
+        // dipanggil di sini. Semua event tetap melewati SentryScrubber lewat
+        // before_send di config/sentry.php.
+        Integration::handles($exceptions);
     })->create();
