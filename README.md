@@ -33,9 +33,19 @@ php artisan serve
 
 ### Database
 
-- MySQL di **port 3308** (instance Laragon). `.env` memakai:
-  `DB_DATABASE=joystickmania`, `DB_USERNAME=joystickmania`, `DB_PASSWORD=joystickmania123`.
-- Database test: `joystickmania_test` (dipakai `phpunit.xml`).
+- MySQL di **port 3308** (instance Laragon). Kredensial dibaca dari `.env`
+  (`DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`) — jangan
+  pernah menuliskan kredensial asli ke dokumen, commit, atau issue.
+- Database test: `joystickmania_test`. `phpunit.xml` hanya memaksa driver, host,
+  port, dan nama database supaya test tidak pernah menyentuh DB produksi;
+  username & password diambil dari `.env.testing` (tidak ter-commit). Buat dari
+  `.env.testing.example` lalu isi kredensial MySQL lokal Anda.
+- **Awas:** `phpdotenv` Laravel bersifat *immutable* — variabel environment
+  level sistem/session yang sudah terlanjur di-set (`DB_USERNAME`, `DB_PASSWORD`,
+  `APP_ENV`, `APP_KEY`, dst.) **menang** atas `.env` maupun `.env.testing`,
+  dan `.env.testing` menggantikannya secara penuh (tidak ditumpuk). Cek dengan
+  `set DB_` sebelum menjalankan `artisan migrate` atau `artisan test`; kalau ada
+  kredensial produksi di sana, perintah Anda bisa diam-diam menarget produksi.
 
 ### Scheduler (cron)
 

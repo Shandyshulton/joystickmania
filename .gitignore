@@ -5,6 +5,8 @@
 .env
 .env.*
 !.env.example
+# file contoh (placeholder, bukan kredensial asli) tetap boleh masuk repo
+!.env.*.example
 .phpactor.json
 .phpunit.result.cache
 /.codex

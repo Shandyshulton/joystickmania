@@ -24,11 +24,13 @@
         <server name="BROADCAST_CONNECTION" value="null" force="true"/>
         <server name="CACHE_STORE" value="array" force="true"/>
         <server name="DB_CONNECTION" value="mysql" force="true"/>
+        <!-- Host/port/database dipaksa di sini supaya test tidak PERNAH menyentuh
+             DB produksi yang ada di .env, walau .env.testing lupa dibuat.
+             Kredensial (DB_USERNAME/DB_PASSWORD) sengaja tidak ditulis di file
+             yang ter-commit — letaknya di .env.testing (di-gitignore). -->
         <server name="DB_HOST" value="127.0.0.1" force="true"/>
         <server name="DB_PORT" value="3308" force="true"/>
         <server name="DB_DATABASE" value="joystickmania_test" force="true"/>
-        <server name="DB_USERNAME" value="joystickmania" force="true"/>
-        <server name="DB_PASSWORD" value="joystickmania123" force="true"/>
         <server name="MAIL_MAILER" value="array" force="true"/>
         <server name="QUEUE_CONNECTION" value="sync" force="true"/>
         <server name="SESSION_DRIVER" value="array" force="true"/>
