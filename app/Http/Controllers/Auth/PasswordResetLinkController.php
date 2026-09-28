@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\SendOtpNotification;
+use App\Support\OtpMailer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +64,15 @@ class PasswordResetLinkController extends Controller
                 ]
             );
 
-            $user->notify(new SendOtpNotification($otp));
+            if (! OtpMailer::send($user, new SendOtpNotification($otp))) {
+                // OTP di database dibuang bareng: kodenya tidak pernah sampai, jadi
+                // baris itu hanya jadi kode yatim yang bisa dicoba orang.
+                DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+
+                throw ValidationException::withMessages([
+                    'email' => 'Kode OTP gagal dikirim ke email. Silakan coba lagi beberapa saat.',
+                ]);
+            }
 
             // Simpan token plaintext di session untuk redirect ke form password baru
             session([

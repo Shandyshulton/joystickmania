@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Notifications\LoginOtpNotification;
+use App\Support\OtpMailer;
 use App\Support\PortalRedirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,7 +47,12 @@ class AuthenticatedSessionController extends Controller
         if (config('auth.login_otp.enabled')) {
             /** @var User $user */
             $user = $request->validateCredentials('web');
-            $this->startLoginOtp($request, $user, $request->boolean('remember'));
+
+            if (! $this->startLoginOtp($request, $user, $request->boolean('remember'))) {
+                throw ValidationException::withMessages([
+                    'email' => 'Kode OTP login gagal dikirim ke email. Silakan coba lagi beberapa saat.',
+                ]);
+            }
 
             return redirect()->route('login.otp')
                 ->with('status', 'Kode OTP login telah dikirim ke email Anda.');
@@ -130,7 +136,7 @@ class AuthenticatedSessionController extends Controller
         return redirect('/');
     }
 
-    private function startLoginOtp(Request $request, User $user, bool $remember): void
+    private function startLoginOtp(Request $request, User $user, bool $remember): bool
     {
         $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
@@ -141,6 +147,14 @@ class AuthenticatedSessionController extends Controller
             'expires_at' => now()->addMinutes(config('auth.login_otp.expires_minutes', 10))->timestamp,
         ]);
 
-        $user->notify(new LoginOtpNotification($otp));
+        if (OtpMailer::send($user, new LoginOtpNotification($otp))) {
+            return true;
+        }
+
+        // Kode tidak pernah sampai: sesi OTP dibuang supaya halaman verifikasi
+        // tidak menunggu kode yang tidak ada.
+        $request->session()->forget('login_otp');
+
+        return false;
     }
 }

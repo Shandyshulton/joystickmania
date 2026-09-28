@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Notifications\LoginOtpNotification;
+use App\Support\OtpMailer;
 use App\Support\PortalRedirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -69,7 +70,12 @@ class AdminLoginController extends Controller
             }
 
             RateLimiter::clear($throttleKey);
-            $this->startLoginOtp($request, $admin, $request->boolean('remember'));
+
+            if (! $this->startLoginOtp($request, $admin, $request->boolean('remember'))) {
+                throw ValidationException::withMessages([
+                    'email' => 'Kode OTP login gagal dikirim ke email. Silakan coba lagi, atau hubungi admin lain untuk memperbaiki layanan email.',
+                ]);
+            }
 
             return redirect()->route('admin.login.otp')
                 ->with('status', 'Kode OTP login telah dikirim ke email admin.');
@@ -181,7 +187,7 @@ class AdminLoginController extends Controller
         return $admin;
     }
 
-    private function startLoginOtp(Request $request, Admin $admin, bool $remember): void
+    private function startLoginOtp(Request $request, Admin $admin, bool $remember): bool
     {
         $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
@@ -192,6 +198,14 @@ class AdminLoginController extends Controller
             'expires_at' => now()->addMinutes(config('auth.login_otp.expires_minutes', 10))->timestamp,
         ]);
 
-        $admin->notify(new LoginOtpNotification($otp));
+        if (OtpMailer::send($admin, new LoginOtpNotification($otp))) {
+            return true;
+        }
+
+        // Kode tidak pernah sampai: sesi OTP dibuang supaya halaman verifikasi
+        // tidak menunggu kode yang tidak ada.
+        $request->session()->forget('admin_login_otp');
+
+        return false;
     }
 }
