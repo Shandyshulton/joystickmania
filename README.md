@@ -38,12 +38,12 @@ php artisan serve
   pernah menuliskan kredensial asli ke dokumen, commit, atau issue.
 - Database test: `joystickmania_test`. `phpunit.xml` hanya memaksa driver, host,
   port, dan nama database supaya test tidak pernah menyentuh DB produksi;
-  username & password diambil dari `.env.testing` (tidak ter-commit). Buat dari
-  `.env.testing.example` lalu isi kredensial MySQL lokal Anda.
+  `APP_KEY` + `DB_USERNAME`/`DB_PASSWORD` diambil dari `.env.testing` yang tidak
+  ter-commit — buat file itu sendiri (berisi minimal 3 key di atas).
 - **Awas:** `phpdotenv` Laravel bersifat *immutable* — variabel environment
   level sistem/session yang sudah terlanjur di-set (`DB_USERNAME`, `DB_PASSWORD`,
-  `APP_ENV`, `APP_KEY`, dst.) **menang** atas `.env` maupun `.env.testing`,
-  dan `.env.testing` menggantikannya secara penuh (tidak ditumpuk). Cek dengan
+  `APP_ENV`, `APP_KEY`, dst.) **menang** atas `.env` maupun `.env.testing`, dan
+  `.env.testing` menggantikan `.env` secara penuh (tidak ditumpuk). Cek dengan
   `set DB_` sebelum menjalankan `artisan migrate` atau `artisan test`; kalau ada
   kredensial produksi di sana, perintah Anda bisa diam-diam menarget produksi.
 

@@ -5,8 +5,6 @@
 .env
 .env.*
 !.env.example
-# file contoh (placeholder, bukan kredensial asli) tetap boleh masuk repo
-!.env.*.example
 .phpactor.json
 .phpunit.result.cache
 /.codex
@@ -38,74 +36,31 @@ Thumbs.db
 /JoyStickMania-Spesifikasi (1).md
 /Syarat-Ketentuan-Sewa-Fisik-PS.md
 
-# ===== Berkas sensitif — jangan pernah masuk repo =====
+# ===== Berkas sensitif =====
+# Semua varian .env (lokal, localtest, testing, production) sudah dicakup
+# aturan ".env.*" di awal file. Folder storage juga sudah self-ignore lewat
+# .gitignore bawaan Laravel (storage/**/.gitignore).
 
-# Environment: semua varian (.env, .env.local, .env.localtest, .env.production, ...)
-# Sudah dicakup ".env.*" di atas, ditulis eksplisit supaya mudah dibaca.
-/.env.localtest
-/.env.local
-/.env.production
-/.env.staging
-/.env.testing
-
-# Kunci & sertifikat
+# Kunci & sertifikat privat
 *.key
 *.pem
-*.p8
 *.p12
 *.pfx
-*.crt
-*.cer
-*.der
-*.jks
-*.keystore
 *.ppk
-*.snk
 id_rsa
-id_rsa.pub
 id_ed25519
-id_ed25519.pub
-*.kdbx
 
-# Berkas credential / service account / token
-credentials.json
-credentials*.json
-service-account*.json
-firebase-adminsdk*.json
-google-services.json
-composer/auth.json
+# Credential / service account
 **/auth.json
+service-account*.json
+credentials*.json
 /.aws/
-/.ssh/
-tunnel.json
-expose.json
-ngrok.yml
 
-# Arsip & backup — sering berisi dump DB atau salinan .env
+# Arsip & backup — rawan berisi dump DB atau salinan .env
 *.zip
-*.tar
-*.tar.gz
-*.tgz
-*.gz
-*.bz2
 *.7z
 *.rar
+*.tar.gz
+*.tgz
 *.bak
-*.old
-*.save
-*.swp
-*~
 /backup/
-/backups/
-/dump-*/
-/public/build.zip
-
-# Data pengguna yang di-upload & cache berisi PII
-/storage/app/private/*
-!/storage/app/private/.gitignore
-/storage/debugbar/*
-!/storage/debugbar/.gitignore
-/storage/framework/data/*
-!/storage/framework/data/.gitignore
-/storage/framework/testing/*
-!/storage/framework/testing/.gitignore
