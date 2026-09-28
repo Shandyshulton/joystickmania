@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Support\RequestPayloadCrypt;
+use App\Support\SecurityAlerter;
 use Closure;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
@@ -24,6 +25,8 @@ class DecryptRequestPayload
             // Jangan abort(422): Inertia akan menampilkan error mentah dan tombol
             // Simpan terlihat mati. ValidationException membuat Inertia redirect
             // balik dengan pesan error yang bisa dibaca user.
+            app(SecurityAlerter::class)->tamperedPayload($request);
+
             throw ValidationException::withMessages([
                 'encrypted_payload' => 'Payload form tidak valid. Muat ulang halaman lalu coba lagi.',
             ]);

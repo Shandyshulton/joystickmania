@@ -125,3 +125,59 @@ Reminder H-1 & notifikasi expired dikirim otomatis oleh `membership:process-dail
 ## WhatsApp Admin
 
 Nomor admin dikonfigurasi di `.env`: `WA_ADMIN_NUMBER=62812xxxxxxx` (format internasional tanpa `+`).
+
+## Alerting & Error Tracking
+
+Dua lapis, keduanya mati secara default sampai dikonfigurasi:
+
+- **Sentry** (`sentry/sentry-laravel`) — stack trace penuh, pengelompokan issue, dedupe.
+- **Telegram** (`App\Support\TelegramAlert`) — pesan pendek ke HP admin untuk hal yang
+  butuh tindakan manusia, bukan untuk setiap baris error.
+
+### Menyalakan
+
+1. Buat bot di `@BotFather`, salin token ke `TELEGRAM_BOT_TOKEN`.
+2. Kirim `/start` ke bot Anda, lalu buka `https://api.telegram.org/bot<TOKEN>/getUpdates`
+   dan ambil `chat.id` → `TELEGRAM_CHAT_ID`.
+3. Buat project Sentry, salin DSN ke `SENTRY_LARAVEL_DSN`.
+4. `php artisan config:clear`
+5. Uji: `php artisan alerts:test --category=crash` dan `php artisan sentry:test`
+6. Pastikan cron `alerts:heartbeat` ikut terdaftar (lihat `routes/console.php`).
+
+### Kategori & ambang
+
+| Kategori | Pemicu | Config |
+|---|---|---|
+| `crash` | exception 5xx yang dilaporkan | `ALERT_ON_CRASH` |
+| `security` | N login gagal / payload tak terbaca / 403 berulang dari satu IP | `ALERT_ON_SECURITY`, `ALERT_LOGIN_FAILURE_THRESHOLD` |
+| `business` | notifikasi email OTP/reset gagal terkirim | `ALERT_ON_BUSINESS` |
+| `infra` | disk menipis, DB tak terhubung, storage tak writable, task scheduler macet | `ALERT_ON_INFRA` |
+
+Satu kunci dedupe hanya menghasilkan satu pesan per `ALERT_THROTTLE_SECONDS` (default
+600). `ALERTING_ENABLED=false` mematikan semuanya tanpa menyentuh Sentry.
+
+### Aturan data pribadi
+
+**Jangan nyalakan `SENTRY_SEND_DEFAULT_PII`.** Nama, no HP, dan alamat pelanggan
+disimpan sebagai kolom plaintext sejak `2026_08_14_000004_revert_encryption_columns.php`,
+dan `QueryException` Laravel menyisipkan binding SQL ke dalam string pesan error —
+jadi PII bisa keluar hanya lewat judul issue. Karena itu semua event dilewatkan
+`App\Support\SentryScrubber` (lihat `config/sentry.php`), dan pesan Telegram disaring
+`App\Support\SensitiveData::redact()` sebelum dikirim.
+
+Kalau menambah alert baru, jangan pernah menyertakan `$request->all()`, kredensial
+login, atau isi payload form. Cukup kelas exception, path, dan ID.
+
+### Yang TIDAK bisa dideteksi dari dalam app
+
+`alerts:heartbeat` dijalankan oleh cron yang sama, jadi ia tidak bisa memperingatkan
+kalau cron mati total atau seluruh server down. Untuk itu perlu pemantau uptime
+eksternal (mis. UptimeRobot / Sentry Crons) yang mengecek `https://…/up` dari luar.
+
+### Jebakan environment variable
+
+`phpdotenv` Laravel *immutable*: variabel shell mengalahkan `.env` dan `.env.testing`.
+Mesin pengembangan ini pernah punya kredensial produksi tertanam di environment shell,
+yang membuat suite test diam-diam memakai user DB produksi. `tests/bootstrap.php`
+membersihkan kunci yang seharusnya datang dari `.env.testing` dan mencetak apa yang
+dibersihkan. Cek manual dengan `set DB_` (Windows) atau `env | grep '^DB_'` (Linux).

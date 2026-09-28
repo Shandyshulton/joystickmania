@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\SecurityAlerter;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,8 +28,13 @@ class EnsureUserIsAdmin
             return $next($request);
         }
 
-        // Menu "users" (manajemen admin & role) khusus super admin
+        // Menu "users" (manajemen admin & role) khusus super admin.
+        // Yang tidak login (case di atas) sengaja tidak dilaporkan: itu sesi
+        // kadaluarsa biasa, bukan percobaan masuk. Yang sudah login tapi ditolak
+        // baru menarik.
         if ($permission === 'users') {
+            app(SecurityAlerter::class)->deniedAdminAccess($request, 'menu users, bukan super admin');
+
             abort(403, 'Hanya Super Admin yang bisa mengelola admin & role.');
         }
 
@@ -46,6 +52,8 @@ class EnsureUserIsAdmin
         if ($user->hasPermission($permission)) {
             return $next($request);
         }
+
+        app(SecurityAlerter::class)->deniedAdminAccess($request, "permission '{$permission}' ditolak");
 
         abort(403, 'Anda tidak punya akses ke menu ini.');
     }

@@ -1,8 +1,14 @@
 <?php
 
+use App\Http\Middleware\DecryptRequestPayload;
+use App\Http\Middleware\EnsurePortalPort;
+use App\Http\Middleware\EnsureUserIsAdmin;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Support\CrashAlerter;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -22,18 +28,25 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
-            \App\Http\Middleware\EnsurePortalPort::class,
-            \App\Http\Middleware\DecryptRequestPayload::class,
-            \App\Http\Middleware\HandleInertiaRequests::class,
-            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            EnsurePortalPort::class,
+            DecryptRequestPayload::class,
+            HandleInertiaRequests::class,
+            AddLinkHeadersForPreloadedAssets::class,
         ]);
 
         $middleware->alias([
-            'is_admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'is_admin' => EnsureUserIsAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        // Setiap exception yang dilaporkan juga dikirim ke Telegram (dibatasi
+        // throttle & disaring mana yang layak membangunkan orang). Sentry
+        // menangkap exception yang sama lewat reportable listener-nya sendiri.
+        $exceptions->reportable(function (Throwable $e): void {
+            app(CrashAlerter::class)->notify($e);
+        });
     })->create();
