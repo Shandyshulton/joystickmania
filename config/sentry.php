@@ -115,7 +115,16 @@ return [
         'queue_info' => env('SENTRY_BREADCRUMBS_QUEUE_INFO_ENABLED', true),
 
         // Capture command information as breadcrumbs
-        'command_info' => env('SENTRY_BREADCRUMBS_COMMAND_JOBS_ENABLED', true),
+        //
+        // MATI secara default. Breadcrumb ini mengubah ArgvInput jadi string lewat
+        // ConsoleIntegration::extractConsoleCommandInput(), dan Symfony
+        // Console\Input::escapeToken() memanggil escapeshellarg() untuk token yang
+        // berisi tanda baca (semua nama perintah artisan: "config:cache"). Fungsi itu
+        // dinonaktifkan hosting ini lewat disable_functions, jadi selama DSN terisi,
+        // SETIAP perintah artisan mati di akhir eksekusi -- termasuk schedule:run.
+        // Nama perintah tetap tercatat sebagai tag "command" di scope, jadi yang
+        // hilang hanya daftar breadcrumb-nya saja.
+        'command_info' => env('SENTRY_BREADCRUMBS_COMMAND_JOBS_ENABLED', false),
 
         // Capture HTTP client request information as breadcrumbs
         'http_client_requests' => env('SENTRY_BREADCRUMBS_HTTP_CLIENT_REQUESTS_ENABLED', true),
