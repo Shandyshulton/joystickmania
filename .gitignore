@@ -64,3 +64,8 @@ credentials*.json
 *.tgz
 *.bak
 /backup/
+
+# Artefak ekstraksi arsip vendor di Windows. Placeholder "%S%" di dalam path tidak
+# pernah di-expand, sehingga terbentuk folder literal berisi salinan pustaka yang
+# tidak dibaca Composer (yang dipakai tetap /vendor).
+/%S%/
