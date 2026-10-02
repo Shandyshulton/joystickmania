@@ -5,8 +5,8 @@
  *
  * Alasan file ini ada: phpdotenv Laravel bersifat immutable, jadi variabel
  * environment yang sudah ada di shell MENANG atas .env.testing. Kalau shell
- * developer pernah meng-export kredensial produksi (kasus nyata di mesin ini:
- * DB_USERNAME=shaq8166_jm_user), suite test diam-diam berjalan dengan kredensial
+ * developer pernah meng-export kredensial produksi (mis.
+ * DB_USERNAME=<user_db_produksi>), suite test diam-diam berjalan dengan kredensial
  * produksi. phpunit.xml tetap memaksa host/port/database, jadi satu-satunya yang
  * perlu dibersihkan adalah kunci yang harusnya datang dari .env.testing.
  */
