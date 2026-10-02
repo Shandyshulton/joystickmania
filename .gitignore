@@ -32,6 +32,7 @@ Homestead.yaml
 Thumbs.db
 
 # Catatan internal — sengaja tidak di-commit ke repo
+/docs
 /DEPLOYMENT.md
 /JoyStickMania-Spesifikasi (1).md
 /Syarat-Ketentuan-Sewa-Fisik-PS.md
@@ -64,7 +65,7 @@ credentials*.json
 *.tgz
 *.bak
 /backup/
-
+/docker-compose.yml
 # Artefak ekstraksi arsip vendor di Windows. Placeholder "%S%" di dalam path tidak
 # pernah di-expand, sehingga terbentuk folder literal berisi salinan pustaka yang
 # tidak dibaca Composer (yang dipakai tetap /vendor).

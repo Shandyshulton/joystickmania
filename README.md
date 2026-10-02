@@ -66,6 +66,9 @@ Konfigurasi local & production ada di satu file `.env`: baris aktif = local, bar
 bertanda `[production]` = server. Panduan langkah deploy-nya ada di `DEPLOYMENT.md`
 (file lokal, tidak di-commit ke repo).
 
+Untuk projek lain, versi umum dari panduan itu (plus skrip probe kemampuan
+hosting) ada di `docs/DEPLOYMENT-CHECKLIST.md`.
+
 ## Akun Demo (Seeder)
 
 | Role | Email | Password |
@@ -127,6 +130,10 @@ Reminder H-1 & notifikasi expired dikirim otomatis oleh `membership:process-dail
 Nomor admin dikonfigurasi di `.env`: `WA_ADMIN_NUMBER=62812xxxxxxx` (format internasional tanpa `+`).
 
 ## Alerting & Error Tracking
+
+Playbook lengkap untuk dipindahkan ke projek lain (instalasi, wiring, penyaringan
+PII, daftar jebakan yang sudah diverifikasi, dan checklist verifikasi):
+`docs/SENTRY-SETUP.md`.
 
 Dua lapis, keduanya mati secara default sampai dikonfigurasi:
 
