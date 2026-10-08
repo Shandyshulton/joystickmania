@@ -4,13 +4,13 @@ import { useState } from 'react';
 
 const KONSOL_INFO = [
     { nama: 'PS3', img: '/asset/ps3.jpg', warna: 'from-slate-500 to-slate-700', desc: 'Klasik, banyak game legendaris' },
-    { nama: 'PS4', img: '/asset/PS4Versions-removebg-preview.png', warna: 'from-sky-600 to-blue-800', desc: 'Pilihan terpopuler' },
-    { nama: 'PS5', img: '/asset/PS5Versions-removebg-preview.png', warna: 'from-cyan-400 to-blue-600', desc: 'Generasi terbaru, 4K 120fps' },
+    { nama: 'PS4', img: '/asset/PS4Versions-removebg-preview.png', warna: 'from-stone-500 to-stone-700', desc: 'Pilihan terpopuler' },
+    { nama: 'PS5', img: '/asset/PS5Versions-removebg-preview.png', warna: 'from-orange-500 to-orange-700', desc: 'Generasi terbaru, 4K 120fps' },
 ];
 
 const GAME_KONSOL_STYLE: Record<string, string> = {
     PS3: 'border-slate-500/50 bg-slate-500/10 text-slate-300',
-    PS4: 'border-sky-500/50 bg-sky-500/10 text-sky-300',
+    PS4: 'border-stone-400/50 bg-stone-400/10 text-stone-300',
     PS5: 'border-neon-cyan/50 bg-neon-cyan/10 text-neon-cyan',
 };
 
@@ -29,7 +29,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                     </p>
                     <h1 className="max-w-3xl font-display text-4xl font-black leading-tight tracking-wide text-white sm:text-5xl lg:text-6xl">
                         MAIN GAME,{' '}
-                        <span className="animate-flicker text-neon-cyan drop-shadow-[0_0_18px_rgba(0,217,255,0.8)]">
+                        <span className="text-neon-cyan">
                             NIKMATI NEON
                         </span>
                     </h1>
