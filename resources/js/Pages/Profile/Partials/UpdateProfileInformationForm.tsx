@@ -103,14 +103,14 @@ export default function UpdateProfileInformation({
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
-                                className="rounded-md text-sm text-neon-cyan underline hover:text-neon-blue focus:outline-none focus:ring-2 focus:ring-neon-blue"
+                                className="rounded-md text-sm text-accent-light underline hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent"
                             >
                                 Klik di sini untuk kirim ulang email verifikasi.
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
-                            <div className="mt-2 text-sm font-medium text-neon-green">
+                            <div className="mt-2 text-sm font-medium text-ok">
                                 Tautan verifikasi baru telah dikirim ke email Anda.
                             </div>
                         )}
@@ -127,7 +127,7 @@ export default function UpdateProfileInformation({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-neon-green">Tersimpan.</p>
+                        <p className="text-sm text-ok">Tersimpan.</p>
                     </Transition>
                 </div>
             </form>

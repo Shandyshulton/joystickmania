@@ -65,6 +65,9 @@ credentials*.json
 *.tgz
 *.bak
 /backup/
+
+# Patch redesain — artefak kerja, jangan masuk repo
+hardware-console-redesign.patch
 /docker-compose.yml
 # Artefak ekstraksi arsip vendor di Windows. Placeholder "%S%" di dalam path tidak
 # pernah di-expand, sehingga terbentuk folder literal berisi salinan pustaka yang

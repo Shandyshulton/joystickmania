@@ -36,7 +36,7 @@ export default function AmountInput({
                 autoComplete="off"
                 value={value ?? ''}
                 onChange={(e) => onValueChange(e.target.value.replace(/\D/g, ''))}
-                className={`input-neon ${prefix ? 'pl-11' : ''} ${suffix ? 'pr-14' : ''} ${className}`}
+                className={`input-console ${prefix ? 'pl-11' : ''} ${suffix ? 'pr-14' : ''} ${className}`}
                 {...rest}
             />
 

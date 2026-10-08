@@ -11,9 +11,9 @@ export default function AdminTiers({ tiers }: any) {
             header={
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <h1 className="font-display text-xl font-bold text-white">
-                        Manajemen <span className="text-neon-cyan">Membership Tier</span>
+                        Manajemen <span className="text-accent-light">Membership Tier</span>
                     </h1>
-                    <button onClick={() => setModal('create')} className="btn-neon-solid !py-2 !text-xs">
+                    <button onClick={() => setModal('create')} className="btn-primary !py-2 !text-xs">
                         + Tambah Tier
                     </button>
                 </div>
@@ -21,7 +21,7 @@ export default function AdminTiers({ tiers }: any) {
         >
             <Head title="Admin Tier" />
 
-            <div className="card-neon overflow-x-auto">
+            <div className="card-console overflow-x-auto">
                 <table className="min-w-full divide-y divide-night-600 text-sm">
                     <thead className="bg-night-800/60">
                         <tr>
@@ -36,14 +36,14 @@ export default function AdminTiers({ tiers }: any) {
                         {tiers.map((t: any) => (
                             <tr key={t.id} className="hover:bg-night-800/50">
                                 <td className="px-4 py-3 font-display font-bold uppercase tracking-widest text-white">{t.nama_tier}</td>
-                                <td className="px-4 py-3 text-neon-cyan">
+                                <td className="px-4 py-3 text-accent-light">
                                     {t.harga_paket === 0 ? 'Gratis' : `Rp ${Number(t.harga_paket).toLocaleString('id-ID')}`}
                                 </td>
                                 <td className="px-4 py-3 text-slate-300">{t.masa_berlaku_hari} hari</td>
-                                <td className="px-4 py-3 text-neon-green">{t.diskon_persen}%</td>
+                                <td className="px-4 py-3 text-ok">{t.diskon_persen}%</td>
                                 <td className="px-4 py-3">
                                     <div className="flex gap-2">
-                                        <button onClick={() => setModal(t.id)} className="btn-neon !px-3 !py-1 !text-xs">Edit</button>
+                                        <button onClick={() => setModal(t.id)} className="btn-soft !px-3 !py-1 !text-xs">Edit</button>
                                         {t.nama_tier !== 'bronze' && (
                                             <button
                                                 onClick={() => {
@@ -51,7 +51,7 @@ export default function AdminTiers({ tiers }: any) {
                                                         router.delete(route('admin.tiers.destroy', t.id));
                                                     }
                                                 }}
-                                                className="btn-neon-outline !px-3 !py-1 !text-xs !text-neon-red !ring-neon-red/40"
+                                                className="btn-outline !px-3 !py-1 !text-xs !text-danger !ring-danger/40"
                                             >
                                                 Hapus
                                             </button>
@@ -103,7 +103,7 @@ function TierFormModal({ tier, onClose }: any) {
             <form
                 onClick={(e) => e.stopPropagation()}
                 onSubmit={submit}
-                className="card-neon max-h-[92dvh] w-full max-w-lg space-y-4 overflow-y-auto rounded-b-none p-5 sm:rounded-b-xl sm:p-6"
+                className="card-console max-h-[92dvh] w-full max-w-lg space-y-4 overflow-y-auto rounded-b-none p-5 sm:rounded-b-xl sm:p-6"
             >
                 <div className="flex items-center justify-between">
                     <h2 className="font-display text-lg font-bold text-white">
@@ -115,35 +115,35 @@ function TierFormModal({ tier, onClose }: any) {
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="label-neon">Nama Tier</label>
-                        <input value={data.nama_tier} onChange={(e) => setData('nama_tier', e.target.value)} className="input-neon" required />
+                        <label className="label-console">Nama Tier</label>
+                        <input value={data.nama_tier} onChange={(e) => setData('nama_tier', e.target.value)} className="input-console" required />
                     </div>
                     <div>
-                        <label className="label-neon">Harga Paket</label>
+                        <label className="label-console">Harga Paket</label>
                         <AmountInput
                             prefix="Rp"
                             value={data.harga_paket}
                             onValueChange={(value) => setData('harga_paket', value)}
                         />
                         {errors.harga_paket && (
-                            <p className="mt-1 text-xs text-neon-red">{errors.harga_paket}</p>
+                            <p className="mt-1 text-xs text-danger">{errors.harga_paket}</p>
                         )}
                     </div>
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="label-neon">Masa Berlaku</label>
+                        <label className="label-console">Masa Berlaku</label>
                         <AmountInput
                             suffix="hari"
                             value={data.masa_berlaku_hari}
                             onValueChange={(value) => setData('masa_berlaku_hari', value)}
                         />
                         {errors.masa_berlaku_hari && (
-                            <p className="mt-1 text-xs text-neon-red">{errors.masa_berlaku_hari}</p>
+                            <p className="mt-1 text-xs text-danger">{errors.masa_berlaku_hari}</p>
                         )}
                     </div>
                     <div>
-                        <label className="label-neon">Diskon</label>
+                        <label className="label-console">Diskon</label>
                         <AmountInput
                             suffix="%"
                             maxLength={3}
@@ -151,17 +151,17 @@ function TierFormModal({ tier, onClose }: any) {
                             onValueChange={(value) => setData('diskon_persen', value)}
                         />
                         {errors.diskon_persen && (
-                            <p className="mt-1 text-xs text-neon-red">{errors.diskon_persen}</p>
+                            <p className="mt-1 text-xs text-danger">{errors.diskon_persen}</p>
                         )}
                     </div>
                 </div>
                 <div>
-                    <label className="label-neon">Benefit Lain</label>
-                    <textarea value={data.benefit_lain} onChange={(e) => setData('benefit_lain', e.target.value)} className="input-neon" rows={2} />
+                    <label className="label-console">Benefit Lain</label>
+                    <textarea value={data.benefit_lain} onChange={(e) => setData('benefit_lain', e.target.value)} className="input-console" rows={2} />
                 </div>
                 <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
-                    <button type="button" onClick={onClose} className="btn-neon-outline w-full !py-2 !text-xs sm:w-auto">Batal</button>
-                    <button type="submit" disabled={processing} className="btn-neon-solid w-full !py-2 !text-xs sm:w-auto">Simpan</button>
+                    <button type="button" onClick={onClose} className="btn-outline w-full !py-2 !text-xs sm:w-auto">Batal</button>
+                    <button type="submit" disabled={processing} className="btn-primary w-full !py-2 !text-xs sm:w-auto">Simpan</button>
                 </div>
             </form>
         </div>

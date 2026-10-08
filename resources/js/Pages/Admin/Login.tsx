@@ -36,30 +36,30 @@ export default function AdminLogin({
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-night-900 bg-neon-grid bg-grid bg-neon-radial px-4 py-8">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-night-900 bg-grid-faint bg-grid bg-glow-warm px-4 py-8">
             <Head title="Login Admin" />
 
             <div className="mb-6 flex flex-col items-center gap-3 text-center">
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-neon-blue font-display text-2xl font-black text-night-950 shadow-neon-lg">
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent font-display text-2xl font-black text-night-950 shadow-solid-lg">
                     JM
                 </span>
                 <div>
                     <div className="font-display text-xl font-bold tracking-widest text-white">
-                        JOYSTICK<span className="text-neon-cyan">MANIA</span>
+                        JOYSTICK<span className="text-accent-light">MANIA</span>
                     </div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-neon-cyan">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent-light">
                         Admin Panel
                     </div>
                 </div>
             </div>
 
-            <div className="w-full max-w-md rounded-2xl border border-neon-cyan/30 bg-night-800/90 p-6 shadow-neon-sm backdrop-blur-md sm:p-8">
+            <div className="w-full max-w-md rounded-2xl border border-accent-light/30 bg-night-800/90 p-6 shadow-solid-sm backdrop-blur-md sm:p-8">
                 <h1 className="font-display text-center text-xl font-bold text-white">
-                    Login <span className="text-neon-cyan">Admin / Staff</span>
+                    Login <span className="text-accent-light">Admin / Staff</span>
                 </h1>
 
                 {status && (
-                    <div className="mt-3 text-center text-sm text-neon-green">{status}</div>
+                    <div className="mt-3 text-center text-sm text-ok">{status}</div>
                 )}
 
                 <form onSubmit={submit} className="mt-6 space-y-5">
@@ -97,7 +97,7 @@ export default function AdminLogin({
                             type="checkbox"
                             checked={data.remember}
                             onChange={(e) => setData('remember', e.target.checked)}
-                            className="h-4 w-4 rounded border-night-500 bg-night-700 text-neon-blue focus:ring-neon-blue"
+                            className="h-4 w-4 rounded border-night-500 bg-night-700 text-accent focus:ring-accent"
                         />
                         <span className="ms-2 text-sm text-slate-400">Ingat saya</span>
                     </label>

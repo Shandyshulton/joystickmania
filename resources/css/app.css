@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Blue Neon base styles */
+/* Hardware Console base styles */
 @layer base {
     body {
-        @apply bg-night-900 text-slate-200 antialiased;
+        @apply bg-night-900 text-stone-200 antialiased;
     }
 
     h1, h2, h3, h4, h5, h6 {
@@ -13,51 +13,66 @@
     }
 }
 
-/* Neon utility components */
+/* Console utility components */
 @layer components {
-    .btn-neon {
-        @apply inline-flex items-center justify-center gap-2 rounded-lg bg-neon-blue/10 px-5 py-2.5 font-display text-sm font-semibold tracking-wider text-neon-cyan ring-1 ring-neon-cyan/60 transition-all duration-200 hover:bg-neon-cyan/20 hover:shadow-neon focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan disabled:opacity-50;
+    .btn-soft {
+        @apply inline-flex items-center justify-center gap-2 rounded-md bg-accent/10 px-5 py-2.5 font-display text-sm font-semibold tracking-wider text-accent-light ring-1 ring-accent-light/60 transition-all duration-200 hover:bg-accent-light/20 hover:shadow-solid focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light disabled:opacity-50;
     }
 
-    .btn-neon-solid {
-        @apply inline-flex items-center justify-center gap-2 rounded-lg bg-neon-blue px-5 py-2.5 font-display text-sm font-bold tracking-wider text-night-950 shadow-neon transition-all duration-200 hover:bg-neon-cyan hover:shadow-neon-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan disabled:opacity-50;
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-md bg-accent px-5 py-2.5 font-display text-sm font-bold tracking-wider text-night-950 shadow-solid transition-all duration-150 hover:bg-accent-light active:translate-x-[3px] active:translate-y-[3px] active:shadow-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light disabled:opacity-50;
     }
 
-    .btn-neon-outline {
-        @apply inline-flex items-center justify-center gap-2 rounded-lg border border-neon-cyan/50 bg-transparent px-5 py-2.5 font-display text-sm font-semibold tracking-wider text-neon-cyan transition-all duration-200 hover:border-neon-cyan hover:shadow-neon focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan disabled:opacity-50;
+    .btn-outline {
+        @apply inline-flex items-center justify-center gap-2 rounded-md border-2 border-accent-light/60 bg-transparent px-5 py-2.5 font-display text-sm font-semibold tracking-wider text-accent-light transition-all duration-200 hover:border-accent-light hover:shadow-solid focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light disabled:opacity-50;
     }
 
-    .card-neon {
-        @apply rounded-xl border border-night-600 bg-night-800/80 backdrop-blur-sm transition-all duration-200 hover:border-neon-blue/40 hover:shadow-neon-sm;
+    .card-console {
+        @apply rounded-lg border-2 border-night-600 bg-night-800 transition-all duration-150 hover:border-accent/60 hover:shadow-solid-sm;
     }
 
     /* text-base di layar kecil, text-sm dari 640px ke atas.
        Di bawah 16px, iOS Safari otomatis men-zoom halaman saat input difokuskan. */
-    .input-neon {
-        @apply w-full rounded-lg border border-night-600 bg-night-700/60 px-3.5 py-2.5 text-base text-white placeholder-slate-500 transition-colors focus:border-neon-blue focus:outline-none focus:ring-1 focus:ring-neon-blue/50 sm:text-sm;
+    .input-console {
+        @apply w-full rounded-lg border border-night-600 bg-night-700/60 px-3.5 py-2.5 text-base text-white placeholder-slate-500 transition-colors focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/50 sm:text-sm;
     }
 
-    .label-neon {
+    .label-console {
         @apply mb-1.5 block text-sm font-semibold tracking-wide text-slate-300;
     }
 
-    .badge-neon {
+    .badge-console {
         @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wider;
     }
 }
 
-/* Thin arcade-style scrollbar */
+/* Thin console-style scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: #0a0e17;
+    background: #16140F;
 }
 ::-webkit-scrollbar-thumb {
-    background: #1b2436;
+    background: #3A352A;
     border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #0066ff;
+    background: #C94A1E;
+}
+
+/* Grain halus di latar, hampir tak terlihat tapi mengurangi kesan 'flat digital' */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-nudge { animation: none; }
 }

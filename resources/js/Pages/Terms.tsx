@@ -93,12 +93,12 @@ export default function Terms() {
 
             <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
                 <div className="text-center">
-                    <p className="mb-3 font-display text-xs font-semibold uppercase tracking-[0.3em] text-neon-cyan">
+                    <p className="mb-3 font-display text-xs font-semibold uppercase tracking-[0.3em] text-accent-light">
                         JoyStickMania
                     </p>
                     <h1 className="font-display text-3xl font-bold tracking-wide text-white sm:text-4xl">
                         SYARAT & KETENTUAN{' '}
-                        <span className="text-neon-cyan">SEWA FISIK PS</span>
+                        <span className="text-accent-light">SEWA FISIK PS</span>
                     </h1>
                     <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-400">
                         Berlaku untuk layanan penyewaan unit PlayStation (PS3/PS4/PS5)
@@ -108,8 +108,8 @@ export default function Terms() {
 
                 <div className="mt-8 space-y-6">
                     {SECTIONS.map((section) => (
-                        <div key={section.title} className="card-neon p-6">
-                            <h2 className="font-display text-xl font-bold text-neon-cyan">
+                        <div key={section.title} className="card-console p-6">
+                            <h2 className="font-display text-xl font-bold text-accent-light">
                                 {section.title}
                             </h2>
                             <ul className="mt-3 space-y-2">
@@ -118,7 +118,7 @@ export default function Terms() {
                                         key={i}
                                         className="flex gap-3 text-sm leading-relaxed text-slate-300"
                                     >
-                                        <span className="mt-0.5 text-neon-blue">▸</span>
+                                        <span className="mt-0.5 text-accent">▸</span>
                                         <span>{item}</span>
                                     </li>
                                 ))}
@@ -127,7 +127,7 @@ export default function Terms() {
                     ))}
                 </div>
 
-                <div className="card-neon mt-8 border-neon-cyan/30 p-6 text-center">
+                <div className="card-console mt-8 border-accent-light/30 p-6 text-center">
                     <p className="text-sm text-slate-300">
                         ☐ Saya telah membaca dan menyetujui Syarat & Ketentuan Sewa Fisik
                         PlayStation JoyStickMania.

@@ -12,7 +12,7 @@ import { PropsWithChildren, ReactNode, useState } from 'react';
 function ProfileTriggerContent({ user }: { user: any }) {
     return (
         <>
-            <span className="badge-neon shrink-0 border border-neon-cyan/40 text-neon-cyan">
+            <span className="badge-console shrink-0 border border-accent-light/40 text-accent-light">
                 {user.membership_tier}
             </span>
             <span className="truncate">{user.nama}</span>
@@ -43,8 +43,8 @@ export default function Authenticated({
         useState(false);
 
     return (
-        <div className="min-h-screen bg-night-900 bg-neon-grid bg-grid">
-            <nav className="border-b border-neon-blue/20 bg-night-900/80 backdrop-blur-md">
+        <div className="min-h-screen bg-night-900 bg-grid-faint bg-grid">
+            <nav className="border-b border-accent/20 bg-night-900/80 backdrop-blur-md">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
@@ -53,12 +53,12 @@ export default function Authenticated({
                                     href="/"
                                     className="flex items-center gap-2"
                                 >
-                                    <span className="flex h-8 w-8 items-center justify-center rounded bg-neon-blue font-display text-lg font-black text-night-950 shadow-neon-sm">
+                                    <span className="flex h-8 w-8 items-center justify-center rounded bg-accent font-display text-lg font-black text-night-950 shadow-solid-sm">
                                         JM
                                     </span>
                                     <span className="hidden font-display text-base font-bold tracking-widest text-white sm:block">
                                         JOYSTICK
-                                        <span className="text-neon-cyan">
+                                        <span className="text-accent-light">
                                             MANIA
                                         </span>
                                     </span>
@@ -90,7 +90,7 @@ export default function Authenticated({
                         <div className="hidden lg:ms-6 lg:flex lg:items-center">
                             <div className="relative ms-3">
                                 <Dropdown>
-                                    <Dropdown.Trigger className="inline-flex max-w-[16rem] items-center gap-2 rounded-md border border-night-600 bg-night-800 px-3 py-2 text-sm font-medium leading-4 text-slate-300 transition hover:text-neon-cyan focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan">
+                                    <Dropdown.Trigger className="inline-flex max-w-[16rem] items-center gap-2 rounded-md border border-night-600 bg-night-800 px-3 py-2 text-sm font-medium leading-4 text-slate-300 transition hover:text-accent-light focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light">
                                         <ProfileTriggerContent user={user} />
                                     </Dropdown.Trigger>
 
@@ -114,7 +114,7 @@ export default function Authenticated({
 
                         <div className="-me-1 flex items-center gap-1 lg:hidden">
                             <Dropdown>
-                                <Dropdown.Trigger className="inline-flex h-11 max-w-[10rem] items-center gap-2 rounded-md border border-night-600 bg-night-800 px-2.5 text-sm font-medium leading-4 text-slate-300 transition hover:text-neon-cyan focus:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan">
+                                <Dropdown.Trigger className="inline-flex h-11 max-w-[10rem] items-center gap-2 rounded-md border border-night-600 bg-night-800 px-2.5 text-sm font-medium leading-4 text-slate-300 transition hover:text-accent-light focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light">
                                     <ProfileTriggerContent user={user} />
                                 </Dropdown.Trigger>
 
@@ -138,7 +138,7 @@ export default function Authenticated({
                                         (previousState) => !previousState,
                                     )
                                 }
-                                className="inline-flex h-11 w-11 items-center justify-center rounded-md text-slate-400 transition hover:bg-night-700 hover:text-neon-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+                                className="inline-flex h-11 w-11 items-center justify-center rounded-md text-slate-400 transition hover:bg-night-700 hover:text-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-light"
                                 aria-label="Menu"
                                 aria-expanded={showingNavigationDropdown}
                                 aria-controls="member-mobile-nav"

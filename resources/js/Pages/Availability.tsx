@@ -3,9 +3,9 @@ import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 const STATUS_STYLE: Record<string, string> = {
-    available: 'border-neon-green/50 bg-neon-green/10 text-neon-green hover:bg-neon-green/25',
-    booked: 'border-neon-red/50 bg-neon-red/10 text-neon-red cursor-not-allowed',
-    pending: 'border-neon-yellow/50 bg-neon-yellow/10 text-neon-yellow cursor-not-allowed',
+    available: 'border-ok/50 bg-ok/10 text-ok hover:bg-ok/25',
+    booked: 'border-danger/50 bg-danger/10 text-danger cursor-not-allowed',
+    pending: 'border-warn/50 bg-warn/10 text-warn cursor-not-allowed',
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -36,36 +36,36 @@ export default function Availability({ rooms, slots, grid, filters }: any) {
 
             <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
                 <h1 className="font-display text-3xl font-bold tracking-wide text-white">
-                    CEK <span className="text-neon-cyan">KETERSEDIAAN</span>
+                    CEK <span className="text-accent-light">KETERSEDIAAN</span>
                 </h1>
                 <p className="mt-2 text-slate-400">
                     Pilih tanggal & room untuk melihat slot jam. Slot yang sedang{" "}
-                    <span className="text-neon-yellow">Pending Payment</span> tidak bisa
+                    <span className="text-warn">Pending Payment</span> tidak bisa
                     dipesan ganda.
                 </p>
 
                 {/* Filter */}
                 <form
                     onSubmit={applyFilter}
-                    className="card-neon mt-6 grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4"
+                    className="card-console mt-6 grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4"
                 >
                     <div>
-                        <label className="label-neon">Tanggal</label>
+                        <label className="label-console">Tanggal</label>
                         <input
                             type="date"
                             min={today}
                             value={tanggal}
                             onChange={(e) => setTanggal(e.target.value)}
-                            className="input-neon"
+                            className="input-console"
                             required
                         />
                     </div>
                     <div>
-                        <label className="label-neon">Room</label>
+                        <label className="label-console">Room</label>
                         <select
                             value={roomId}
                             onChange={(e) => setRoomId(e.target.value)}
-                            className="input-neon"
+                            className="input-console"
                         >
                             <option value="">Semua Room</option>
                             {rooms?.map((r: any) => (
@@ -76,11 +76,11 @@ export default function Availability({ rooms, slots, grid, filters }: any) {
                         </select>
                     </div>
                     <div>
-                        <label className="label-neon">Konsol</label>
+                        <label className="label-console">Konsol</label>
                         <select
                             value={konsol}
                             onChange={(e) => setKonsol(e.target.value)}
-                            className="input-neon"
+                            className="input-console"
                         >
                             <option value="">Semua Konsol</option>
                             <option value="PS3">PS3</option>
@@ -89,7 +89,7 @@ export default function Availability({ rooms, slots, grid, filters }: any) {
                         </select>
                     </div>
                     <div className="flex items-end">
-                        <button type="submit" className="btn-neon-solid w-full">
+                        <button type="submit" className="btn-primary w-full">
                             Terapkan Filter
                         </button>
                     </div>
@@ -98,13 +98,13 @@ export default function Availability({ rooms, slots, grid, filters }: any) {
                 {/* Legenda */}
                 <div className="mt-4 flex flex-wrap gap-4 text-xs">
                     <span className="flex items-center gap-1.5">
-                        <i className="inline-block h-3 w-3 rounded border border-neon-green/50 bg-neon-green/10" /> Available
+                        <i className="inline-block h-3 w-3 rounded border border-ok/50 bg-ok/10" /> Available
                     </span>
                     <span className="flex items-center gap-1.5">
-                        <i className="inline-block h-3 w-3 rounded border border-neon-yellow/50 bg-neon-yellow/10" /> Pending Payment
+                        <i className="inline-block h-3 w-3 rounded border border-warn/50 bg-warn/10" /> Pending Payment
                     </span>
                     <span className="flex items-center gap-1.5">
-                        <i className="inline-block h-3 w-3 rounded border border-neon-red/50 bg-neon-red/10" /> Booked
+                        <i className="inline-block h-3 w-3 rounded border border-danger/50 bg-danger/10" /> Booked
                     </span>
                 </div>
 
@@ -117,7 +117,7 @@ export default function Availability({ rooms, slots, grid, filters }: any) {
                             return r.konsol_tersedia?.includes(konsol);
                         })
                         .map((room: any) => (
-                            <div key={room.id} className="card-neon overflow-hidden">
+                            <div key={room.id} className="card-console overflow-hidden">
                                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-night-600 bg-night-800/60 px-5 py-3">
                                     <div className="flex items-center gap-3">
                                         {room.foto && (
@@ -139,7 +139,7 @@ export default function Availability({ rooms, slots, grid, filters }: any) {
                                     </div>
                                     <Link
                                         href={`/booking/room?room_id=${room.id}&tanggal=${tanggal}`}
-                                        className="btn-neon !px-4 !py-1.5 !text-xs"
+                                        className="btn-soft !px-4 !py-1.5 !text-xs"
                                     >
                                         Booking Room Ini
                                     </Link>
@@ -160,7 +160,7 @@ export default function Availability({ rooms, slots, grid, filters }: any) {
                             </div>
                         ))}
                     {(!rooms || rooms.length === 0) && (
-                        <div className="card-neon p-8 text-center text-slate-400">
+                        <div className="card-console p-8 text-center text-slate-400">
                             Tidak ada room aktif.
                         </div>
                     )}

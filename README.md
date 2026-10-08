@@ -1,14 +1,14 @@
 # JoyStickMania — Website Booking Rental PlayStation
 
 Platform booking rental PlayStation (tempat main & sewa fisik unit PS3/PS4/PS5) dengan
-tema **Blue Neon** (dark background + aksen neon cyan), CMS admin, dan pembayaran manual
+tema **Hardware Console** (dark background hangat + aksen oranye solid), CMS admin, dan pembayaran manual
 via WhatsApp (tanpa payment gateway).
 
 ## Tech Stack
 
 - **Backend:** Laravel 13 (PHP 8.5)
 - **Frontend:** React via Inertia.js + TypeScript (bukan SPA terpisah)
-- **Styling:** Tailwind CSS dengan tema kustom Blue Neon (lihat `tailwind.config.js`)
+- **Styling:** Tailwind CSS dengan tema kustom Hardware Console (lihat `tailwind.config.js`)
 - **Auth:** Laravel Breeze (Inertia + React + TS) — dikustomisasi untuk field `nama`/`no_hp` & tier Bronze default
 - **Database:** MySQL (port 3308 di Laragon)
 - **Queue & Scheduler:** Laravel Queue + `php artisan schedule:run`

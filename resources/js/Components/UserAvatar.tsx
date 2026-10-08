@@ -1,5 +1,5 @@
 /**
- * Avatar user — menampilkan inisial nama dengan ring neon.
+ * Avatar user — menampilkan inisial nama dengan ring accent.
  * Dipakai di navbar untuk user yang sudah login.
  */
 export default function UserAvatar({ name, size = 'h-8 w-8' }: { name: string; size?: string }) {
@@ -12,7 +12,7 @@ export default function UserAvatar({ name, size = 'h-8 w-8' }: { name: string; s
 
     return (
         <span
-            className={`inline-flex ${size} items-center justify-center rounded-full bg-gradient-to-br from-neon-blue to-neon-azure font-display text-xs font-bold text-night-950 shadow-neon-sm ring-2 ring-neon-cyan/50`}
+            className={`inline-flex ${size} items-center justify-center rounded-full bg-gradient-to-br from-accent to-accent-dark font-display text-xs font-bold text-night-950 shadow-solid-sm ring-2 ring-accent-light/50`}
         >
             {initials || '?'}
         </span>

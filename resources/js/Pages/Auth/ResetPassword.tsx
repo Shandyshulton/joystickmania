@@ -38,11 +38,11 @@ export default function ResetPassword({
             <Head title="Reset Password" />
 
             <div className="text-sm text-slate-400">
-                OTP valid. Sekarang buat <b className="text-neon-cyan">password baru</b>.
+                OTP valid. Sekarang buat <b className="text-accent-light">password baru</b>.
             </div>
 
             {status && (
-                <div className="mt-3 rounded-lg border border-neon-green/40 bg-neon-green/10 p-3 text-sm text-neon-green">
+                <div className="mt-3 rounded-lg border border-ok/40 bg-ok/10 p-3 text-sm text-ok">
                     {status}
                 </div>
             )}
@@ -89,7 +89,7 @@ export default function ResetPassword({
             </form>
 
             <div className="mt-5 border-t border-night-700 pt-4 text-center">
-                <Link href="/login" className="text-sm text-slate-400 hover:text-neon-cyan">
+                <Link href="/login" className="text-sm text-slate-400 hover:text-accent-light">
                     ← Kembali ke Login
                 </Link>
             </div>

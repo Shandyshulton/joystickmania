@@ -44,7 +44,7 @@ export default function Login({
             <Head title="Masuk" />
 
             {status && (
-                <div className="mb-4 text-sm font-medium text-neon-green">
+                <div className="mb-4 text-sm font-medium text-ok">
                     {status}
                 </div>
             )}
@@ -105,7 +105,7 @@ export default function Login({
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="rounded-md text-sm text-slate-400 underline hover:text-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-blue"
+                            className="rounded-md text-sm text-slate-400 underline hover:text-accent-light focus:outline-none focus:ring-2 focus:ring-accent"
                         >
                             Lupa password?
                         </Link>
@@ -121,7 +121,7 @@ export default function Login({
                 Belum punya akun?{' '}
                 <Link
                     href={route('register')}
-                    className="font-semibold text-neon-cyan underline hover:text-neon-green"
+                    className="font-semibold text-accent-light underline hover:text-ok"
                 >
                     Daftar
                 </Link>
@@ -130,7 +130,7 @@ export default function Login({
             <div className="mt-5 border-t border-night-700 pt-4 text-center">
                 <Link
                     href="/"
-                    className="inline-flex items-center gap-1.5 text-sm text-slate-400 transition hover:text-neon-cyan"
+                    className="inline-flex items-center gap-1.5 text-sm text-slate-400 transition hover:text-accent-light"
                 >
                     ← Kembali ke Beranda
                 </Link>

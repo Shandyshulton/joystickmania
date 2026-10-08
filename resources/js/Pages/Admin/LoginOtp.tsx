@@ -22,30 +22,30 @@ export default function AdminLoginOtp({ status }: { status?: string }) {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-night-900 bg-neon-grid bg-grid bg-neon-radial px-4 py-8">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-night-900 bg-grid-faint bg-grid bg-glow-warm px-4 py-8">
             <Head title="OTP Login Admin" />
 
             <div className="mb-6 flex flex-col items-center gap-3 text-center">
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-neon-blue font-display text-2xl font-black text-night-950 shadow-neon-lg">
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent font-display text-2xl font-black text-night-950 shadow-solid-lg">
                     JM
                 </span>
                 <div>
                     <div className="font-display text-xl font-bold tracking-widest text-white">
-                        JOYSTICK<span className="text-neon-cyan">MANIA</span>
+                        JOYSTICK<span className="text-accent-light">MANIA</span>
                     </div>
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-neon-cyan">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent-light">
                         Admin OTP
                     </div>
                 </div>
             </div>
 
-            <div className="w-full max-w-md rounded-2xl border border-neon-cyan/30 bg-night-800/90 p-6 shadow-neon-sm backdrop-blur-md sm:p-8">
+            <div className="w-full max-w-md rounded-2xl border border-accent-light/30 bg-night-800/90 p-6 shadow-solid-sm backdrop-blur-md sm:p-8">
                 <h1 className="font-display text-center text-xl font-bold text-white">
-                    Verifikasi <span className="text-neon-cyan">Login Admin</span>
+                    Verifikasi <span className="text-accent-light">Login Admin</span>
                 </h1>
 
                 {status && (
-                    <div className="mt-3 rounded-lg border border-neon-green/40 bg-neon-green/10 p-3 text-center text-sm text-neon-green">
+                    <div className="mt-3 rounded-lg border border-ok/40 bg-ok/10 p-3 text-center text-sm text-ok">
                         {status}
                     </div>
                 )}
@@ -75,7 +75,7 @@ export default function AdminLoginOtp({ status }: { status?: string }) {
                 </form>
 
                 <div className="mt-5 border-t border-night-700 pt-4 text-center">
-                    <Link href={route('admin.login')} className="text-sm text-slate-400 hover:text-neon-cyan">
+                    <Link href={route('admin.login')} className="text-sm text-slate-400 hover:text-accent-light">
                         Kembali ke Login Admin
                     </Link>
                 </div>

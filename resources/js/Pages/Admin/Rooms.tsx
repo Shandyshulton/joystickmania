@@ -21,9 +21,9 @@ export default function AdminRooms({ rooms }: any) {
             header={
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <h1 className="font-display text-xl font-bold text-white">
-                        Manajemen <span className="text-neon-cyan">Rooms</span>
+                        Manajemen <span className="text-accent-light">Rooms</span>
                     </h1>
-                    <button onClick={() => setModal('create')} className="btn-neon-solid !py-2 !text-xs">
+                    <button onClick={() => setModal('create')} className="btn-primary !py-2 !text-xs">
                         + Tambah Room
                     </button>
                 </div>
@@ -31,7 +31,7 @@ export default function AdminRooms({ rooms }: any) {
         >
             <Head title="Admin Rooms" />
 
-            <div className="card-neon overflow-x-auto">
+            <div className="card-console overflow-x-auto">
                 <table className="min-w-full divide-y divide-night-600 text-sm">
                     <thead className="bg-night-800/60">
                         <tr>
@@ -63,22 +63,22 @@ export default function AdminRooms({ rooms }: any) {
                                 <td className="px-4 py-3 font-semibold text-slate-200">{r.nama_room}</td>
                                 <td className="px-4 py-3 text-slate-400">{r.kapasitas}</td>
                                 <td className="px-4 py-3 text-slate-300">{r.konsol_tersedia?.join(', ')}</td>
-                                <td className="px-4 py-3 text-neon-cyan">Rp {Number(r.harga_per_jam).toLocaleString('id-ID')}</td>
+                                <td className="px-4 py-3 text-accent-light">Rp {Number(r.harga_per_jam).toLocaleString('id-ID')}</td>
                                 <td className="px-4 py-3">
-                                    <span className={`badge-neon border ${r.status === 'aktif' ? 'border-neon-green/40 text-neon-green' : 'border-neon-yellow/40 text-neon-yellow'}`}>
+                                    <span className={`badge-console border ${r.status === 'aktif' ? 'border-ok/40 text-ok' : 'border-warn/40 text-warn'}`}>
                                         {r.status}
                                     </span>
                                 </td>
                                 <td className="px-4 py-3">
                                     <div className="flex gap-2">
-                                        <button onClick={() => setModal(r.id)} className="btn-neon !px-3 !py-1 !text-xs">Edit</button>
+                                        <button onClick={() => setModal(r.id)} className="btn-soft !px-3 !py-1 !text-xs">Edit</button>
                                         <button
                                             onClick={() => {
                                                 if (confirm(`Hapus room ${r.nama_room}?`)) {
                                                     router.delete(route('admin.rooms.destroy', r.id));
                                                 }
                                             }}
-                                            className="btn-neon-outline !px-3 !py-1 !text-xs !text-neon-red !ring-neon-red/40"
+                                            className="btn-outline !px-3 !py-1 !text-xs !text-danger !ring-danger/40"
                                         >
                                             Hapus
                                         </button>
@@ -139,7 +139,7 @@ function RoomFormModal({ room, onClose }: any) {
             <form
                 onClick={(e) => e.stopPropagation()}
                 onSubmit={submit}
-                className="card-neon max-h-[92dvh] w-full max-w-lg space-y-4 overflow-y-auto rounded-b-none p-5 sm:rounded-b-xl sm:p-6"
+                className="card-console max-h-[92dvh] w-full max-w-lg space-y-4 overflow-y-auto rounded-b-none p-5 sm:rounded-b-xl sm:p-6"
             >
                 <div className="flex items-center justify-between">
                     <h2 className="font-display text-lg font-bold text-white">
@@ -150,35 +150,35 @@ function RoomFormModal({ room, onClose }: any) {
                     </button>
                 </div>
                 <div>
-                    <label className="label-neon">Nama Room</label>
-                    <input value={data.nama_room} onChange={(e) => setData('nama_room', e.target.value)} className="input-neon" required />
+                    <label className="label-console">Nama Room</label>
+                    <input value={data.nama_room} onChange={(e) => setData('nama_room', e.target.value)} className="input-console" required />
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="label-neon">Kapasitas</label>
+                        <label className="label-console">Kapasitas</label>
                         <AmountInput
                             suffix="orang"
                             value={data.kapasitas}
                             onValueChange={(value) => setData('kapasitas', value)}
                         />
                         {errors.kapasitas && (
-                            <p className="mt-1 text-xs text-neon-red">{errors.kapasitas}</p>
+                            <p className="mt-1 text-xs text-danger">{errors.kapasitas}</p>
                         )}
                     </div>
                     <div>
-                        <label className="label-neon">Harga/Jam</label>
+                        <label className="label-console">Harga/Jam</label>
                         <AmountInput
                             prefix="Rp"
                             value={data.harga_per_jam}
                             onValueChange={(value) => setData('harga_per_jam', value)}
                         />
                         {errors.harga_per_jam && (
-                            <p className="mt-1 text-xs text-neon-red">{errors.harga_per_jam}</p>
+                            <p className="mt-1 text-xs text-danger">{errors.harga_per_jam}</p>
                         )}
                     </div>
                 </div>
                 <div>
-                    <label className="label-neon">Foto Room (opsional)</label>
+                    <label className="label-console">Foto Room (opsional)</label>
                     <input
                         type="file"
                         accept="image/*"
@@ -187,15 +187,15 @@ function RoomFormModal({ room, onClose }: any) {
                             setData('foto', file);
                             if (file) setPreview(URL.createObjectURL(file));
                         }}
-                        className="input-neon file:me-3 file:rounded file:border-0 file:bg-neon-blue/20 file:px-3 file:py-1.5 file:font-semibold file:text-neon-cyan"
+                        className="input-console file:me-3 file:rounded file:border-0 file:bg-accent/20 file:px-3 file:py-1.5 file:font-semibold file:text-accent-light"
                     />
                     {preview && (
                         <img src={preview} alt="Preview" className="mt-3 h-32 rounded-lg border border-night-600 object-cover" />
                     )}
-                    {errors.foto && <p className="mt-1 text-xs text-neon-red">{errors.foto}</p>}
+                    {errors.foto && <p className="mt-1 text-xs text-danger">{errors.foto}</p>}
                 </div>
                 <div>
-                    <label className="label-neon">Konsol Tersedia</label>
+                    <label className="label-console">Konsol Tersedia</label>
                     <div className="grid grid-cols-3 gap-2">
                         {['PS3', 'PS4', 'PS5'].map((k) => (
                             <label key={k} className="flex cursor-pointer items-center gap-1.5 rounded border border-night-600 bg-night-700/40 px-3 py-2 text-sm text-slate-300">
@@ -203,7 +203,7 @@ function RoomFormModal({ room, onClose }: any) {
                                     type="checkbox"
                                     checked={data.konsol_tersedia.includes(k)}
                                     onChange={() => toggleKonsol(k)}
-                                    className="rounded border-night-500 bg-night-700 text-neon-blue focus:ring-neon-blue"
+                                    className="rounded border-night-500 bg-night-700 text-accent focus:ring-accent"
                                 />
                                 {k}
                             </label>
@@ -211,21 +211,21 @@ function RoomFormModal({ room, onClose }: any) {
                     </div>
                 </div>
                 <div>
-                    <label className="label-neon">Fasilitas</label>
-                    <textarea value={data.fasilitas} onChange={(e) => setData('fasilitas', e.target.value)} className="input-neon" rows={2} />
+                    <label className="label-console">Fasilitas</label>
+                    <textarea value={data.fasilitas} onChange={(e) => setData('fasilitas', e.target.value)} className="input-console" rows={2} />
                 </div>
                 <div>
-                    <label className="label-neon">Status</label>
-                    <select value={data.status} onChange={(e) => setData('status', e.target.value)} className="input-neon">
+                    <label className="label-console">Status</label>
+                    <select value={data.status} onChange={(e) => setData('status', e.target.value)} className="input-console">
                         <option value="aktif">Aktif</option>
                         <option value="maintenance">Maintenance</option>
                     </select>
                 </div>
                 <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
-                    <button type="button" onClick={onClose} className="btn-neon-outline w-full !py-2 !text-xs sm:w-auto">
+                    <button type="button" onClick={onClose} className="btn-outline w-full !py-2 !text-xs sm:w-auto">
                         Batal
                     </button>
-                    <button type="submit" disabled={processing} className="btn-neon-solid w-full !py-2 !text-xs sm:w-auto">
+                    <button type="submit" disabled={processing} className="btn-primary w-full !py-2 !text-xs sm:w-auto">
                         Simpan
                     </button>
                 </div>

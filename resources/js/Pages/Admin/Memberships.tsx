@@ -11,9 +11,9 @@ const TABS = [
 ];
 
 const STATUS_STYLE: Record<string, string> = {
-    pending_payment: 'border-neon-yellow/50 bg-neon-yellow/10 text-neon-yellow',
-    active: 'border-neon-green/50 bg-neon-green/10 text-neon-green',
-    expired: 'border-neon-red/50 bg-neon-red/10 text-neon-red',
+    pending_payment: 'border-warn/50 bg-warn/10 text-warn',
+    active: 'border-ok/50 bg-ok/10 text-ok',
+    expired: 'border-danger/50 bg-danger/10 text-danger',
     cancelled: 'border-slate-500/50 bg-slate-500/10 text-slate-400',
 };
 
@@ -38,7 +38,7 @@ export default function AdminMemberships({ memberships, tab, waAdmin }: any) {
         <AdminLayout
             header={
                 <h1 className="font-display text-xl font-bold text-white">
-                    Manajemen <span className="text-neon-cyan">Membership</span>
+                    Manajemen <span className="text-accent-light">Membership</span>
                 </h1>
             }
         >
@@ -52,8 +52,8 @@ export default function AdminMemberships({ memberships, tab, waAdmin }: any) {
                         onClick={() => switchTab(t.key)}
                         className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
                             tab === t.key
-                                ? 'bg-neon-blue/15 text-neon-cyan shadow-neon-sm ring-1 ring-neon-cyan/40'
-                                : 'text-slate-400 hover:bg-night-800 hover:text-neon-cyan'
+                                ? 'bg-accent/15 text-accent-light shadow-solid-sm ring-1 ring-accent-light/40'
+                                : 'text-slate-400 hover:bg-night-800 hover:text-accent-light'
                         }`}
                     >
                         {t.label}
@@ -61,7 +61,7 @@ export default function AdminMemberships({ memberships, tab, waAdmin }: any) {
                 ))}
             </div>
 
-            <div className="card-neon mt-4 overflow-x-auto">
+            <div className="card-console mt-4 overflow-x-auto">
                 <table className="min-w-full divide-y divide-night-600 text-sm">
                     <thead className="bg-night-800/60">
                         <tr>
@@ -101,13 +101,13 @@ function MembershipRow({ purchase: m, editing, onToggle }: any) {
     return (
         <>
             <tr className="hover:bg-night-800/50">
-                <td className="px-4 py-3 font-mono font-bold text-neon-cyan">#{m.id}</td>
+                <td className="px-4 py-3 font-mono font-bold text-accent-light">#{m.id}</td>
                 <td className="px-4 py-3">
                     <div className="text-slate-200">{m.user?.nama}</div>
                     <div className="text-xs text-slate-500">{m.user?.no_hp}</div>
                 </td>
                 <td className="px-4 py-3">
-                    <span className="badge-neon border border-neon-cyan/40 bg-neon-cyan/10 uppercase text-neon-cyan">
+                    <span className="badge-console border border-accent-light/40 bg-accent-light/10 uppercase text-accent-light">
                         {m.tier?.nama_tier}
                     </span>
                 </td>
@@ -115,26 +115,26 @@ function MembershipRow({ purchase: m, editing, onToggle }: any) {
                     Rp {Number(m.harga_paket).toLocaleString('id-ID')}
                 </td>
                 <td className="px-4 py-3">
-                    <span className={`badge-neon border ${
+                    <span className={`badge-console border ${
                         m.payment_status === 'sudah_bayar'
-                            ? 'border-neon-green/40 bg-neon-green/10 text-neon-green'
+                            ? 'border-ok/40 bg-ok/10 text-ok'
                             : m.payment_status === 'ditolak'
-                              ? 'border-neon-red/40 bg-neon-red/10 text-neon-red'
-                              : 'border-neon-yellow/40 bg-neon-yellow/10 text-neon-yellow'
+                              ? 'border-danger/40 bg-danger/10 text-danger'
+                              : 'border-warn/40 bg-warn/10 text-warn'
                     }`}>
                         {m.payment_status === 'sudah_bayar' ? 'Lunas' : m.payment_status === 'ditolak' ? 'Ditolak' : 'Belum Bayar'}
                     </span>
                 </td>
                 <td className="px-4 py-3">
-                    <span className={`badge-neon border ${STATUS_STYLE[m.membership_status] || ''}`}>
+                    <span className={`badge-console border ${STATUS_STYLE[m.membership_status] || ''}`}>
                         {m.membership_status}
                     </span>
                 </td>
                 <td className="px-4 py-3 text-xs text-slate-500">
                     {m.valid_until && <div>Aktif s/d {new Date(m.valid_until).toLocaleDateString('id-ID')}</div>}
                     {m.expires_at && <div>Batas bayar {new Date(m.expires_at).toLocaleString('id-ID')}</div>}
-                    {m.reminder_h1_sent_at && <div className="text-neon-green">📧 Reminder H-1</div>}
-                    {m.expired_notif_sent_at && <div className="text-neon-red">📧 Notif expired</div>}
+                    {m.reminder_h1_sent_at && <div className="text-ok">📧 Reminder H-1</div>}
+                    {m.expired_notif_sent_at && <div className="text-danger">📧 Notif expired</div>}
                 </td>
                 <td className="px-4 py-3">
                     <div className="flex flex-wrap gap-2">
@@ -144,14 +144,14 @@ function MembershipRow({ purchase: m, editing, onToggle }: any) {
                                 href={`https://wa.me/${m.user.no_hp.replace(/^0/, '62')}?text=${encodeURIComponent(buildReminderMessage(m))}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="btn-neon !px-3 !py-1.5 !text-xs"
+                                className="btn-soft !px-3 !py-1.5 !text-xs"
                             >
                                 Kirim Template WA
                             </a>
                         )}
                         <button
                             onClick={onToggle}
-                            className="btn-neon-outline !px-3 !py-1.5 !text-xs"
+                            className="btn-outline !px-3 !py-1.5 !text-xs"
                         >
                             {editing ? 'Tutup' : 'Update Status'}
                         </button>
@@ -202,11 +202,11 @@ function MembershipEditForm({ purchase, onDone }: any) {
     return (
         <form onSubmit={submit} className="mt-3 grid gap-3 rounded-lg border border-night-600 bg-night-800/60 p-4 sm:grid-cols-3">
             <div>
-                <label className="label-neon">Metode Bayar</label>
-                <input value={data.payment_method} onChange={(e) => setData('payment_method', e.target.value)} className="input-neon" placeholder="Transfer / QRIS / Cash" />
+                <label className="label-console">Metode Bayar</label>
+                <input value={data.payment_method} onChange={(e) => setData('payment_method', e.target.value)} className="input-console" placeholder="Transfer / QRIS / Cash" />
             </div>
             <div>
-                <label className="label-neon">Payment Status</label>
+                <label className="label-console">Payment Status</label>
                 <CustomSelect
                     value={data.payment_status}
                     onChange={changePayment}
@@ -218,7 +218,7 @@ function MembershipEditForm({ purchase, onDone }: any) {
                 />
             </div>
             <div>
-                <label className="label-neon">Membership Status</label>
+                <label className="label-console">Membership Status</label>
                 <CustomSelect
                     value={data.membership_status}
                     onChange={(v) => setData('membership_status', v)}
@@ -239,7 +239,7 @@ function MembershipEditForm({ purchase, onDone }: any) {
                 />
             </div>
             <div className="sm:col-span-3">
-                <button type="submit" disabled={processing} className="btn-neon-solid w-full !py-2 !text-xs">
+                <button type="submit" disabled={processing} className="btn-primary w-full !py-2 !text-xs">
                     Simpan (konfirmasi lunas → aktifkan + set tier otomatis)
                 </button>
             </div>

@@ -95,12 +95,12 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                 <Head title="Berhasil Terbooking" />
 
                 <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6 lg:px-8">
-                    <div className="card-neon border-neon-green/50 bg-neon-radial p-8 text-center">
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-neon-green bg-neon-green/10 text-3xl text-neon-green shadow-neon-green">
+                    <div className="card-console border-ok/50 bg-glow-warm p-8 text-center">
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-ok bg-ok/10 text-3xl text-ok shadow-solid-ok">
                             ✓
                         </div>
                         <h1 className="mt-5 font-display text-2xl font-bold text-white">
-                            BERHASIL <span className="text-neon-green">TERBOOKING!</span>
+                            BERHASIL <span className="text-ok">TERBOOKING!</span>
                         </h1>
                         <p className="mt-2 text-sm text-slate-400">
                             Pembayaran kamu sudah dikonfirmasi admin. Booking #{booking?.id}{' '}
@@ -115,7 +115,7 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                         <div className="mt-6 rounded-lg border border-night-600 bg-night-800/60 p-5 text-left text-sm">
                             <div className="flex justify-between">
                                 <span className="text-slate-500">ID Booking</span>
-                                <span className="font-mono font-bold text-neon-cyan">#{booking?.id}</span>
+                                <span className="font-mono font-bold text-accent-light">#{booking?.id}</span>
                             </div>
                             {tipe === 'room' && (
                                 <>
@@ -147,7 +147,7 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                             )}
                             <div className="mt-2 flex justify-between border-t border-night-600 pt-2">
                                 <span className="text-slate-500">Total Bayar</span>
-                                <span className="font-bold text-neon-cyan">
+                                <span className="font-bold text-accent-light">
                                     Rp{' '}
                                     {Number(
                                         tipe === 'room'
@@ -161,10 +161,10 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                         </div>
 
                         <div className="mt-6 flex flex-col gap-3 text-sm sm:flex-row sm:justify-center">
-                            <Link href="/riwayat" className="btn-neon-solid !px-6 !py-2.5 !text-xs">
+                            <Link href="/riwayat" className="btn-primary !px-6 !py-2.5 !text-xs">
                                 Lihat Riwayat Booking
                             </Link>
-                            <Link href="/" className="btn-neon-outline !px-6 !py-2.5 !text-xs">
+                            <Link href="/" className="btn-outline !px-6 !py-2.5 !text-xs">
                                 Kembali ke Beranda
                             </Link>
                         </div>
@@ -181,12 +181,12 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                 <Head title="Booking Kedaluwarsa" />
 
                 <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6 lg:px-8">
-                    <div className="card-neon border-neon-red/50 bg-neon-radial p-8 text-center">
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-neon-red bg-neon-red/10 text-3xl text-neon-red shadow-neon-red">
+                    <div className="card-console border-danger/50 bg-glow-warm p-8 text-center">
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-danger bg-danger/10 text-3xl text-danger shadow-solid-danger">
                             !
                         </div>
                         <h1 className="mt-5 font-display text-2xl font-bold text-white">
-                            BOOKING <span className="text-neon-red">KEDALUWARSA</span>
+                            BOOKING <span className="text-danger">KEDALUWARSA</span>
                         </h1>
                         <p className="mt-2 text-sm text-slate-400">
                             Batas waktu pembayaran 30 menit sudah lewat tanpa konfirmasi.
@@ -194,10 +194,10 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                         </p>
 
                         <div className="mt-6 flex flex-col gap-3 text-sm sm:flex-row sm:justify-center">
-                            <Link href="/cek-ketersediaan" className="btn-neon-solid !px-6 !py-2.5 !text-xs">
+                            <Link href="/cek-ketersediaan" className="btn-primary !px-6 !py-2.5 !text-xs">
                                 Booking Ulang
                             </Link>
-                            <Link href="/" className="btn-neon-outline !px-6 !py-2.5 !text-xs">
+                            <Link href="/" className="btn-outline !px-6 !py-2.5 !text-xs">
                                 Kembali ke Beranda
                             </Link>
                         </div>
@@ -213,19 +213,19 @@ export default function Success({ booking, waAdmin, tipe }: any) {
             <Head title="Booking Dibuat" />
 
             <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6 lg:px-8">
-                <div className="card-neon border-neon-green/40 bg-neon-radial p-8 text-center">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-neon-yellow bg-neon-yellow/10 text-3xl text-neon-yellow shadow-neon-yellow">
+                <div className="card-console border-ok/40 bg-glow-warm p-8 text-center">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-warn bg-warn/10 text-3xl text-warn shadow-solid-warn">
                         ⏳
                     </div>
                     <h1 className="mt-5 font-display text-2xl font-bold text-white">
-                        MENUNGGU <span className="text-neon-yellow">PEMBAYARAN</span>
+                        MENUNGGU <span className="text-warn">PEMBAYARAN</span>
                     </h1>
                     <p className="mt-2 text-sm text-slate-400">
                         Slot sudah dikunci untuk Anda. Selesaikan pembayaran dalam:
                     </p>
 
                     {/* Countdown */}
-                    <div className="mx-auto mt-4 inline-flex items-center gap-1 rounded-lg border border-neon-yellow/40 bg-neon-yellow/10 px-5 py-2 font-mono text-2xl font-bold text-neon-yellow">
+                    <div className="mx-auto mt-4 inline-flex items-center gap-1 rounded-lg border border-warn/40 bg-warn/10 px-5 py-2 font-mono text-2xl font-bold text-warn">
                         <span>{String(minutes).padStart(2, '0')}</span>
                         <span>:</span>
                         <span>{String(seconds).padStart(2, '0')}</span>
@@ -239,7 +239,7 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                     <div className="mt-6 rounded-lg border border-night-600 bg-night-800/60 p-5 text-left text-sm">
                         <div className="flex justify-between">
                             <span className="text-slate-500">ID Booking</span>
-                            <span className="font-mono font-bold text-neon-cyan">#{booking?.id}</span>
+                            <span className="font-mono font-bold text-accent-light">#{booking?.id}</span>
                         </div>
                         {tipe === 'room' && (
                             <>
@@ -277,7 +277,7 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                         )}
                         <div className="mt-2 flex justify-between border-t border-night-600 pt-2">
                             <span className="text-slate-500">Total Bayar</span>
-                            <span className="font-bold text-neon-cyan">
+                            <span className="font-bold text-accent-light">
                                 Rp{' '}
                                 {Number(
                                     tipe === 'room'
@@ -295,7 +295,7 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                         href={waLink}
                         target="_blank"
                         rel="noreferrer"
-                        className="btn-neon-solid mt-6 w-full animate-glow-pulse !py-3 !text-base"
+                        className="btn-primary mt-6 w-full animate-nudge !py-3 !text-base"
                     >
                         Konfirmasi via WhatsApp →
                     </a>
@@ -304,10 +304,10 @@ export default function Success({ booking, waAdmin, tipe }: any) {
                     </p>
 
                     <div className="mt-6 flex flex-col gap-3 text-sm sm:flex-row sm:justify-center">
-                        <Link href="/cek-ketersediaan" className="text-neon-cyan hover:underline">
+                        <Link href="/cek-ketersediaan" className="text-accent-light hover:underline">
                             Booking lagi
                         </Link>
-                        <Link href="/" className="text-slate-500 hover:text-neon-cyan">
+                        <Link href="/" className="text-slate-500 hover:text-accent-light">
                             Kembali ke beranda
                         </Link>
                     </div>

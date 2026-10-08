@@ -16,10 +16,10 @@ export default function BuyMembership({ tier, waAdmin }: any) {
             <Head title={`Beli ${tier.nama_tier}`} />
 
             <div className="mx-auto max-w-xl px-4 py-14 sm:px-6 lg:px-8">
-                <div className="card-neon bg-neon-radial p-8 text-center">
+                <div className="card-console bg-glow-warm p-8 text-center">
                     <h1 className="font-display text-2xl font-bold uppercase tracking-widest text-white">
                         Beli Membership{' '}
-                        <span className="text-neon-cyan">{tier.nama_tier}</span>
+                        <span className="text-accent-light">{tier.nama_tier}</span>
                     </h1>
 
                     <div className="mt-6 rounded-lg border border-night-600 bg-night-800/60 p-5 text-left text-sm">
@@ -29,13 +29,13 @@ export default function BuyMembership({ tier, waAdmin }: any) {
                         </div>
                         <div className="mt-2 flex justify-between">
                             <span className="text-slate-500">Harga</span>
-                            <span className="font-bold text-neon-cyan">
+                            <span className="font-bold text-accent-light">
                                 Rp {Number(tier.harga_paket).toLocaleString('id-ID')}
                             </span>
                         </div>
                         <div className="mt-2 flex justify-between">
                             <span className="text-slate-500">Diskon Booking</span>
-                            <span className="text-neon-green">{tier.diskon_persen}%</span>
+                            <span className="text-ok">{tier.diskon_persen}%</span>
                         </div>
                         <div className="mt-2 flex justify-between">
                             <span className="text-slate-500">Masa Berlaku</span>
@@ -47,7 +47,7 @@ export default function BuyMembership({ tier, waAdmin }: any) {
                         <button
                             type="submit"
                             disabled={processing}
-                            className="btn-neon-solid w-full animate-glow-pulse !py-3 !text-base"
+                            className="btn-primary w-full animate-nudge !py-3 !text-base"
                         >
                             {processing ? 'Memproses...' : 'Lanjut ke Pembayaran'}
                         </button>
@@ -57,7 +57,7 @@ export default function BuyMembership({ tier, waAdmin }: any) {
                         Slot pembayaran dikunci 30 menit. Setelah submit, Anda diarahkan ke
                         WhatsApp untuk konfirmasi.
                     </p>
-                    <Link href="/membership" className="mt-4 inline-block text-sm text-neon-cyan hover:underline">
+                    <Link href="/membership" className="mt-4 inline-block text-sm text-accent-light hover:underline">
                         ← Kembali ke halaman membership
                     </Link>
                 </div>

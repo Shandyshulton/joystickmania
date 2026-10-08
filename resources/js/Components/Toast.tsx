@@ -34,10 +34,10 @@ export default function Toast() {
     return (
         <div className="pointer-events-none fixed right-4 top-4 z-[100] animate-[fadeIn_.2s_ease-out]">
             <div
-                className={`pointer-events-auto flex items-center gap-3 rounded-lg border px-4 py-3 shadow-neon-sm backdrop-blur-md ${
+                className={`pointer-events-auto flex items-center gap-3 rounded-lg border px-4 py-3 shadow-solid-sm backdrop-blur-md ${
                     isSuccess
-                        ? 'border-neon-green/50 bg-night-800/95 text-neon-green'
-                        : 'border-neon-red/50 bg-night-800/95 text-neon-red'
+                        ? 'border-ok/50 bg-night-800/95 text-ok'
+                        : 'border-danger/50 bg-night-800/95 text-danger'
                 }`}
             >
                 <span className="text-sm font-semibold">{toast.message}</span>

@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
         // ---- Rooms ----
         $rooms = [
             [
-                'nama_room' => 'Room Neon 1',
+                'nama_room' => 'Room Console 1',
                 'kapasitas' => 2,
                 'konsol_tersedia' => ['PS3', 'PS4', 'PS5'],
                 'harga_per_jam' => 40_000,
@@ -89,7 +89,7 @@ class DatabaseSeeder extends Seeder
                 'status' => 'aktif',
             ],
             [
-                'nama_room' => 'Room Neon 2',
+                'nama_room' => 'Room Console 2',
                 'kapasitas' => 2,
                 'konsol_tersedia' => ['PS4', 'PS5'],
                 'harga_per_jam' => 40_000,

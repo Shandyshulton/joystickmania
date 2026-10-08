@@ -28,12 +28,12 @@ export default function ForgotPassword({ status, email = '' }: { status?: string
 
             <div className="text-sm text-slate-400">
                 Lupa password? Masukkan email kamu, kami akan mengirim{' '}
-                <b className="text-neon-cyan">kode OTP 6 digit</b> untuk mereset
+                <b className="text-accent-light">kode OTP 6 digit</b> untuk mereset
                 password.
             </div>
 
             {status && (
-                <div className="mt-3 rounded-lg border border-neon-green/40 bg-neon-green/10 p-3 text-sm text-neon-green">
+                <div className="mt-3 rounded-lg border border-ok/40 bg-ok/10 p-3 text-sm text-ok">
                     {status}
                 </div>
             )}
@@ -61,7 +61,7 @@ export default function ForgotPassword({ status, email = '' }: { status?: string
             </form>
 
             <div className="mt-5 border-t border-night-700 pt-4 text-center">
-                <Link href="/login" className="text-sm text-slate-400 hover:text-neon-cyan">
+                <Link href="/login" className="text-sm text-slate-400 hover:text-accent-light">
                     ← Kembali ke Login
                 </Link>
             </div>

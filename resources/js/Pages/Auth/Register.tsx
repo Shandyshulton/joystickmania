@@ -126,15 +126,15 @@ export default function Register() {
                     />
                 </div>
 
-                <p className="mt-4 rounded-lg border border-neon-cyan/20 bg-neon-blue/5 p-3 text-xs text-slate-400">
+                <p className="mt-4 rounded-lg border border-accent-light/20 bg-accent/5 p-3 text-xs text-slate-400">
                     Setiap akun baru otomatis mendapat membership{' '}
-                    <span className="font-bold text-neon-cyan">Bronze (gratis)</span>.
+                    <span className="font-bold text-accent-light">Bronze (gratis)</span>.
                 </p>
 
                 <div className="mt-4 flex items-center justify-between">
                     <Link
                         href={route('login')}
-                        className="rounded-md text-sm text-slate-400 underline hover:text-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-blue"
+                        className="rounded-md text-sm text-slate-400 underline hover:text-accent-light focus:outline-none focus:ring-2 focus:ring-accent"
                     >
                         Sudah punya akun?
                     </Link>
