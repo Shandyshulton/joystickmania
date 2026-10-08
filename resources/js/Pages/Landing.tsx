@@ -30,7 +30,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                     <h1 className="max-w-3xl font-display text-4xl font-black leading-tight tracking-wide text-white sm:text-5xl lg:text-6xl">
                         MAIN GAME,{' '}
                         <span className="text-accent-light">
-                            NIKMATI NEON
+                            NIKMATI SENSASINYA
                         </span>
                     </h1>
                     <p className="mt-5 max-w-2xl text-lg text-slate-400">
@@ -314,7 +314,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
             {/* ===== MEMBERSHIP HIGHLIGHT ===== */}
             <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 <h2 className="text-center font-display text-3xl font-bold tracking-wide text-white">
-                    MEMBERSHIP <span className="text-accent-light">NEON</span>
+                    <span className="text-accent-light">MEMBERSHIP</span>
                 </h2>
                 <p className="mx-auto mt-3 max-w-xl text-center text-slate-400">
                     Hemat lebih banyak tiap main — diskon otomatis & benefit eksklusif.

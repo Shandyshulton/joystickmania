@@ -17,7 +17,7 @@ export default function Membership({ tiers, auth }: any) {
             <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
                 <div className="text-center">
                     <h1 className="font-display text-3xl font-bold tracking-wide text-white sm:text-4xl">
-                        MEMBERSHIP <span className="text-accent-light">NEON</span>
+                        <span className="text-accent-light">MEMBERSHIP</span>
                     </h1>
                     <p className="mx-auto mt-3 max-w-2xl text-slate-400">
                         Bronze gratis untuk semua akun. Upgrade ke Silver/Gold untuk diskon
