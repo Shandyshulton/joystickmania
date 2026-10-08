@@ -20,7 +20,7 @@ function ProfileMenu({
     const close = () => setOpen(false);
 
     const itemClass =
-        'block px-4 py-2.5 text-sm text-slate-300 hover:bg-night-700 hover:text-neon-cyan';
+        'block px-4 py-2.5 text-sm text-slate-300 hover:bg-night-700 hover:text-accent-light';
 
     return (
         <div className="relative">
@@ -30,7 +30,7 @@ function ProfileMenu({
                 aria-label={showName ? undefined : 'Menu profil'}
                 aria-expanded={open}
                 aria-controls={menuId}
-                className={`flex h-11 items-center gap-2 rounded-full px-1 transition hover:ring-2 hover:ring-neon-cyan/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan ${
+                className={`flex h-11 items-center gap-2 rounded-full px-1 transition hover:ring-2 hover:ring-accent-light/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-light ${
                     showName ? 'max-w-[11rem]' : ''
                 }`}
             >
@@ -67,7 +67,7 @@ function ProfileMenu({
                     <div className="fixed inset-0 z-40" onClick={close}></div>
                     <div
                         id={menuId}
-                        className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-night-600 bg-night-800 shadow-neon-sm"
+                        className="absolute right-0 z-50 mt-2 w-52 overflow-hidden rounded-xl border border-night-600 bg-night-800 shadow-solid-sm"
                     >
                         <div className="border-b border-night-700 px-4 py-3">
                             <div className="truncate text-sm font-semibold text-white">
@@ -104,7 +104,7 @@ function ProfileMenu({
                             as="button"
                             onClick={close}
                             className={
-                                'block w-full border-t border-night-700 px-4 py-2.5 text-left text-sm text-neon-red hover:bg-night-700'
+                                'block w-full border-t border-night-700 px-4 py-2.5 text-left text-sm text-danger hover:bg-night-700'
                             }
                         >
                             Keluar
@@ -130,22 +130,22 @@ export default function PublicLayout({ children }: PropsWithChildren) {
     ];
 
     return (
-        <div className="min-h-screen bg-night-900 bg-neon-grid bg-grid font-sans text-slate-200">
+        <div className="min-h-screen bg-night-900 bg-grid-faint bg-grid font-sans text-slate-200">
             {/* Navbar */}
-            <nav className="sticky top-0 z-50 border-b border-neon-blue/20 bg-night-900/80 backdrop-blur-md">
+            <nav className="sticky top-0 z-50 border-b border-accent/20 bg-night-900/80 backdrop-blur-md">
                 <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                     <Link
                         href="/"
                         className="group flex shrink-0 items-center gap-2"
                     >
-                        <span className="flex h-8 w-8 items-center justify-center rounded bg-neon-blue font-display text-lg font-black text-night-950 shadow-neon-sm transition group-hover:shadow-neon">
+                        <span className="flex h-8 w-8 items-center justify-center rounded bg-accent font-display text-lg font-black text-night-950 shadow-solid-sm transition group-hover:shadow-solid">
                             JM
                         </span>
                         {/* Wordmark disembunyikan di ponsel kecil agar nama user
                             di samping hamburger muat tanpa merusak baris. */}
                         <span className="hidden font-display text-lg font-bold tracking-widest text-white sm:block">
                             JOYSTICK
-                            <span className="text-neon-cyan">MANIA</span>
+                            <span className="text-accent-light">MANIA</span>
                         </span>
                     </Link>
 
@@ -154,7 +154,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className="rounded-md px-3 py-2 text-sm font-semibold tracking-wide text-slate-300 transition hover:bg-neon-blue/10 hover:text-neon-cyan"
+                                className="rounded-md px-3 py-2 text-sm font-semibold tracking-wide text-slate-300 transition hover:bg-accent/10 hover:text-accent-light"
                             >
                                 {item.label}
                             </Link>
@@ -169,14 +169,14 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                 ) && (
                                     <Link
                                         href="/admin"
-                                        className="btn-neon-outline !px-4 !py-2 !text-xs"
+                                        className="btn-outline !px-4 !py-2 !text-xs"
                                     >
                                         Panel Admin
                                     </Link>
                                 )}
                                 <Link
                                     href="/membership"
-                                    className="rounded-full border border-neon-cyan/40 px-3 py-1 text-xs font-bold uppercase tracking-wider text-neon-cyan hover:bg-neon-cyan/10"
+                                    className="rounded-full border border-accent-light/40 px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent-light hover:bg-accent-light/10"
                                 >
                                     ⭐ {auth.user.membership_tier}
                                 </Link>
@@ -187,13 +187,13 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <>
                                 <Link
                                     href="/login"
-                                    className="btn-neon-outline !px-4 !py-2 !text-xs"
+                                    className="btn-outline !px-4 !py-2 !text-xs"
                                 >
                                     Masuk
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="btn-neon-solid !px-4 !py-2 !text-xs"
+                                    className="btn-primary !px-4 !py-2 !text-xs"
                                 >
                                     Daftar
                                 </Link>
@@ -225,7 +225,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         {auth.user && <ProfileMenu user={auth.user} showName />}
                         <button
                             onClick={() => setOpen(!open)}
-                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-300 transition hover:bg-night-700 hover:text-neon-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-300 transition hover:bg-night-700 hover:text-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-light"
                             aria-label="Menu"
                             aria-expanded={open}
                             aria-controls="public-mobile-nav"
@@ -267,7 +267,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                 key={item.href}
                                 href={item.href}
                                 onClick={() => setOpen(false)}
-                                className="block rounded-md px-3 py-2.5 text-sm font-semibold text-slate-300 hover:bg-night-700 hover:text-neon-cyan"
+                                className="block rounded-md px-3 py-2.5 text-sm font-semibold text-slate-300 hover:bg-night-700 hover:text-accent-light"
                             >
                                 {item.label}
                             </Link>
@@ -280,14 +280,14 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                     ) && (
                                         <Link
                                             href="/admin"
-                                            className="btn-neon-outline w-full !py-2 !text-xs"
+                                            className="btn-outline w-full !py-2 !text-xs"
                                         >
                                             Panel Admin
                                         </Link>
                                     )}
                                     <Link
                                         href="/dashboard"
-                                        className="btn-neon-solid w-full !py-2 !text-xs"
+                                        className="btn-primary w-full !py-2 !text-xs"
                                     >
                                         Dashboard
                                     </Link>
@@ -296,13 +296,13 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                 <>
                                     <Link
                                         href="/login"
-                                        className="btn-neon-outline w-full !py-2 !text-xs"
+                                        className="btn-outline w-full !py-2 !text-xs"
                                     >
                                         Masuk
                                     </Link>
                                     <Link
                                         href="/register"
-                                        className="btn-neon-solid w-full !py-2 !text-xs"
+                                        className="btn-primary w-full !py-2 !text-xs"
                                     >
                                         Daftar
                                     </Link>
@@ -322,12 +322,12 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                 <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6 lg:px-8">
                     <div>
                         <div className="flex items-center gap-2">
-                            <span className="flex h-8 w-8 items-center justify-center rounded bg-neon-blue font-display text-lg font-black text-night-950">
+                            <span className="flex h-8 w-8 items-center justify-center rounded bg-accent font-display text-lg font-black text-night-950">
                                 JM
                             </span>
                             <span className="font-display text-base font-bold tracking-widest text-white">
                                 JOYSTICK
-                                <span className="text-neon-cyan">MANIA</span>
+                                <span className="text-accent-light">MANIA</span>
                             </span>
                         </div>
                         <p className="mt-3 text-sm text-slate-400">
@@ -336,14 +336,14 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         </p>
                     </div>
                     <div>
-                        <h4 className="font-display text-sm font-bold uppercase tracking-wider text-neon-cyan">
+                        <h4 className="font-display text-sm font-bold uppercase tracking-wider text-accent-light">
                             Layanan
                         </h4>
                         <ul className="mt-3 space-y-2 text-sm text-slate-400">
                             <li>
                                 <Link
                                     href="/cek-ketersediaan"
-                                    className="hover:text-neon-cyan"
+                                    className="hover:text-accent-light"
                                 >
                                     Sewa Room
                                 </Link>
@@ -351,7 +351,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <li>
                                 <Link
                                     href="/cek-ketersediaan"
-                                    className="hover:text-neon-cyan"
+                                    className="hover:text-accent-light"
                                 >
                                     Sewa Unit Fisik
                                 </Link>
@@ -359,7 +359,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <li>
                                 <Link
                                     href="/membership"
-                                    className="hover:text-neon-cyan"
+                                    className="hover:text-accent-light"
                                 >
                                     Membership
                                 </Link>
@@ -367,7 +367,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         </ul>
                     </div>
                     <div>
-                        <h4 className="font-display text-sm font-bold uppercase tracking-wider text-neon-cyan">
+                        <h4 className="font-display text-sm font-bold uppercase tracking-wider text-accent-light">
                             Kontak
                         </h4>
                         <ul className="mt-3 space-y-2 text-sm text-slate-400">
@@ -376,7 +376,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <li>
                                 <a
                                     href={`https://wa.me/${(window as any).joyConfig?.waAdmin || ''}`}
-                                    className="text-neon-cyan hover:underline"
+                                    className="text-accent-light hover:underline"
                                 >
                                     WhatsApp Admin
                                 </a>

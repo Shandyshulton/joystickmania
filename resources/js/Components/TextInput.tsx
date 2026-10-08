@@ -32,7 +32,7 @@ export default forwardRef(function TextInput(
             {...props}
             type={type}
             className={
-                'input-neon rounded-md ' +
+                'input-console rounded-md ' +
                 className
             }
             ref={localRef}

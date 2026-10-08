@@ -4,11 +4,11 @@ import { Head, router, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 const STATUS_STYLE: Record<string, string> = {
-    pending_payment: 'border-neon-yellow/50 bg-neon-yellow/10 text-neon-yellow',
-    confirmed: 'border-neon-green/50 bg-neon-green/10 text-neon-green',
-    expired: 'border-neon-red/50 bg-neon-red/10 text-neon-red',
+    pending_payment: 'border-warn/50 bg-warn/10 text-warn',
+    confirmed: 'border-ok/50 bg-ok/10 text-ok',
+    expired: 'border-danger/50 bg-danger/10 text-danger',
     cancelled: 'border-slate-500/50 bg-slate-500/10 text-slate-400',
-    selesai: 'border-neon-cyan/50 bg-neon-cyan/10 text-neon-cyan',
+    selesai: 'border-accent-light/50 bg-accent-light/10 text-accent-light',
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -32,16 +32,16 @@ export default function AdminBookings({ bookings, filters }: any) {
         <AdminLayout
             header={
                 <h1 className="font-display text-xl font-bold text-white">
-                    Manajemen <span className="text-neon-cyan">Booking Room</span>
+                    Manajemen <span className="text-accent-light">Booking Room</span>
                 </h1>
             }
         >
             <Head title="Admin Booking" />
 
             {/* Filter */}
-            <div className="card-neon grid grid-cols-1 items-end gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="card-console grid grid-cols-1 items-end gap-3 p-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div>
-                    <label className="label-neon">Status</label>
+                    <label className="label-console">Status</label>
                     <CustomSelect
                         value={statusFilter || 'all'}
                         onChange={(v) => setStatusFilter(v === 'all' ? '' : v)}
@@ -52,16 +52,16 @@ export default function AdminBookings({ bookings, filters }: any) {
                     />
                 </div>
                 <div>
-                    <label className="label-neon">Tanggal</label>
-                    <input type="date" value={tanggalFilter} onChange={(e) => setTanggalFilter(e.target.value)} className="input-neon" />
+                    <label className="label-console">Tanggal</label>
+                    <input type="date" value={tanggalFilter} onChange={(e) => setTanggalFilter(e.target.value)} className="input-console" />
                 </div>
                 <div className="sm:col-span-2 lg:col-span-1">
-                    <button onClick={applyFilter} className="btn-neon w-full">Terapkan</button>
+                    <button onClick={applyFilter} className="btn-soft w-full">Terapkan</button>
                 </div>
             </div>
 
             {/* Tabel */}
-            <div className="card-neon mt-4 overflow-x-auto">
+            <div className="card-console mt-4 overflow-x-auto">
                 <table className="min-w-full divide-y divide-night-600 text-sm">
                     <thead className="bg-night-800/60">
                         <tr>
@@ -99,7 +99,7 @@ function BookingRow({ booking: b, editing, onToggle }: any) {
     return (
         <>
             <tr className="hover:bg-night-800/50">
-                <td className="px-4 py-3 font-mono font-bold text-neon-cyan">#{b.id}</td>
+                <td className="px-4 py-3 font-mono font-bold text-accent-light">#{b.id}</td>
                 <td className="px-4 py-3">
                     <div className="text-slate-200">{b.nama}</div>
                     <div className="text-xs text-slate-500">{b.no_hp}</div>
@@ -118,18 +118,18 @@ function BookingRow({ booking: b, editing, onToggle }: any) {
                     <div className="text-xs text-slate-500">{b.jam_mulai} ({b.durasi} jam)</div>
                 </td>
                 <td className="px-4 py-3">
-                    <div className="text-neon-cyan">Rp {Number(b.harga_total).toLocaleString('id-ID')}</div>
+                    <div className="text-accent-light">Rp {Number(b.harga_total).toLocaleString('id-ID')}</div>
                     {b.diskon_persen > 0 && (
-                        <div className="text-xs text-neon-green">diskon {b.diskon_persen}%</div>
+                        <div className="text-xs text-ok">diskon {b.diskon_persen}%</div>
                     )}
                 </td>
                 <td className="px-4 py-3">
-                    <span className={`badge-neon border ${
+                    <span className={`badge-console border ${
                         b.payment_status === 'sudah_bayar'
-                            ? 'border-neon-green/40 bg-neon-green/10 text-neon-green'
+                            ? 'border-ok/40 bg-ok/10 text-ok'
                             : b.payment_status === 'ditolak'
-                              ? 'border-neon-red/40 bg-neon-red/10 text-neon-red'
-                              : 'border-neon-yellow/40 bg-neon-yellow/10 text-neon-yellow'
+                              ? 'border-danger/40 bg-danger/10 text-danger'
+                              : 'border-warn/40 bg-warn/10 text-warn'
                     }`}>
                         {b.payment_status === 'sudah_bayar' ? 'Lunas' : b.payment_status === 'ditolak' ? 'Ditolak' : 'Belum Bayar'}
                     </span>
@@ -138,14 +138,14 @@ function BookingRow({ booking: b, editing, onToggle }: any) {
                     )}
                 </td>
                 <td className="px-4 py-3">
-                    <span className={`badge-neon border ${STATUS_STYLE[b.booking_status] || ''}`}>
+                    <span className={`badge-console border ${STATUS_STYLE[b.booking_status] || ''}`}>
                         {STATUS_LABEL[b.booking_status] || b.booking_status}
                     </span>
                 </td>
                 <td className="px-4 py-3">
                     <button
                         onClick={onToggle}
-                        className="btn-neon-outline !px-3 !py-1.5 !text-xs"
+                        className="btn-outline !px-3 !py-1.5 !text-xs"
                     >
                         {editing ? 'Tutup' : 'Update Status'}
                     </button>
@@ -184,7 +184,7 @@ function ActivityLogList({ logs }: any) {
             <ul className="mt-2 space-y-1.5 text-xs text-slate-400">
                 {logs.map((log: any) => (
                     <li key={log.id} className="flex flex-wrap gap-1">
-                        <span className="rounded bg-neon-blue/10 px-1.5 py-0.5 font-semibold text-neon-cyan">
+                        <span className="rounded bg-accent/10 px-1.5 py-0.5 font-semibold text-accent-light">
                             {log.action}
                         </span>
                         {log.from_status && (
@@ -239,16 +239,16 @@ function BookingEditForm({ booking, onDone }: any) {
             </div>
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 <div>
-                    <label className="label-neon">Metode Bayar</label>
+                    <label className="label-console">Metode Bayar</label>
                     <input
                         value={data.payment_method}
                         onChange={(e) => setData('payment_method', e.target.value)}
-                        className="input-neon"
+                        className="input-console"
                         placeholder="Transfer BCA / QRIS / Cash"
                     />
                 </div>
                 <div>
-                    <label className="label-neon">Payment Status</label>
+                    <label className="label-console">Payment Status</label>
                     <CustomSelect
                         value={data.payment_status}
                         onChange={changePayment}
@@ -260,7 +260,7 @@ function BookingEditForm({ booking, onDone }: any) {
                     />
                 </div>
                 <div>
-                    <label className="label-neon">Booking Status</label>
+                    <label className="label-console">Booking Status</label>
                     <CustomSelect
                         value={data.booking_status}
                         onChange={(v) => setData('booking_status', v)}
@@ -282,7 +282,7 @@ function BookingEditForm({ booking, onDone }: any) {
                     />
                 </div>
             </div>
-            <button type="submit" disabled={processing} className="btn-neon-solid mt-3 w-full !py-2 !text-xs">
+            <button type="submit" disabled={processing} className="btn-primary mt-3 w-full !py-2 !text-xs">
                 Simpan Perubahan
             </button>
         </form>

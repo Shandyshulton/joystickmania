@@ -11,7 +11,7 @@ const KONSOL_INFO = [
 const GAME_KONSOL_STYLE: Record<string, string> = {
     PS3: 'border-slate-500/50 bg-slate-500/10 text-slate-300',
     PS4: 'border-stone-400/50 bg-stone-400/10 text-stone-300',
-    PS5: 'border-neon-cyan/50 bg-neon-cyan/10 text-neon-cyan',
+    PS5: 'border-accent-light/50 bg-accent-light/10 text-accent-light',
 };
 
 export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, alamat, waAdmin }: any) {
@@ -22,14 +22,14 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
             <Head title="Beranda" />
 
             {/* ===== HERO ===== */}
-            <section className="relative overflow-hidden bg-neon-radial">
+            <section className="relative overflow-hidden bg-glow-warm">
                 <div className="mx-auto flex max-w-7xl flex-col items-center px-4 py-20 text-center sm:px-6 lg:px-8 lg:py-28">
-                    <p className="mb-4 font-display text-xs font-semibold uppercase tracking-[0.3em] text-neon-cyan">
+                    <p className="mb-4 font-display text-xs font-semibold uppercase tracking-[0.3em] text-accent-light">
                         PS3 • PS4 • PS5 Rental
                     </p>
                     <h1 className="max-w-3xl font-display text-4xl font-black leading-tight tracking-wide text-white sm:text-5xl lg:text-6xl">
                         MAIN GAME,{' '}
-                        <span className="text-neon-cyan">
+                        <span className="text-accent-light">
                             NIKMATI NEON
                         </span>
                     </h1>
@@ -40,19 +40,19 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                     <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                         <Link
                             href="/cek-ketersediaan"
-                            className="btn-neon-solid animate-glow-pulse !px-8 !py-3 !text-base"
+                            className="btn-primary animate-nudge !px-8 !py-3 !text-base"
                         >
                             Cek Ketersediaan & Booking
                         </Link>
                         <Link
                             href="/membership"
-                            className="btn-neon-outline !px-8 !py-3 !text-base"
+                            className="btn-outline !px-8 !py-3 !text-base"
                         >
                             Lihat Membership
                         </Link>
                         <Link
                             href="/booking/fisik"
-                            className="btn-neon-outline !px-8 !py-3 !text-base"
+                            className="btn-outline !px-8 !py-3 !text-base"
                         >
                             Sewa Unit Fisik
                         </Link>
@@ -64,8 +64,8 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                             ['3', 'Room'],
                             ['6+', 'Unit Fisik'],
                         ].map(([num, label]) => (
-                            <div key={label} className="card-neon px-4 py-5">
-                                <div className="font-display text-2xl font-black text-neon-cyan">
+                            <div key={label} className="card-console px-4 py-5">
+                                <div className="font-display text-2xl font-black text-accent-light">
                                     {num}
                                 </div>
                                 <div className="mt-1 text-xs uppercase tracking-wider text-slate-400">
@@ -80,12 +80,12 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
             {/* ===== DAFTAR KONSOL ===== */}
             <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 <h2 className="text-center font-display text-3xl font-bold tracking-wide text-white">
-                    KONSOL <span className="text-neon-cyan">SIAP MAIN</span>
+                    KONSOL <span className="text-accent-light">SIAP MAIN</span>
                 </h2>
                 <div className="mt-10 grid gap-6 sm:grid-cols-3">
                     {KONSOL_INFO.map((k) => (
-                        <div key={k.nama} className="card-neon group overflow-hidden p-6 text-center">
-                            <div className="mx-auto flex h-44 w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-night-700 to-night-950 transition group-hover:shadow-neon-lg">
+                        <div key={k.nama} className="card-console group overflow-hidden p-6 text-center">
+                            <div className="mx-auto flex h-44 w-full items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-night-700 to-night-950 transition group-hover:shadow-solid-lg">
                                 <img
                                     src={k.img}
                                     alt={`Konsol ${k.nama}`}
@@ -106,7 +106,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
             <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 <div className="text-center">
                     <h2 className="font-display text-3xl font-bold tracking-wide text-white">
-                        DAFTAR <span className="text-neon-cyan">GAME</span>
+                        DAFTAR <span className="text-accent-light">GAME</span>
                     </h2>
                     <p className="mx-auto mt-2 max-w-xl text-slate-400">
                         Pilih konsol untuk melihat koleksi game yang tersedia.
@@ -119,8 +119,8 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                         onClick={() => setGameFilter('')}
                         className={`rounded-lg px-5 py-2 text-sm font-semibold transition ${
                             gameFilter === ''
-                                ? 'bg-neon-blue/15 text-neon-cyan shadow-neon-sm ring-1 ring-neon-cyan/40'
-                                : 'text-slate-400 hover:bg-night-800 hover:text-neon-cyan'
+                                ? 'bg-accent/15 text-accent-light shadow-solid-sm ring-1 ring-accent-light/40'
+                                : 'text-slate-400 hover:bg-night-800 hover:text-accent-light'
                         }`}
                     >
                         Semua
@@ -131,8 +131,8 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                             onClick={() => setGameFilter(k)}
                             className={`rounded-lg px-5 py-2 text-sm font-semibold transition ${
                                 gameFilter === k
-                                    ? 'bg-neon-blue/15 text-neon-cyan shadow-neon-sm ring-1 ring-neon-cyan/40'
-                                    : 'text-slate-400 hover:bg-night-800 hover:text-neon-cyan'
+                                    ? 'bg-accent/15 text-accent-light shadow-solid-sm ring-1 ring-accent-light/40'
+                                    : 'text-slate-400 hover:bg-night-800 hover:text-accent-light'
                             }`}
                         >
                             {k}
@@ -143,7 +143,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                 {/* Grid game */}
                 <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
                     {filteredGames.map((g: any) => (
-                        <div key={g.id} className="card-neon group overflow-hidden">
+                        <div key={g.id} className="card-console group overflow-hidden">
                             <div className="flex aspect-square items-center justify-center overflow-hidden bg-night-950">
                                 {g.gambar ? (
                                     <img
@@ -162,7 +162,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                                 <div className="truncate font-display text-sm font-bold text-white" title={g.nama_game}>
                                     {g.nama_game}
                                 </div>
-                                <span className={`badge-neon mt-1.5 border ${GAME_KONSOL_STYLE[g.jenis_konsol] || ''}`}>
+                                <span className={`badge-console mt-1.5 border ${GAME_KONSOL_STYLE[g.jenis_konsol] || ''}`}>
                                     {g.jenis_konsol}
                                 </span>
                             </div>
@@ -181,18 +181,18 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
             <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 <div className="flex items-end justify-between">
                     <h2 className="font-display text-3xl font-bold tracking-wide text-white">
-                        ROOM <span className="text-neon-cyan">KAMI</span>
+                        ROOM <span className="text-accent-light">KAMI</span>
                     </h2>
                     <Link
                         href="/cek-ketersediaan"
-                        className="hidden text-sm font-semibold text-neon-cyan hover:underline sm:block"
+                        className="hidden text-sm font-semibold text-accent-light hover:underline sm:block"
                     >
                         Lihat semua →
                     </Link>
                 </div>
                 <div className="mt-8 grid gap-6 md:grid-cols-3">
                     {rooms?.map((room: any) => (
-                        <div key={room.id} className="card-neon overflow-hidden">
+                        <div key={room.id} className="card-console overflow-hidden">
                             <div className="h-36">
                                 {room.foto ? (
                                     <img
@@ -202,7 +202,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                                     />
                                 ) : (
                                     <div className="flex h-36 items-center justify-center bg-gradient-to-br from-night-700 to-night-950">
-                                        <span className="font-display text-3xl font-black text-neon-cyan/80">
+                                        <span className="font-display text-3xl font-black text-accent-light/80">
                                             {room.nama_room}
                                         </span>
                                     </div>
@@ -216,7 +216,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                                     {room.konsol_tersedia?.map((k: string) => (
                                         <span
                                             key={k}
-                                            className="badge-neon border border-neon-blue/40 text-neon-cyan"
+                                            className="badge-console border border-accent/40 text-accent-light"
                                         >
                                             {k}
                                         </span>
@@ -226,13 +226,13 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                                     {room.fasilitas}
                                 </p>
                                 <div className="mt-4 flex items-center justify-between">
-                                    <span className="font-display text-lg font-bold text-neon-cyan">
+                                    <span className="font-display text-lg font-bold text-accent-light">
                                         Rp {Number(room.harga_per_jam).toLocaleString('id-ID')}
                                         <span className="text-xs font-medium text-slate-500">/jam</span>
                                     </span>
                                     <Link
                                         href={`/cek-ketersediaan?room_id=${room.id}`}
-                                        className="btn-neon !px-4 !py-1.5 !text-xs"
+                                        className="btn-soft !px-4 !py-1.5 !text-xs"
                                     >
                                         Pesan
                                     </Link>
@@ -245,14 +245,14 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
 
             {/* ===== SEWA FISIK ===== */}
             <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-                <div className="card-neon overflow-hidden bg-neon-radial">
+                <div className="card-console overflow-hidden bg-glow-warm">
                     <div className="grid items-center gap-8 p-8 md:grid-cols-2 lg:p-12">
                         <div>
-                            <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-neon-cyan">
+                            <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-accent-light">
                                 Bawa Pulang
                             </p>
                             <h2 className="mt-2 font-display text-3xl font-bold tracking-wide text-white">
-                                SEWA UNIT <span className="text-neon-cyan">PS FISIK</span>
+                                SEWA UNIT <span className="text-accent-light">PS FISIK</span>
                             </h2>
                             <p className="mt-4 text-slate-400">
                                 Bawa pulang unit PlayStation (PS3/PS4/PS5) beserta
@@ -262,19 +262,19 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
 
                             <ul className="mt-5 space-y-2 text-sm text-slate-300">
                                 <li className="flex items-center gap-2">
-                                    <span className="text-neon-green">✓</span> Unit lengkap: konsol, stik, kabel
+                                    <span className="text-ok">✓</span> Unit lengkap: konsol, stik, kabel
                                 </li>
                                 <li className="flex items-center gap-2">
-                                    <span className="text-neon-green">✓</span> Deposit sesuai jenis konsol
+                                    <span className="text-ok">✓</span> Deposit sesuai jenis konsol
                                 </li>
                                 <li className="flex items-center gap-2">
-                                    <span className="text-neon-green">✓</span> Deposit dikembalikan penuh bila kondisi baik
+                                    <span className="text-ok">✓</span> Deposit dikembalikan penuh bila kondisi baik
                                 </li>
                             </ul>
 
                             <Link
                                 href="/booking/fisik"
-                                className="btn-neon-solid mt-6 animate-glow-pulse !px-8 !py-3"
+                                className="btn-primary mt-6 animate-nudge !px-8 !py-3"
                             >
                                 Sewa Sekarang
                             </Link>
@@ -297,7 +297,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                                             {u.jenis_konsol}
                                         </span>
                                         <div className="text-right text-sm">
-                                            <div className="text-neon-cyan">
+                                            <div className="text-accent-light">
                                                 Rp {Number(u.harga_sewa).toLocaleString('id-ID')}/hari
                                             </div>
                                             <div className="text-xs text-slate-500">
@@ -314,28 +314,28 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
             {/* ===== MEMBERSHIP HIGHLIGHT ===== */}
             <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
                 <h2 className="text-center font-display text-3xl font-bold tracking-wide text-white">
-                    MEMBERSHIP <span className="text-neon-cyan">NEON</span>
+                    MEMBERSHIP <span className="text-accent-light">NEON</span>
                 </h2>
                 <p className="mx-auto mt-3 max-w-xl text-center text-slate-400">
                     Hemat lebih banyak tiap main — diskon otomatis & benefit eksklusif.
                 </p>
                 <div className="mt-10 grid gap-6 md:grid-cols-2">
                     {tiers?.map((t: any) => (
-                        <div key={t.id} className="card-neon relative p-6 text-center">
-                            <span className="badge-neon absolute right-4 top-4 border border-neon-cyan/50 bg-neon-cyan/10 text-neon-cyan">
+                        <div key={t.id} className="card-console relative p-6 text-center">
+                            <span className="badge-console absolute right-4 top-4 border border-accent-light/50 bg-accent-light/10 text-accent-light">
                                 {t.diskon_persen}% DISKON
                             </span>
                             <h3 className="font-display text-2xl font-bold uppercase tracking-widest text-white">
                                 {t.nama_tier}
                             </h3>
-                            <div className="mt-3 font-display text-3xl font-black text-neon-cyan">
+                            <div className="mt-3 font-display text-3xl font-black text-accent-light">
                                 Rp {Number(t.harga_paket).toLocaleString('id-ID')}
                                 <span className="text-sm font-medium text-slate-500">/bulan</span>
                             </div>
                             <p className="mt-3 text-sm text-slate-400">{t.benefit_lain}</p>
                             <Link
                                 href="/membership"
-                                className="btn-neon-outline mt-5 w-full !text-xs"
+                                className="btn-outline mt-5 w-full !text-xs"
                             >
                                 Lihat Detail
                             </Link>
@@ -346,9 +346,9 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
 
             {/* ===== CTA & KONTAK ===== */}
             <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-                <div className="card-neon bg-neon-radial p-10 text-center">
+                <div className="card-console bg-glow-warm p-10 text-center">
                     <h2 className="font-display text-3xl font-bold text-white">
-                        SIAP <span className="text-neon-cyan">BERMAIN?</span>
+                        SIAP <span className="text-accent-light">BERMAIN?</span>
                     </h2>
                     <p className="mx-auto mt-3 max-w-lg text-slate-400">
                         {alamat} • {jamOperasional}
@@ -356,7 +356,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                     <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
                         <Link
                             href="/cek-ketersediaan"
-                            className="btn-neon-solid animate-glow-pulse !px-8 !py-3"
+                            className="btn-primary animate-nudge !px-8 !py-3"
                         >
                             Booking Sekarang
                         </Link>
@@ -364,7 +364,7 @@ export default function Landing({ rooms, psUnits, tiers, games, jamOperasional, 
                             href={`https://wa.me/${waAdmin}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="btn-neon-outline !px-8 !py-3"
+                            className="btn-outline !px-8 !py-3"
                         >
                             Chat WhatsApp
                         </a>

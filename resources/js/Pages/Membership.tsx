@@ -17,7 +17,7 @@ export default function Membership({ tiers, auth }: any) {
             <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
                 <div className="text-center">
                     <h1 className="font-display text-3xl font-bold tracking-wide text-white sm:text-4xl">
-                        MEMBERSHIP <span className="text-neon-cyan">NEON</span>
+                        MEMBERSHIP <span className="text-accent-light">NEON</span>
                     </h1>
                     <p className="mx-auto mt-3 max-w-2xl text-slate-400">
                         Bronze gratis untuk semua akun. Upgrade ke Silver/Gold untuk diskon
@@ -31,12 +31,12 @@ export default function Membership({ tiers, auth }: any) {
                         return (
                             <div
                                 key={t.id}
-                                className={`card-neon relative flex flex-col p-6 ${
-                                    t.nama_tier === 'gold' ? 'shadow-neon-sm ring-1 ring-neon-yellow/30' : ''
+                                className={`card-console relative flex flex-col p-6 ${
+                                    t.nama_tier === 'gold' ? 'shadow-solid-sm ring-1 ring-warn/30' : ''
                                 }`}
                             >
                                 {t.nama_tier === 'gold' && (
-                                    <span className="badge-neon absolute -top-3 left-1/2 -translate-x-1/2 bg-neon-yellow/20 text-neon-yellow ring-1 ring-neon-yellow/50">
+                                    <span className="badge-console absolute -top-3 left-1/2 -translate-x-1/2 bg-warn/20 text-warn ring-1 ring-warn/50">
                                         ★ PALING LARIS
                                     </span>
                                 )}
@@ -62,7 +62,7 @@ export default function Membership({ tiers, auth }: any) {
                                 </div>
                                 <div className="mt-4 space-y-2 text-sm text-slate-400">
                                     {t.harga_paket > 0 && (
-                                        <p className="font-semibold text-neon-cyan">
+                                        <p className="font-semibold text-accent-light">
                                             Diskon {t.diskon_persen}% semua booking room
                                         </p>
                                     )}
@@ -74,11 +74,11 @@ export default function Membership({ tiers, auth }: any) {
 
                                 <div className="mt-auto pt-6">
                                     {isCurrent ? (
-                                        <div className="badge-neon w-full justify-center border border-neon-green/50 bg-neon-green/10 py-2 text-neon-green">
+                                        <div className="badge-console w-full justify-center border border-ok/50 bg-ok/10 py-2 text-ok">
                                             ✓ Tier Aktif Anda
                                         </div>
                                     ) : t.nama_tier === 'bronze' ? (
-                                        <div className="badge-neon w-full justify-center border border-night-500 bg-night-700 py-2 text-slate-400">
+                                        <div className="badge-console w-full justify-center border border-night-500 bg-night-700 py-2 text-slate-400">
                                             Default Akun
                                         </div>
                                     ) : (
@@ -89,8 +89,8 @@ export default function Membership({ tiers, auth }: any) {
                                             href={`/membership/beli/${t.id}`}
                                             className={
                                                 auth?.user
-                                                    ? 'btn-neon-solid w-full'
-                                                    : 'btn-neon w-full'
+                                                    ? 'btn-primary w-full'
+                                                    : 'btn-soft w-full'
                                             }
                                         >
                                             Beli / Upgrade
@@ -107,7 +107,7 @@ export default function Membership({ tiers, auth }: any) {
                         Belum punya akun?{' '}
                         <Link
                             href="/register"
-                            className="font-semibold text-neon-cyan underline hover:text-neon-green"
+                            className="font-semibold text-accent-light underline hover:text-ok"
                         >
                             Daftar gratis
                         </Link>{' '}
@@ -115,7 +115,7 @@ export default function Membership({ tiers, auth }: any) {
                     </p>
                 )}
 
-                <div className="card-neon mt-10 p-6 text-sm text-slate-400">
+                <div className="card-console mt-10 p-6 text-sm text-slate-400">
                     <h4 className="font-display text-base font-bold text-white">
                         Cara kerja pembayaran
                     </h4>

@@ -43,16 +43,16 @@ export default function AdminLayout({
         <div className="min-h-screen bg-night-900 font-sans text-slate-200">
             <div className="flex min-h-screen">
                 {/* Sidebar desktop */}
-                <aside className="hidden w-60 shrink-0 flex-col border-r border-neon-blue/20 bg-night-950/60 p-4 lg:flex">
+                <aside className="hidden w-60 shrink-0 flex-col border-r border-accent/20 bg-night-950/60 p-4 lg:flex">
                     <Link href="/admin" className="flex items-center gap-2 px-2 py-3">
-                        <span className="flex h-8 w-8 items-center justify-center rounded bg-neon-blue font-display text-lg font-black text-night-950 shadow-neon-sm">
+                        <span className="flex h-8 w-8 items-center justify-center rounded bg-accent font-display text-lg font-black text-night-950 shadow-solid-sm">
                             JM
                         </span>
                         <div>
                             <div className="font-display text-sm font-bold tracking-widest text-white">
-                                JOYSTICK<span className="text-neon-cyan">MANIA</span>
+                                JOYSTICK<span className="text-accent-light">MANIA</span>
                             </div>
-                            <div className="text-[10px] uppercase tracking-widest text-neon-cyan">
+                            <div className="text-[10px] uppercase tracking-widest text-accent-light">
                                 Admin Panel
                             </div>
                         </div>
@@ -68,8 +68,8 @@ export default function AdminLayout({
                                     aria-current={active ? 'page' : undefined}
                                     className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
                                         active
-                                            ? 'bg-neon-blue/15 text-neon-cyan shadow-neon-sm ring-1 ring-neon-cyan/40'
-                                            : 'text-slate-400 hover:bg-night-800 hover:text-neon-cyan'
+                                            ? 'bg-accent/15 text-accent-light shadow-solid-sm ring-1 ring-accent-light/40'
+                                            : 'text-slate-400 hover:bg-night-800 hover:text-accent-light'
                                     }`}
                                 >
                                     <span className="w-5 text-center">{item.icon}</span>
@@ -87,7 +87,7 @@ export default function AdminLayout({
                             href={route('admin.logout')}
                             method="post"
                             as="button"
-                            className="block w-full rounded-lg px-3 py-2 text-left text-sm text-neon-red/80 hover:bg-night-800 hover:text-neon-red"
+                            className="block w-full rounded-lg px-3 py-2 text-left text-sm text-danger/80 hover:bg-night-800 hover:text-danger"
                         >
                             Keluar
                         </Link>
@@ -97,10 +97,10 @@ export default function AdminLayout({
                 {/* Main */}
                 <div className="flex min-w-0 flex-1 flex-col">
                     {/* Topbar mobile */}
-                    <header className="sticky top-0 z-40 border-b border-neon-blue/20 bg-night-900/80 backdrop-blur-md lg:hidden">
+                    <header className="sticky top-0 z-40 border-b border-accent/20 bg-night-900/80 backdrop-blur-md lg:hidden">
                         <div className="flex h-14 items-center justify-between px-4">
                             <Link href="/admin" className="flex items-center gap-2">
-                                <span className="flex h-7 w-7 items-center justify-center rounded bg-neon-blue font-display text-sm font-black text-night-950">
+                                <span className="flex h-7 w-7 items-center justify-center rounded bg-accent font-display text-sm font-black text-night-950">
                                     JM
                                 </span>
                                 <span className="font-display text-sm font-bold tracking-widest text-white">
@@ -109,7 +109,7 @@ export default function AdminLayout({
                             </Link>
                             <button
                                 onClick={() => setOpen(!open)}
-                                className="flex h-11 w-11 items-center justify-center rounded-md text-slate-300 transition hover:bg-night-700 hover:text-neon-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+                                className="flex h-11 w-11 items-center justify-center rounded-md text-slate-300 transition hover:bg-night-700 hover:text-accent-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-light"
                                 aria-label="Menu Admin"
                                 aria-expanded={open}
                                 aria-controls="admin-mobile-nav"
@@ -153,8 +153,8 @@ export default function AdminLayout({
                                             aria-current={active ? 'page' : undefined}
                                             className={`block rounded-md px-3 py-2.5 text-sm font-semibold transition ${
                                                 active
-                                                    ? 'bg-neon-blue/15 text-neon-cyan ring-1 ring-neon-cyan/40'
-                                                    : 'text-slate-300 hover:bg-night-700 hover:text-neon-cyan'
+                                                    ? 'bg-accent/15 text-accent-light ring-1 ring-accent-light/40'
+                                                    : 'text-slate-300 hover:bg-night-700 hover:text-accent-light'
                                             }`}
                                         >
                                             {item.icon} {item.label}
@@ -165,7 +165,7 @@ export default function AdminLayout({
                                     href={route('admin.logout')}
                                     method="post"
                                     as="button"
-                                    className="mt-2 block w-full rounded-md border-t border-night-600 px-3 py-2.5 text-left text-sm text-neon-red/80 hover:bg-night-700 hover:text-neon-red"
+                                    className="mt-2 block w-full rounded-md border-t border-night-600 px-3 py-2.5 text-left text-sm text-danger/80 hover:bg-night-700 hover:text-danger"
                                 >
                                     Keluar
                                 </Link>

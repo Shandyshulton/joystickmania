@@ -12,13 +12,13 @@ export default function AdminMembers({ members }: any) {
         <AdminLayout
             header={
                 <h1 className="font-display text-xl font-bold text-white">
-                    Manajemen <span className="text-neon-cyan">Member</span>
+                    Manajemen <span className="text-accent-light">Member</span>
                 </h1>
             }
         >
             <Head title="Admin Member" />
 
-            <div className="card-neon overflow-x-auto">
+            <div className="card-console overflow-x-auto">
                 <table className="min-w-full divide-y divide-night-600 text-sm">
                     <thead className="bg-night-800/60">
                         <tr>
@@ -54,7 +54,7 @@ function MemberRow({ member }: any) {
             <td className="px-4 py-3 text-slate-300">{member.no_hp}</td>
             <td className="px-4 py-3 text-slate-400">{member.email}</td>
             <td className="px-4 py-3">
-                <span className={`badge-neon border uppercase ${TIER_STYLE[member.membership_tier] || 'text-slate-400'}`}>
+                <span className={`badge-console border uppercase ${TIER_STYLE[member.membership_tier] || 'text-slate-400'}`}>
                     {member.membership_tier}
                 </span>
             </td>
@@ -70,13 +70,13 @@ function MemberRow({ member }: any) {
                     <select
                         value={data.membership_tier}
                         onChange={(e) => setData('membership_tier', e.target.value)}
-                        className="input-neon !w-32 !py-1.5 !text-base sm:!text-xs"
+                        className="input-console !w-32 !py-1.5 !text-base sm:!text-xs"
                     >
                         <option value="bronze">Bronze</option>
                         <option value="silver">Silver</option>
                         <option value="gold">Gold</option>
                     </select>
-                    <button type="submit" disabled={processing} className="btn-neon !px-3 !py-1.5 !text-xs">
+                    <button type="submit" disabled={processing} className="btn-soft !px-3 !py-1.5 !text-xs">
                         Ubah
                     </button>
                 </form>

@@ -4,12 +4,12 @@ import { useState } from 'react';
 import ImageViewer from '@/Components/ImageViewer';
 
 const STATUS_STYLE: Record<string, string> = {
-    pending_payment: 'border-neon-yellow/50 bg-neon-yellow/10 text-neon-yellow',
-    confirmed: 'border-neon-green/50 bg-neon-green/10 text-neon-green',
-    active: 'border-neon-green/50 bg-neon-green/10 text-neon-green',
-    expired: 'border-neon-red/50 bg-neon-red/10 text-neon-red',
+    pending_payment: 'border-warn/50 bg-warn/10 text-warn',
+    confirmed: 'border-ok/50 bg-ok/10 text-ok',
+    active: 'border-ok/50 bg-ok/10 text-ok',
+    expired: 'border-danger/50 bg-danger/10 text-danger',
     cancelled: 'border-slate-500/50 bg-slate-500/10 text-slate-400',
-    selesai: 'border-neon-cyan/50 bg-neon-cyan/10 text-neon-cyan',
+    selesai: 'border-accent-light/50 bg-accent-light/10 text-accent-light',
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -29,7 +29,7 @@ function TimeLeft({ expiresAt }: { expiresAt?: string }) {
     const diff = deadline - now;
 
     if (diff <= 0) {
-        return <span className="text-xs text-neon-red">Waktu habis</span>;
+        return <span className="text-xs text-danger">Waktu habis</span>;
     }
 
     // Update countdown tiap menit
@@ -37,7 +37,7 @@ function TimeLeft({ expiresAt }: { expiresAt?: string }) {
 
     const minutes = Math.floor(diff / 60000);
     return (
-        <span className="text-xs text-neon-yellow">
+        <span className="text-xs text-warn">
             ⏳ {minutes} menit lagi
         </span>
     );
@@ -54,7 +54,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
 
             <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
                 <h1 className="font-display text-3xl font-bold tracking-wide text-white">
-                    RIWAYAT <span className="text-neon-cyan">PEMESANAN</span>
+                    RIWAYAT <span className="text-accent-light">PEMESANAN</span>
                 </h1>
                 <p className="mt-2 text-slate-400">
                     Cek status booking room, sewa fisik, dan membership Anda.
@@ -62,7 +62,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                 </p>
 
                 {!auth?.user && (
-                    <div className="card-neon mt-6 p-5 text-sm">
+                    <div className="card-console mt-6 p-5 text-sm">
                         <p className="font-semibold text-white">
                             Menampilkan pemesanan yang dibuat dari perangkat ini
                         </p>
@@ -71,10 +71,10 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                             seluruh riwayat pemesanan Anda, silakan masuk ke akun.
                         </p>
                         <div className="mt-4 flex flex-wrap gap-3">
-                            <Link href="/login" className="btn-neon-solid !px-5 !py-2 !text-xs">
+                            <Link href="/login" className="btn-primary !px-5 !py-2 !text-xs">
                                 Masuk ke Akun
                             </Link>
-                            <Link href="/register" className="btn-neon-outline !px-5 !py-2 !text-xs">
+                            <Link href="/register" className="btn-outline !px-5 !py-2 !text-xs">
                                 Daftar
                             </Link>
                         </div>
@@ -82,7 +82,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                 )}
 
                 {total === 0 ? (
-                    <div className="card-neon mt-6 p-10 text-center text-slate-500">
+                    <div className="card-console mt-6 p-10 text-center text-slate-500">
                         {auth?.user
                             ? 'Belum ada pemesanan. Yuk booking sekarang!'
                             : 'Belum ada pemesanan dari perangkat ini. Kalau kamu baru booking lewat HP atau browser lain, masuk ke akun untuk melihat riwayatnya.'}
@@ -93,9 +93,9 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                         {bookings?.length > 0 && (
                             <section className="mt-8">
                                 <h2 className="font-display text-lg font-bold text-white">
-                                    🕹️ Booking <span className="text-neon-cyan">Room</span>
+                                    🕹️ Booking <span className="text-accent-light">Room</span>
                                 </h2>
-                                <div className="card-neon mt-3 overflow-x-auto">
+                                <div className="card-console mt-3 overflow-x-auto">
                                     <table className="min-w-full divide-y divide-night-600 text-sm">
                                         <thead className="bg-night-800/60">
                                             <tr>
@@ -109,7 +109,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                                         <tbody className="divide-y divide-night-700">
                                             {bookings.map((b: any) => (
                                                 <tr key={`b-${b.id}`} className="hover:bg-night-800/50">
-                                                    <td className="px-4 py-3 font-mono font-bold text-neon-cyan">#{b.id}</td>
+                                                    <td className="px-4 py-3 font-mono font-bold text-accent-light">#{b.id}</td>
                                                     <td className="px-4 py-3">
                                                         <div className="text-slate-200">{b.room?.nama_room}</div>
                                                         <div className="text-xs text-slate-500">{b.konsol}</div>
@@ -121,11 +121,11 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                                                     <td className="px-4 py-3 text-slate-300">
                                                         <div>Rp {Number(b.harga_total).toLocaleString('id-ID')}</div>
                                                         {b.diskon_persen > 0 && (
-                                                            <div className="text-xs text-neon-green">diskon {b.diskon_persen}%</div>
+                                                            <div className="text-xs text-ok">diskon {b.diskon_persen}%</div>
                                                         )}
                                                     </td>
                                                     <td className="px-4 py-3">
-                                                        <span className={`badge-neon border ${STATUS_STYLE[b.booking_status] || ''}`}>
+                                                        <span className={`badge-console border ${STATUS_STYLE[b.booking_status] || ''}`}>
                                                             {STATUS_LABEL[b.booking_status] || b.booking_status}
                                                         </span>
                                                         {b.booking_status === 'pending_payment' && (
@@ -146,9 +146,9 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                         {physicalRentals?.length > 0 && (
                             <section className="mt-8">
                                 <h2 className="font-display text-lg font-bold text-white">
-                                    🎮 Sewa <span className="text-neon-cyan">Fisik</span>
+                                    🎮 Sewa <span className="text-accent-light">Fisik</span>
                                 </h2>
-                                <div className="card-neon mt-3 overflow-x-auto">
+                                <div className="card-console mt-3 overflow-x-auto">
                                     <table className="min-w-full divide-y divide-night-600 text-sm">
                                         <thead className="bg-night-800/60">
                                             <tr>
@@ -164,7 +164,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                                         <tbody className="divide-y divide-night-700">
                                             {physicalRentals.map((r: any) => (
                                                 <tr key={`r-${r.id}`} className="hover:bg-night-800/50">
-                                                    <td className="px-4 py-3 font-mono font-bold text-neon-cyan">#{r.id}</td>
+                                                    <td className="px-4 py-3 font-mono font-bold text-accent-light">#{r.id}</td>
                                                     <td className="px-4 py-3">
                                                         <div className="text-slate-200">{r.ps_unit?.kode_unit}</div>
                                                         <div className="text-xs text-slate-500">{r.ps_unit?.jenis_konsol}</div>
@@ -175,7 +175,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                                                     <td className="px-4 py-3 text-slate-300">
                                                         Rp {Number(r.total_biaya).toLocaleString('id-ID')}
                                                     </td>
-                                                    <td className="px-4 py-3 text-neon-yellow">
+                                                    <td className="px-4 py-3 text-warn">
                                                         Rp {Number(r.nominal_deposit).toLocaleString('id-ID')}
                                                         <div className="text-xs text-slate-500">{r.deposit_status}</div>
                                                     </td>
@@ -183,7 +183,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                                                         {auth?.user && r.has_ktp ? (
                                                             <button
                                                                 onClick={() => setKtpView(`/ktp/${r.id}`)}
-                                                                className="text-xs text-neon-cyan underline hover:text-neon-blue"
+                                                                className="text-xs text-accent-light underline hover:text-accent"
                                                             >
                                                                 Lihat →
                                                             </button>
@@ -192,7 +192,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                                                         )}
                                                     </td>
                                                     <td className="px-4 py-3">
-                                                        <span className={`badge-neon border ${STATUS_STYLE[r.booking_status] || ''}`}>
+                                                        <span className={`badge-console border ${STATUS_STYLE[r.booking_status] || ''}`}>
                                                             {STATUS_LABEL[r.booking_status] || r.booking_status}
                                                         </span>
                                                         {r.booking_status === 'pending_payment' && (
@@ -215,7 +215,7 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                                 <h2 className="font-display text-lg font-bold text-white">
                                     ⭐ Membership
                                 </h2>
-                                <div className="card-neon mt-3 overflow-x-auto">
+                                <div className="card-console mt-3 overflow-x-auto">
                                     <table className="min-w-full divide-y divide-night-600 text-sm">
                                         <thead className="bg-night-800/60">
                                             <tr>
@@ -229,14 +229,14 @@ export default function History({ bookings, physicalRentals, membershipPurchases
                                         <tbody className="divide-y divide-night-700">
                                             {membershipPurchases.map((m: any) => (
                                                 <tr key={`m-${m.id}`} className="hover:bg-night-800/50">
-                                                    <td className="px-4 py-3 font-mono font-bold text-neon-cyan">#{m.id}</td>
+                                                    <td className="px-4 py-3 font-mono font-bold text-accent-light">#{m.id}</td>
                                                     <td className="px-4 py-3 uppercase text-slate-200">{m.tier?.nama_tier}</td>
                                                     <td className="px-4 py-3 text-slate-300">Rp {Number(m.harga_paket).toLocaleString('id-ID')}</td>
                                                     <td className="px-4 py-3 text-slate-300">
                                                         {m.valid_until ? new Date(m.valid_until).toLocaleDateString('id-ID') : '-'}
                                                     </td>
                                                     <td className="px-4 py-3">
-                                                        <span className={`badge-neon border ${STATUS_STYLE[m.membership_status] || ''}`}>
+                                                        <span className={`badge-console border ${STATUS_STYLE[m.membership_status] || ''}`}>
                                                             {STATUS_LABEL[m.membership_status] || m.membership_status}
                                                         </span>
                                                     </td>

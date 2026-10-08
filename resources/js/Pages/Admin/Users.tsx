@@ -4,9 +4,9 @@ import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
 const ROLE_STYLE: Record<string, string> = {
-    super_admin: 'border-neon-red/50 bg-neon-red/10 text-neon-red',
-    admin: 'border-neon-purple/50 bg-neon-purple/10 text-neon-purple',
-    staff: 'border-neon-cyan/50 bg-neon-cyan/10 text-neon-cyan',
+    super_admin: 'border-danger/50 bg-danger/10 text-danger',
+    admin: 'border-muted-accent/50 bg-muted-accent/10 text-muted-accent',
+    staff: 'border-accent-light/50 bg-accent-light/10 text-accent-light',
 };
 
 const ROLE_LABEL: Record<string, string> = {
@@ -24,9 +24,9 @@ export default function AdminUsers({ users, permissionList }: any) {
             header={
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <h1 className="font-display text-xl font-bold text-white">
-                        Manajemen <span className="text-neon-cyan">Admin & Role</span>
+                        Manajemen <span className="text-accent-light">Admin & Role</span>
                     </h1>
-                    <button onClick={() => setShowAdd(!showAdd)} className="btn-neon-solid !py-2 !text-xs">
+                    <button onClick={() => setShowAdd(!showAdd)} className="btn-primary !py-2 !text-xs">
                         + Tambah Admin CMS
                     </button>
                 </div>
@@ -36,7 +36,7 @@ export default function AdminUsers({ users, permissionList }: any) {
 
             {showAdd && <AddUserForm onDone={() => setShowAdd(false)} />}
 
-            <div className="card-neon mt-4 overflow-x-auto">
+            <div className="card-console mt-4 overflow-x-auto">
                 <table className="min-w-full divide-y divide-night-600 text-sm">
                     <thead className="bg-night-800/60">
                         <tr>
@@ -87,37 +87,37 @@ function AddUserForm({ onDone }: any) {
     };
 
     return (
-        <form onSubmit={submit} className="card-neon mt-4 grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-5">
+        <form onSubmit={submit} className="card-console mt-4 grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-5">
             <div>
-                <label className="label-neon">Nama</label>
-                <input value={data.nama} onChange={(e) => setData('nama', e.target.value)} className="input-neon" required />
-                {errors.nama && <p className="mt-1 text-xs text-neon-red">{errors.nama}</p>}
+                <label className="label-console">Nama</label>
+                <input value={data.nama} onChange={(e) => setData('nama', e.target.value)} className="input-console" required />
+                {errors.nama && <p className="mt-1 text-xs text-danger">{errors.nama}</p>}
             </div>
             <div>
-                <label className="label-neon">No. HP</label>
-                <input value={data.no_hp} onChange={(e) => setData('no_hp', e.target.value)} className="input-neon" required />
-                {errors.no_hp && <p className="mt-1 text-xs text-neon-red">{errors.no_hp}</p>}
+                <label className="label-console">No. HP</label>
+                <input value={data.no_hp} onChange={(e) => setData('no_hp', e.target.value)} className="input-console" required />
+                {errors.no_hp && <p className="mt-1 text-xs text-danger">{errors.no_hp}</p>}
             </div>
             <div>
-                <label className="label-neon">Email</label>
-                <input type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} className="input-neon" required />
-                {errors.email && <p className="mt-1 text-xs text-neon-red">{errors.email}</p>}
+                <label className="label-console">Email</label>
+                <input type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} className="input-console" required />
+                {errors.email && <p className="mt-1 text-xs text-danger">{errors.email}</p>}
             </div>
             <div>
-                <label className="label-neon">Password</label>
-                <input type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} className="input-neon" required />
-                {errors.password && <p className="mt-1 text-xs text-neon-red">{errors.password}</p>}
+                <label className="label-console">Password</label>
+                <input type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} className="input-console" required />
+                {errors.password && <p className="mt-1 text-xs text-danger">{errors.password}</p>}
             </div>
             <div>
-                <label className="label-neon">Role</label>
-                <select value={data.role} onChange={(e) => setData('role', e.target.value)} className="input-neon">
+                <label className="label-console">Role</label>
+                <select value={data.role} onChange={(e) => setData('role', e.target.value)} className="input-console">
                     <option value="staff">Staff</option>
                     <option value="admin">Admin</option>
                     <option value="super_admin">Super Admin</option>
                 </select>
             </div>
             <div className="sm:col-span-2 lg:col-span-5">
-                <button type="submit" disabled={processing} className="btn-neon-solid w-full !py-2 !text-xs">
+                <button type="submit" disabled={processing} className="btn-primary w-full !py-2 !text-xs">
                     Simpan Admin
                 </button>
             </div>
@@ -170,15 +170,15 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
                 </td>
                 <td className="px-4 py-3 text-slate-400">{u.no_hp}</td>
                 <td className="px-4 py-3">
-                    <span className={`badge-neon border ${ROLE_STYLE[u.role] || ''}`}>
+                    <span className={`badge-console border ${ROLE_STYLE[u.role] || ''}`}>
                         {ROLE_LABEL[u.role] || u.role}
                     </span>
                 </td>
                 <td className="px-4 py-3">
                     {isSuper ? (
-                        <span className="text-xs text-neon-red">Semua akses</span>
+                        <span className="text-xs text-danger">Semua akses</span>
                     ) : isAdmin ? (
-                        <span className="text-xs text-neon-purple">Semua menu (kecuali Admin & Role)</span>
+                        <span className="text-xs text-muted-accent">Semua menu (kecuali Admin & Role)</span>
                     ) : (
                         <span className="text-xs text-slate-400">
                             {(u.permissions?.length || 0)} menu: {(u.permissions || []).map((p: string) => permissionList?.[p]?.split(' ')[1] || p).join(', ')}
@@ -186,7 +186,7 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
                     )}
                 </td>
                 <td className="px-4 py-3">
-                    <button onClick={onToggle} className="btn-neon-outline !px-3 !py-1.5 !text-xs">
+                    <button onClick={onToggle} className="btn-outline !px-3 !py-1.5 !text-xs">
                         {editing ? 'Tutup' : 'Edit'}
                     </button>
                 </td>
@@ -203,39 +203,39 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
                                 </div>
                                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                     <div>
-                                        <label className="label-neon">Nama</label>
-                                        <input value={data.nama} onChange={(e) => setData('nama', e.target.value)} className="input-neon" required />
+                                        <label className="label-console">Nama</label>
+                                        <input value={data.nama} onChange={(e) => setData('nama', e.target.value)} className="input-console" required />
                                     </div>
                                     <div>
-                                        <label className="label-neon">No. HP</label>
-                                        <input value={data.no_hp} onChange={(e) => setData('no_hp', e.target.value)} className="input-neon" required />
+                                        <label className="label-console">No. HP</label>
+                                        <input value={data.no_hp} onChange={(e) => setData('no_hp', e.target.value)} className="input-console" required />
                                     </div>
                                     <div>
-                                        <label className="label-neon">Email</label>
-                                        <input type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} className="input-neon" required />
+                                        <label className="label-console">Email</label>
+                                        <input type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} className="input-console" required />
                                     </div>
                                     <div>
-                                        <label className="label-neon">Password (kosongkan jika tetap)</label>
-                                        <input type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} className="input-neon" />
+                                        <label className="label-console">Password (kosongkan jika tetap)</label>
+                                        <input type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} className="input-console" />
                                     </div>
                                 </div>
                                 <div className="mt-3">
-                                    <label className="label-neon">Role</label>
-                                    <select value={data.role} onChange={(e) => setData('role', e.target.value)} className="input-neon">
+                                    <label className="label-console">Role</label>
+                                    <select value={data.role} onChange={(e) => setData('role', e.target.value)} className="input-console">
                                         <option value="super_admin">Super Admin</option>
                                         <option value="admin">Admin</option>
                                         <option value="staff">Staff</option>
                                     </select>
                                 </div>
-                                <button type="submit" disabled={processing} className="btn-neon-solid mt-3 w-full !py-2 !text-xs">
+                                <button type="submit" disabled={processing} className="btn-primary mt-3 w-full !py-2 !text-xs">
                                     Simpan Data & Role
                                 </button>
                             </form>
 
                             {/* Permission checklist — hanya untuk staff */}
                             {u.role === 'staff' && (
-                                <form onSubmit={savePerms} className="rounded-lg border border-neon-cyan/30 bg-night-800/60 p-4">
-                                    <div className="text-[10px] font-semibold uppercase tracking-wider text-neon-cyan">
+                                <form onSubmit={savePerms} className="rounded-lg border border-accent-light/30 bg-night-800/60 p-4">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wider text-accent-light">
                                         Checklist Permission (Staff)
                                     </div>
                                     <p className="mt-1 text-xs text-slate-500">
@@ -243,18 +243,18 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
                                     </p>
                                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
                                         {Object.entries(permissionList).map(([key, label]) => (
-                                            <label key={key} className="flex cursor-pointer items-center gap-2 rounded border border-night-600 bg-night-700/40 px-3 py-2 text-sm text-slate-300 hover:border-neon-cyan/40">
+                                            <label key={key} className="flex cursor-pointer items-center gap-2 rounded border border-night-600 bg-night-700/40 px-3 py-2 text-sm text-slate-300 hover:border-accent-light/40">
                                                 <input
                                                     type="checkbox"
                                                     checked={permForm.data.permissions.includes(key)}
                                                     onChange={() => togglePerm(key)}
-                                                    className="h-4 w-4 rounded border-night-500 bg-night-700 text-neon-blue focus:ring-neon-blue"
+                                                    className="h-4 w-4 rounded border-night-500 bg-night-700 text-accent focus:ring-accent"
                                                 />
                                                 {String(label)}
                                             </label>
                                         ))}
                                     </div>
-                                    <button type="submit" disabled={permForm.processing} className="btn-neon mt-3 w-full !py-2 !text-xs">
+                                    <button type="submit" disabled={permForm.processing} className="btn-soft mt-3 w-full !py-2 !text-xs">
                                         Simpan Permission
                                     </button>
                                 </form>
@@ -262,8 +262,8 @@ function UserRow({ user: u, permissionList, editing, onToggle }: any) {
 
                             {u.role !== 'staff' && !isSuper && (
                                 <div className="rounded-lg border border-night-600 bg-night-800/60 p-4 text-xs text-slate-400">
-                                    Role <b className="text-neon-purple">Admin</b> otomatis punya semua menu
-                                    (kecuali Manajemen Admin & Role). Role <b className="text-neon-red">Super Admin</b>{' '}
+                                    Role <b className="text-muted-accent">Admin</b> otomatis punya semua menu
+                                    (kecuali Manajemen Admin & Role). Role <b className="text-danger">Super Admin</b>{' '}
                                     punya segalanya termasuk mengelola admin & role.
                                 </div>
                             )}

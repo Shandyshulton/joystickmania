@@ -20,9 +20,9 @@ export default function AdminUnits({ units }: any) {
             header={
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <h1 className="font-display text-xl font-bold text-white">
-                        Manajemen <span className="text-neon-cyan">Unit PS</span>
+                        Manajemen <span className="text-accent-light">Unit PS</span>
                     </h1>
-                    <button onClick={() => setModal('create')} className="btn-neon-solid !py-2 !text-xs">
+                    <button onClick={() => setModal('create')} className="btn-primary !py-2 !text-xs">
                         + Tambah Unit
                     </button>
                 </div>
@@ -30,7 +30,7 @@ export default function AdminUnits({ units }: any) {
         >
             <Head title="Admin Unit PS" />
 
-            <div className="card-neon overflow-x-auto">
+            <div className="card-console overflow-x-auto">
                 <table className="min-w-full divide-y divide-night-600 text-sm">
                     <thead className="bg-night-800/60">
                         <tr>
@@ -46,30 +46,30 @@ export default function AdminUnits({ units }: any) {
                     <tbody className="divide-y divide-night-700">
                         {units.map((u: any) => (
                             <tr key={u.id} className="hover:bg-night-800/50">
-                                <td className="px-4 py-3 font-mono font-bold text-neon-cyan">{u.kode_unit}</td>
+                                <td className="px-4 py-3 font-mono font-bold text-accent-light">{u.kode_unit}</td>
                                 <td className="px-4 py-3 text-slate-300">{u.jenis_konsol}</td>
                                 <td className="px-4 py-3 text-slate-400">{u.kondisi}</td>
                                 <td className="px-4 py-3 text-slate-300">Rp {Number(u.harga_sewa).toLocaleString('id-ID')}</td>
-                                <td className="px-4 py-3 text-neon-yellow">Rp {Number(u.nominal_deposit).toLocaleString('id-ID')}</td>
+                                <td className="px-4 py-3 text-warn">Rp {Number(u.nominal_deposit).toLocaleString('id-ID')}</td>
                                 <td className="px-4 py-3">
-                                    <span className={`badge-neon border ${
-                                        u.status === 'tersedia' ? 'border-neon-green/40 text-neon-green'
-                                        : u.status === 'disewa' ? 'border-neon-yellow/40 text-neon-yellow'
-                                        : 'border-neon-red/40 text-neon-red'
+                                    <span className={`badge-console border ${
+                                        u.status === 'tersedia' ? 'border-ok/40 text-ok'
+                                        : u.status === 'disewa' ? 'border-warn/40 text-warn'
+                                        : 'border-danger/40 text-danger'
                                     }`}>
                                         {u.status}
                                     </span>
                                 </td>
                                 <td className="px-4 py-3">
                                     <div className="flex gap-2">
-                                        <button onClick={() => setModal(u.id)} className="btn-neon !px-3 !py-1 !text-xs">Edit</button>
+                                        <button onClick={() => setModal(u.id)} className="btn-soft !px-3 !py-1 !text-xs">Edit</button>
                                         <button
                                             onClick={() => {
                                                 if (confirm(`Hapus unit ${u.kode_unit}?`)) {
                                                     router.delete(route('admin.units.destroy', u.id));
                                                 }
                                             }}
-                                            className="btn-neon-outline !px-3 !py-1 !text-xs !text-neon-red !ring-neon-red/40"
+                                            className="btn-outline !px-3 !py-1 !text-xs !text-danger !ring-danger/40"
                                         >
                                             Hapus
                                         </button>
@@ -115,7 +115,7 @@ function UnitFormModal({ unit, onClose }: any) {
             <form
                 onClick={(e) => e.stopPropagation()}
                 onSubmit={submit}
-                className="card-neon max-h-[92dvh] w-full max-w-lg space-y-4 overflow-y-auto rounded-b-none p-5 sm:rounded-b-xl sm:p-6"
+                className="card-console max-h-[92dvh] w-full max-w-lg space-y-4 overflow-y-auto rounded-b-none p-5 sm:rounded-b-xl sm:p-6"
             >
                 <div className="flex items-center justify-between">
                     <h2 className="font-display text-lg font-bold text-white">
@@ -127,12 +127,12 @@ function UnitFormModal({ unit, onClose }: any) {
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="label-neon">Kode Unit</label>
-                        <input value={data.kode_unit} onChange={(e) => setData('kode_unit', e.target.value)} className="input-neon" placeholder="PS5-03" required />
+                        <label className="label-console">Kode Unit</label>
+                        <input value={data.kode_unit} onChange={(e) => setData('kode_unit', e.target.value)} className="input-console" placeholder="PS5-03" required />
                     </div>
                     <div>
-                        <label className="label-neon">Jenis Konsol</label>
-                        <select value={data.jenis_konsol} onChange={(e) => setData('jenis_konsol', e.target.value)} className="input-neon">
+                        <label className="label-console">Jenis Konsol</label>
+                        <select value={data.jenis_konsol} onChange={(e) => setData('jenis_konsol', e.target.value)} className="input-console">
                             <option value="PS3">PS3</option>
                             <option value="PS4">PS4</option>
                             <option value="PS5">PS5</option>
@@ -141,12 +141,12 @@ function UnitFormModal({ unit, onClose }: any) {
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="label-neon">Kondisi</label>
-                        <input value={data.kondisi} onChange={(e) => setData('kondisi', e.target.value)} className="input-neon" placeholder="Baik / Seperti baru" />
+                        <label className="label-console">Kondisi</label>
+                        <input value={data.kondisi} onChange={(e) => setData('kondisi', e.target.value)} className="input-console" placeholder="Baik / Seperti baru" />
                     </div>
                     <div>
-                        <label className="label-neon">Status</label>
-                        <select value={data.status} onChange={(e) => setData('status', e.target.value)} className="input-neon">
+                        <label className="label-console">Status</label>
+                        <select value={data.status} onChange={(e) => setData('status', e.target.value)} className="input-console">
                             <option value="tersedia">Tersedia</option>
                             <option value="disewa">Disewa</option>
                             <option value="servis">Servis</option>
@@ -155,31 +155,31 @@ function UnitFormModal({ unit, onClose }: any) {
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="label-neon">Harga Sewa/Hari</label>
+                        <label className="label-console">Harga Sewa/Hari</label>
                         <AmountInput
                             prefix="Rp"
                             value={data.harga_sewa}
                             onValueChange={(value) => setData('harga_sewa', value)}
                         />
                         {errors.harga_sewa && (
-                            <p className="mt-1 text-xs text-neon-red">{errors.harga_sewa}</p>
+                            <p className="mt-1 text-xs text-danger">{errors.harga_sewa}</p>
                         )}
                     </div>
                     <div>
-                        <label className="label-neon">Deposit</label>
+                        <label className="label-console">Deposit</label>
                         <AmountInput
                             prefix="Rp"
                             value={data.nominal_deposit}
                             onValueChange={(value) => setData('nominal_deposit', value)}
                         />
                         {errors.nominal_deposit && (
-                            <p className="mt-1 text-xs text-neon-red">{errors.nominal_deposit}</p>
+                            <p className="mt-1 text-xs text-danger">{errors.nominal_deposit}</p>
                         )}
                     </div>
                 </div>
                 <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
-                    <button type="button" onClick={onClose} className="btn-neon-outline w-full !py-2 !text-xs sm:w-auto">Batal</button>
-                    <button type="submit" disabled={processing} className="btn-neon-solid w-full !py-2 !text-xs sm:w-auto">Simpan</button>
+                    <button type="button" onClick={onClose} className="btn-outline w-full !py-2 !text-xs sm:w-auto">Batal</button>
+                    <button type="submit" disabled={processing} className="btn-primary w-full !py-2 !text-xs sm:w-auto">Simpan</button>
                 </div>
             </form>
         </div>

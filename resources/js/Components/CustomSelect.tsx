@@ -6,7 +6,7 @@ export interface SelectOption {
 }
 
 /**
- * Dropdown custom (menggantikan <select> bawaan) dengan tema neon.
+ * Dropdown custom (menggantikan <select> bawaan) dengan tema console.
  * Mendukung: disabled, hint di bawah, list yang bisa di-scroll.
  */
 export default function CustomSelect({
@@ -54,7 +54,7 @@ export default function CustomSelect({
                 className={`flex w-full items-center justify-between gap-2 rounded-lg border px-3.5 py-2.5 text-sm transition ${
                     disabled
                         ? 'cursor-not-allowed border-night-600 bg-night-800/40 text-slate-500'
-                        : 'border-night-600 bg-night-700/60 text-white hover:border-neon-blue/60'
+                        : 'border-night-600 bg-night-700/60 text-white hover:border-accent/60'
                 }`}
             >
                 <span className={selected ? 'text-white' : 'text-slate-500'}>
@@ -78,7 +78,7 @@ export default function CustomSelect({
             </button>
 
             {open && !disabled && (
-                <div className="absolute z-50 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border border-night-600 bg-night-800 py-1 shadow-neon-sm">
+                <div className="absolute z-50 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border border-night-600 bg-night-800 py-1 shadow-solid-sm">
                     {options.map((opt) => {
                         const isActive = opt.value === value;
                         return (
@@ -91,13 +91,13 @@ export default function CustomSelect({
                                 }}
                                 className={`flex w-full items-center justify-between px-3.5 py-2 text-left text-sm transition ${
                                     isActive
-                                        ? 'bg-neon-blue/15 font-semibold text-neon-cyan'
+                                        ? 'bg-accent/15 font-semibold text-accent-light'
                                         : 'text-slate-300 hover:bg-night-700 hover:text-white'
                                 }`}
                             >
                                 {opt.label}
                                 {isActive && (
-                                    <span className="text-neon-cyan">✓</span>
+                                    <span className="text-accent-light">✓</span>
                                 )}
                             </button>
                         );

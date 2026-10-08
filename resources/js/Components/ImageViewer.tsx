@@ -117,7 +117,7 @@ export default function ImageViewer({
             onClick={onClose}
         >
             <div
-                className="flex h-full w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-night-600 bg-night-900 shadow-neon-sm"
+                className="flex h-full w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-night-600 bg-night-900 shadow-solid-sm"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -126,7 +126,7 @@ export default function ImageViewer({
                         <span className="font-display text-sm font-bold text-white">
                             Foto KTP
                         </span>
-                        <span className="badge-neon border border-neon-cyan/40 bg-neon-cyan/10 text-xs text-neon-cyan">
+                        <span className="badge-console border border-accent-light/40 bg-accent-light/10 text-xs text-accent-light">
                             {zoom}%
                         </span>
                     </div>
@@ -177,24 +177,24 @@ export default function ImageViewer({
                 <div className="flex items-center justify-center gap-3 border-t border-night-700 px-4 py-3">
                     <button
                         onClick={() => setZoom((z) => Math.max(50, z - 10))}
-                        className="btn-neon-outline !h-9 !w-9 !p-0 !text-base"
+                        className="btn-outline !h-9 !w-9 !p-0 !text-base"
                         aria-label="Zoom out"
                     >
                         −
                     </button>
-                    <span className="w-16 text-center font-mono text-sm font-bold text-neon-cyan">
+                    <span className="w-16 text-center font-mono text-sm font-bold text-accent-light">
                         {zoom}%
                     </span>
                     <button
                         onClick={() => setZoom((z) => Math.min(400, z + 10))}
-                        className="btn-neon-outline !h-9 !w-9 !p-0 !text-base"
+                        className="btn-outline !h-9 !w-9 !p-0 !text-base"
                         aria-label="Zoom in"
                     >
                         +
                     </button>
                     <button
                         onClick={resetView}
-                        className="btn-neon !px-4 !py-1.5 !text-xs"
+                        className="btn-soft !px-4 !py-1.5 !text-xs"
                     >
                         Reset
                     </button>

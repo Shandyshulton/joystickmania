@@ -53,7 +53,7 @@ export default function BookingRoom({
 
             <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
                 <h1 className="font-display text-3xl font-bold tracking-wide text-white">
-                    BOOKING <span className="text-neon-cyan">ROOM</span>
+                    BOOKING <span className="text-accent-light">ROOM</span>
                 </h1>
                 <p className="mt-2 text-slate-400">
                     Isi data di bawah. Slot dikunci 30 menit setelah submit — segera
@@ -61,13 +61,13 @@ export default function BookingRoom({
                 </p>
 
                 {diskonPersen > 0 && (
-                    <div className="mt-4 rounded-lg border border-neon-green/40 bg-neon-green/10 p-4 text-sm text-neon-green">
+                    <div className="mt-4 rounded-lg border border-ok/40 bg-ok/10 p-4 text-sm text-ok">
                         🎮 Member {userTier?.toUpperCase()} — diskon{' '}
                         <b>{diskonPersen}%</b> otomatis diterapkan!
                     </div>
                 )}
 
-                <form onSubmit={submit} className="card-neon mt-6 space-y-5 p-6">
+                <form onSubmit={submit} className="card-console mt-6 space-y-5 p-6">
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div>
                             <InputLabel htmlFor="nama" value="Nama" />
@@ -75,7 +75,7 @@ export default function BookingRoom({
                                 id="nama"
                                 value={data.nama}
                                 onChange={(e) => setData('nama', e.target.value)}
-                                className="input-neon mt-1"
+                                className="input-console mt-1"
                                 required
                             />
                             <InputError message={errors.nama} className="mt-1" />
@@ -86,7 +86,7 @@ export default function BookingRoom({
                                 id="no_hp"
                                 value={data.no_hp}
                                 onChange={(e) => setData('no_hp', e.target.value)}
-                                className="input-neon mt-1"
+                                className="input-console mt-1"
                                 placeholder="08xxxxxxxxxx"
                                 required
                             />
@@ -103,7 +103,7 @@ export default function BookingRoom({
                                 min={today}
                                 value={data.tanggal}
                                 onChange={(e) => setData('tanggal', e.target.value)}
-                                className="input-neon mt-1"
+                                className="input-console mt-1"
                                 required
                             />
                             <InputError message={errors.tanggal} className="mt-1" />
@@ -114,7 +114,7 @@ export default function BookingRoom({
                                 id="jam_mulai"
                                 value={data.jam_mulai}
                                 onChange={(e) => setData('jam_mulai', e.target.value)}
-                                className="input-neon mt-1"
+                                className="input-console mt-1"
                             >
                                 {Array.from({ length: 12 }, (_, i) => i + 10).map((h) => (
                                     <option key={h} value={`${String(h).padStart(2, '0')}:00`}>
@@ -136,7 +136,7 @@ export default function BookingRoom({
                                 max={12}
                                 value={data.durasi}
                                 onChange={(e) => setData('durasi', Number(e.target.value))}
-                                className="input-neon mt-1"
+                                className="input-console mt-1"
                             />
                         </div>
                         <div>
@@ -145,7 +145,7 @@ export default function BookingRoom({
                                 id="room_id"
                                 value={data.room_id}
                                 onChange={(e) => setData('room_id', Number(e.target.value))}
-                                className="input-neon mt-1"
+                                className="input-console mt-1"
                             >
                                 {rooms?.map((r: any) => (
                                     <option key={r.id} value={r.id}>
@@ -161,7 +161,7 @@ export default function BookingRoom({
                                 id="konsol"
                                 value={data.konsol}
                                 onChange={(e) => setData('konsol', e.target.value)}
-                                className="input-neon mt-1"
+                                className="input-console mt-1"
                             >
                                 {selectedRoom?.konsol_tersedia?.map((k: string) => (
                                     <option key={k} value={k}>
@@ -179,7 +179,7 @@ export default function BookingRoom({
                             id="catatan"
                             value={data.catatan}
                             onChange={(e) => setData('catatan', e.target.value)}
-                            className="input-neon mt-1"
+                            className="input-console mt-1"
                             rows={2}
                         />
                     </div>
@@ -195,18 +195,18 @@ export default function BookingRoom({
                             <span>Rp {subtotal.toLocaleString('id-ID')}</span>
                         </div>
                         {diskonPersen > 0 && (
-                            <div className="mt-1 flex justify-between text-sm text-neon-green">
+                            <div className="mt-1 flex justify-between text-sm text-ok">
                                 <span>Diskon member ({diskonPersen}%)</span>
                                 <span>- Rp {diskonNominal.toLocaleString('id-ID')}</span>
                             </div>
                         )}
-                        <div className="mt-2 flex justify-between border-t border-night-600 pt-2 font-display text-lg font-bold text-neon-cyan">
+                        <div className="mt-2 flex justify-between border-t border-night-600 pt-2 font-display text-lg font-bold text-accent-light">
                             <span>Total Bayar</span>
                             <span>Rp {total.toLocaleString('id-ID')}</span>
                         </div>
                     </div>
 
-                    <button type="submit" disabled={processing} className="btn-neon-solid w-full animate-glow-pulse !py-3">
+                    <button type="submit" disabled={processing} className="btn-primary w-full animate-nudge !py-3">
                         {processing ? 'Memproses...' : 'Lanjut ke Konfirmasi WhatsApp'}
                     </button>
                 </form>
